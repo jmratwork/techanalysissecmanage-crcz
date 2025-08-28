@@ -1,0 +1,8 @@
+---
+- hosts: all
+  become: true
+  roles:
+    - bips
+    - ng_siem
+    - ng_soc
+    - cicms

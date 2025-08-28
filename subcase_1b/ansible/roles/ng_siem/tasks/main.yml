@@ -1,0 +1,8 @@
+---
+- name: Deploy NG-SIEM configuration
+  template:
+    src: ng_siem.conf.j2
+    dest: /etc/ng_siem/config.yml
+    owner: root
+    group: root
+    mode: "0644"
