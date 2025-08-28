@@ -1,0 +1,8 @@
+---
+- name: Deploy CICMS configuration
+  template:
+    src: cicms.conf.j2
+    dest: /etc/cicms/config.yml
+    owner: root
+    group: root
+    mode: "0644"
