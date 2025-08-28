@@ -1,6 +1,8 @@
-# Subcase 1c: Malware Handling Training
+# Subcase 1c Malware Handling Training
 
 ## Objective
+Design a comprehensive cyber security training plan focused on handling and mitigating malware attacks. This proactive approach involves theoretical and practical training on the utilization of automation techniques, tools and technologies, and incident response procedures to detect, contain, eradicate, and recover from malware attacks. Through this subcase, CYNET will improve its protection capabilities and capacities using state-of-the-art technology and solutions to better prepare, detect, and stop malware attacks. Furthermore, relevant intelligence (CTI) is shared with the appropriate audience (other entities and authorities) to enhance collective defense efforts and improve overall cybersecurity resilience.
+
 Simulate benign malware activity and integrate threat intelligence feeds to exercise NG-SOC components.
 
 ## Node Roles
