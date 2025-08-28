@@ -3,8 +3,31 @@ set -euo pipefail
 
 WEB_ROOT="${WEB_ROOT:-/var/www/dvwa}"
 WEB_PORT="${WEB_PORT:-8080}"
-DVWA_REPO="${DVWA_REPO:-https://internal.example.com/dvwa.git}"
 LOG_DIR="/var/log/web_vuln"
+
+# Location of the Ansible inventory used to populate defaults when
+# environment variables are not provided.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+INVENTORY_FILE="${INVENTORY_FILE:-$SCRIPT_DIR/../ansible/inventory.ini}"
+
+load_inventory_var() {
+    local key="$1"
+    if [ -f "$INVENTORY_FILE" ]; then
+        local host_line
+        host_line=$(grep '^web_vuln' "$INVENTORY_FILE" || true)
+        if [[ $host_line =~ $key=([^[:space:]]+) ]]; then
+            echo "${BASH_REMATCH[1]}"
+        fi
+    fi
+}
+
+DVWA_REPO="${DVWA_REPO:-$(load_inventory_var dvwa_repo)}"
+DVWA_ARCHIVE="${DVWA_ARCHIVE:-$(load_inventory_var dvwa_archive)}"
+
+if [ -z "${DVWA_ARCHIVE:-}" ]; then
+    DEFAULT_ARCHIVE="$SCRIPT_DIR/../dvwa.tar.gz"
+    [ -f "$DEFAULT_ARCHIVE" ] && DVWA_ARCHIVE="$DEFAULT_ARCHIVE"
+fi
 
 install_deps() {
     if [ "${SKIP_INSTALL:-0}" -eq 1 ]; then
@@ -16,11 +39,21 @@ install_deps() {
 }
 
 fetch_dvwa() {
-    if [ ! -d "$WEB_ROOT" ]; then
-        git clone "$DVWA_REPO" "$WEB_ROOT"
+    if [ -d "$WEB_ROOT" ]; then
+        return
     fi
 
-    if [ ! -f "$WEB_ROOT/config/config.inc.php" ]; then
+    if [ -n "${DVWA_ARCHIVE:-}" ] && [ -f "$DVWA_ARCHIVE" ]; then
+        mkdir -p "$(dirname "$WEB_ROOT")"
+        tar -xzf "$DVWA_ARCHIVE" -C "$(dirname "$WEB_ROOT")"
+    elif [ -n "${DVWA_REPO:-}" ]; then
+        git clone "$DVWA_REPO" "$WEB_ROOT"
+    else
+        echo "DVWA source not provided. Set DVWA_ARCHIVE or DVWA_REPO." >&2
+        exit 1
+    fi
+
+    if [ ! -f "$WEB_ROOT/config/config.inc.php" ] && [ -f "$WEB_ROOT/config/config.inc.php.dist" ]; then
         cp "$WEB_ROOT/config/config.inc.php.dist" "$WEB_ROOT/config/config.inc.php"
     fi
 }
