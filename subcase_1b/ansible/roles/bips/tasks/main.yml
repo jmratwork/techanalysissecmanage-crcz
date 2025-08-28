@@ -1,9 +1,14 @@
----
+- name: Download BIPS package
+  ansible.builtin.get_url:
+    url: "https://packages.internal.example.com/bips/bips-agent.deb"
+    dest: "/tmp/bips-agent.deb"
+    mode: "0644"
+  become: yes
+
 - name: Install BIPS
   ansible.builtin.apt:
-    name: bips
+    deb: "/tmp/bips-agent.deb"
     state: present
-    update_cache: yes
   become: yes
 
 - name: Configure BIPS

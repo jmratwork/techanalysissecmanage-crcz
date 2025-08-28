@@ -1,2 +1,5 @@
-# MISP configuration template
-misp_url: {{ misp_url | default('http://localhost') }}
+# MISP configuration
+misp:
+  url: {{ misp_url | default('https://misp.internal.local') }}
+  authkey: {{ misp_authkey | default('changeme') }}
+  ssl_verify: false

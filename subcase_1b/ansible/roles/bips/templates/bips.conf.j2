@@ -1,2 +1,7 @@
 # BIPS configuration
-bips_setting: {{ bips_setting | default('default_value') }}
+logging:
+  level: INFO
+  file: /var/log/bips/bips.log
+network:
+  interface: {{ bips_interface | default('eth0') }}
+  ruleset: /etc/bips/rules.yml
