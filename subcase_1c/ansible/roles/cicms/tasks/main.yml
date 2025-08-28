@@ -6,3 +6,11 @@
     owner: root
     group: root
     mode: "0644"
+
+- name: Deploy MISP configuration
+  template:
+    src: misp.conf.j2
+    dest: /etc/misp/misp.conf
+    owner: root
+    group: root
+    mode: "0644"

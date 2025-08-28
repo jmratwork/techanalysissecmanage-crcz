@@ -1,0 +1,3 @@
+# Filebeat configuration template
+output.elasticsearch:
+  hosts: ['{{ siem_host | default("localhost") }}:9200']

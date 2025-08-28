@@ -6,3 +6,11 @@
     owner: root
     group: root
     mode: "0644"
+
+- name: Deploy NG-SOC dashboard
+  template:
+    src: ngsoc-dashboard.ndjson.j2
+    dest: /etc/ng_soc/ngsoc-dashboard.ndjson
+    owner: root
+    group: root
+    mode: "0644"
