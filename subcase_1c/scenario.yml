@@ -2,29 +2,58 @@
 version: "1.0"
 name: "subcase_1c"
 description: "Scenario for subcase 1c"
+metadata:
+  author: "TechAnalysisSecManage"
+  category: "training"
+  difficulty: "medium"
+  created: "2024-01-01"
+network:
+  subnet: "10.20.0.0/24"
+  gateway: "10.20.0.1"
 playbook: "ansible/playbook.yml"
 nodes:
   infected_host:
     image: "windows10:latest"
     role: "victim"
-    startup_script: "scripts/load_malware_simulation.ps1"
+    ip: "10.20.0.2"
+    subnet: "10.20.0.0/24"
+    gateway: "10.20.0.1"
+    startup_scripts:
+      - path: "scripts/load_malware_simulation.ps1"
+        args: "-ExecutionPolicy Bypass"
   c2_server:
     image: "c2-server:latest"
     role: "c2"
-    startup_script: "scripts/start_c2_server.sh"
+    ip: "10.20.0.3"
+    subnet: "10.20.0.0/24"
+    gateway: "10.20.0.1"
+    startup_scripts:
+      - path: "scripts/start_c2_server.sh"
+        args: "--config /etc/c2.conf"
   soc_server:
     image: "soc-platform:latest"
     role: "soc"
     services:
       - "NG-SOC"
       - "NG-SIEM"
-    startup_script: "scripts/start_soc_services.sh"
+    ip: "10.20.0.4"
+    subnet: "10.20.0.0/24"
+    gateway: "10.20.0.1"
+    startup_scripts:
+      - path: "scripts/start_soc_services.sh"
+        args: "--services NG-SOC,NG-SIEM"
   cti_component:
     image: "cti-platform:latest"
     role: "cti"
     services:
       - "CTEMS"
       - "NG-SIEM"
+    ip: "10.20.0.5"
+    subnet: "10.20.0.0/24"
+    gateway: "10.20.0.1"
+    startup_scripts:
+      - path: "scripts/start_cti_component.sh"
+        args: "--sync"
 links:
   - [infected_host, c2_server]
   - [infected_host, soc_server]

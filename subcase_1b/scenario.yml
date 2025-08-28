@@ -2,16 +2,34 @@
 version: "1.0"
 name: "subcase_1b"
 description: "Scenario for subcase 1b"
+metadata:
+  author: "TechAnalysisSecManage"
+  category: "training"
+  difficulty: "medium"
+  created: "2024-01-01"
+network:
+  subnet: "10.10.0.0/24"
+  gateway: "10.10.0.1"
 playbook: "ansible/playbook.yml"
 nodes:
   attacker:
     image: "kali:latest"
     role: "attacker"
-    startup_script: "scripts/attacker_start.sh"
+    ip: "10.10.0.2"
+    subnet: "10.10.0.0/24"
+    gateway: "10.10.0.1"
+    startup_scripts:
+      - path: "scripts/attacker_start.sh"
+        args: "--init --verbose"
   web_vuln:
     image: "vulnerable-web:latest"
     role: "target"
-    startup_script: "scripts/web_vuln_start.sh"
+    ip: "10.10.0.3"
+    subnet: "10.10.0.0/24"
+    gateway: "10.10.0.1"
+    startup_scripts:
+      - path: "scripts/web_vuln_start.sh"
+        args: "--seed data01"
   soc_server:
     image: "soc-platform:latest"
     role: "soc"
@@ -20,7 +38,12 @@ nodes:
       - "NG-SIEM"
       - "NG-SOC"
       - "CICMS"
-    startup_script: "scripts/soc_server_start.sh"
+    ip: "10.10.0.4"
+    subnet: "10.10.0.0/24"
+    gateway: "10.10.0.1"
+    startup_scripts:
+      - path: "scripts/soc_server_start.sh"
+        args: "--enable-logging"
 links:
   - [attacker, web_vuln]
   - [web_vuln, soc_server]
