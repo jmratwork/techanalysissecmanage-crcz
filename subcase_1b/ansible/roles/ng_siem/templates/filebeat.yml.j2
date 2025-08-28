@@ -4,4 +4,5 @@ filebeat.inputs:
     paths:
       - /var/log/*.log
 output.logstash:
-  hosts: ["{{ siem_host | default('localhost:5044') }}"]
+  hosts: ["{{ siem_ingest_host | default(siem_host | default('localhost')) }}:{{ siem_ingest_port | default(5044) }}"]
+  protocol: "{{ siem_ingest_protocol | default('tcp') }}"
