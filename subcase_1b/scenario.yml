@@ -3,3 +3,24 @@ version: "1.0"
 name: "subcase_1b"
 description: "Scenario for subcase 1b"
 playbook: "ansible/playbook.yml"
+nodes:
+  attacker:
+    image: "kali:latest"
+    role: "attacker"
+    startup_script: "scripts/attacker_start.sh"
+  web_vuln:
+    image: "vulnerable-web:latest"
+    role: "target"
+    startup_script: "scripts/web_vuln_start.sh"
+  soc_server:
+    image: "soc-platform:latest"
+    role: "soc"
+    services:
+      - "BIPS"
+      - "NG-SIEM"
+      - "NG-SOC"
+      - "CICMS"
+    startup_script: "scripts/soc_server_start.sh"
+links:
+  - [attacker, web_vuln]
+  - [web_vuln, soc_server]
