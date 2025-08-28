@@ -35,3 +35,8 @@ This repository contains materials for deploying and managing security analysis 
 - **Tool-Specific Logs** – Consult documentation for [BIPS](https://ngsoc.example.com/bips), [NG-SIEM](https://ngsoc.example.com/ng-siem), [CICMS](https://ngsoc.example.com/cicms), and [CTEMS](https://ngsoc.example.com/ctems).
 
 Additional theoretical background and workflow guidance can be found in [`docs/training_workflows.md`](docs/training_workflows.md).
+
+## Scenario Guides
+
+- [Subcase 1b – Vulnerable Web App](docs/subcase_1b_guide.md)
+- [Subcase 1c – Malware Simulation and CTI Integration](docs/subcase_1c_guide.md)
