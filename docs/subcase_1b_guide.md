@@ -1,9 +1,9 @@
 # Subcase 1b Guide: Phishing Training
 
 ## Objective
-Simulate a phishing campaign and analyze trainee responses using NG-SOC monitoring components.
+Provide phishing‑email identification training with an accompanying policy briefing. Trainees practice spotting malicious messages inside the Random Education Platform (REP) while SOC analysts monitor activity through NG‑SOC components.
 
-## Tasks
+## Deployment Steps
 
 1. **Start SOC services**
    ```bash
@@ -11,11 +11,11 @@ Simulate a phishing campaign and analyze trainee responses using NG-SOC monitori
    ```
    Launches BIPS, NG-SIEM, CICMS, and NG-SOC.
 
-2. **Launch the training platform**
+2. **Launch the Random Education Platform (REP)**
    ```bash
    sudo subcase_1b/scripts/training_platform_start.sh
    ```
-   Sends simulated phishing emails to the trainee.
+   Sends simulated phishing emails for trainees to classify and review against the policy briefing.
 
 3. **Run the trainee simulation**
    ```bash
@@ -24,11 +24,11 @@ Simulate a phishing campaign and analyze trainee responses using NG-SOC monitori
    Logs receipt of the phishing email.
 
 4. **Monitor with NG-SOC tools**
-   Use BIPS for intrusion prevention alerts, NG-SIEM for event correlation, CICMS for case tracking, and NG-SOC for dashboard visibility.
+   SOC analysts follow the BIPS → NG‑SIEM → NG‑SOC → CICMS chain to view alerts, correlate events, and open cases.
 
 ## Expected Outcomes
 
-- Phishing log written to `/var/log/training_platform/phishing.log`.
+- REP writes a phishing log to `/var/log/training_platform/phishing.log`.
 - Trainee mailbox updated at `/var/mail/trainee`.
 - BIPS (5500), NG-SIEM (5601), CICMS (5800), and NG-SOC (5900) running.
 
