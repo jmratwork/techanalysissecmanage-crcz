@@ -1,5 +1,7 @@
 # Subcase 1b Vulnerable Web App
 
+Subcase 1b info: Design a comprehensive cyber security training plan focused on conducting network penetration tests (to educate trainees identifying security vulnerabilities based on a similar environment of an NREN) to identify security vulnerabilities in CYNET's network(s). This proactive approach involves a) theoretical training regarding penetration testing and vulnerability assessments and b) briefing of organisational policies and procedures related to pen tests, aiming to equip CYNET staff with the necessary capabilities to find and fix any potential weaknesses before bad actors can take advantage of them.
+
 The `web_vuln_start.sh` script installs the [Damn Vulnerable Web Application (DVWA)](https://github.com/digininja/DVWA) from a configurable source and launches it for trainees. The application can be cloned from a Git repository or extracted from a prepackaged archive bundled with the scenario for offline use.
 
 ## Usage
