@@ -3,6 +3,7 @@ filebeat.inputs:
   - type: log
     paths:
       - /var/log/*.log
+      - /var/log/ctems/*.log
 # NG-SIEM collector output
 # ng_siem_collector_host and ng_siem_collector_port provide the collector endpoint
 output.ng_siem:
