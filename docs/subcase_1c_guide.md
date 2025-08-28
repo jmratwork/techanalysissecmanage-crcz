@@ -11,11 +11,11 @@ Simulate benign malware activity and integrate threat intelligence feeds to exer
    ```  
    Launches BIPS, NG-SIEM, CICMS, and NG-SOC.
 
-2. **Start CTI component and ingest feeds**  
+2. **Start CTI component and ingest feeds**
    ```bash
    sudo subcase_1c/scripts/start_cti_component.sh
-   ```  
-   Runs CTEMS, kicks off [fetch_cti_feed.sh](../subcase_1c/scripts/fetch_cti_feed.sh), and verifies NG-SIEM.
+   ```
+   Runs CTEMS, starts the `fetch-cti-feed` systemd service, and verifies NG-SIEM.
 
 3. **Launch the C2 server**  
    ```bash
@@ -42,7 +42,7 @@ Simulate benign malware activity and integrate threat intelligence feeds to exer
 
 - [`start_soc_services.sh`](../subcase_1c/scripts/start_soc_services.sh)
 - [`start_cti_component.sh`](../subcase_1c/scripts/start_cti_component.sh)
-- [`fetch_cti_feed.sh`](../subcase_1c/scripts/fetch_cti_feed.sh)
+- [`fetch-cti-feed.service`](../subcase_1c/ansible/roles/ctems/templates/fetch-cti-feed.service.j2)
 - [`start_c2_server.sh`](../subcase_1c/scripts/start_c2_server.sh)
 - [`benign_malware_simulator.ps1`](../subcase_1c/scripts/benign_malware_simulator.ps1)
 - [`load_malware_simulation.ps1`](../subcase_1c/scripts/load_malware_simulation.ps1)

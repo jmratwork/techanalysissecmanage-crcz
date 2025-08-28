@@ -1,0 +1,16 @@
+[Unit]
+Description=Fetch CTI feed for CTEMS
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/opt/ctems/fetch_cti_feed.sh
+EnvironmentFile=-/etc/ctems/cti_feed.env
+Restart=on-failure
+RestartSec=10
+StandardOutput=append:/var/log/ctems/fetch_cti_feed.log
+StandardError=append:/var/log/ctems/fetch_cti_feed.log
+
+[Install]
+WantedBy=multi-user.target

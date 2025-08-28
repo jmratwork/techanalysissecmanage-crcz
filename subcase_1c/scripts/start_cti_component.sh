@@ -55,7 +55,20 @@ start_ng_siem() {
     fi
 }
 
+start_fetch_cti_feed() {
+    mkdir -p /var/log/ctems
+    if systemctl start fetch-cti-feed >>/var/log/ctems/service.log 2>&1; then
+        if ! systemctl is-active --quiet fetch-cti-feed; then
+            echo "$(date) fetch-cti-feed failed to start" >>/var/log/ctems/service.log
+            return 1
+        fi
+    else
+        echo "$(date) failed to run systemctl start fetch-cti-feed" >>/var/log/ctems/service.log
+        return 1
+    fi
+}
+
 install_deps
 start_ctems
 start_ng_siem
-"$(dirname "$0")/fetch_cti_feed.sh" &
+start_fetch_cti_feed
