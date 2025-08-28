@@ -1,5 +1,5 @@
 ---
-- hosts: soc_servers
+- hosts: soc_server
   become: true
   roles:
     - bips
