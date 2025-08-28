@@ -1,16 +1,32 @@
 ---
-- name: Deploy NG-SOC configuration
-  template:
+- name: Install NG-SOC
+  ansible.builtin.apt:
+    name: ng-soc
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Configure NG-SOC
+  ansible.builtin.template:
     src: ng_soc.conf.j2
     dest: /etc/ng_soc/config.yml
     owner: root
     group: root
     mode: "0644"
+  become: yes
 
 - name: Deploy NG-SOC dashboard
-  template:
+  ansible.builtin.template:
     src: ngsoc-dashboard.ndjson.j2
     dest: /etc/ng_soc/ngsoc-dashboard.ndjson
     owner: root
     group: root
     mode: "0644"
+  become: yes
+
+- name: Enable and start NG-SOC service
+  ansible.builtin.service:
+    name: ng-soc
+    state: started
+    enabled: yes
+  become: yes

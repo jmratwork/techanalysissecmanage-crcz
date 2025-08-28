@@ -1,16 +1,41 @@
 ---
-- name: Deploy CICMS configuration
-  template:
+- name: Install CICMS and MISP
+  ansible.builtin.apt:
+    name:
+      - cicms
+      - misp
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Configure CICMS
+  ansible.builtin.template:
     src: cicms.conf.j2
     dest: /etc/cicms/config.yml
     owner: root
     group: root
     mode: "0644"
+  become: yes
 
-- name: Deploy MISP configuration
-  template:
+- name: Configure MISP
+  ansible.builtin.template:
     src: misp.conf.j2
     dest: /etc/misp/misp.conf
     owner: root
     group: root
     mode: "0644"
+  become: yes
+
+- name: Enable and start CICMS service
+  ansible.builtin.service:
+    name: cicms
+    state: started
+    enabled: yes
+  become: yes
+
+- name: Enable and start MISP service
+  ansible.builtin.service:
+    name: misp
+    state: started
+    enabled: yes
+  become: yes
