@@ -1,40 +1,39 @@
-# Subcase 1b Guide: Vulnerable Web App
+# Subcase 1b Guide: Phishing Training
 
 ## Objective
-Deploy a vulnerable web application and analyze attacker activity using NG-SOC monitoring components.
+Simulate a phishing campaign and analyze trainee responses using NG-SOC monitoring components.
 
 ## Tasks
 
-1. **Start SOC services**  
+1. **Start SOC services**
    ```bash
    sudo subcase_1b/scripts/soc_server_start.sh
-   ```  
+   ```
    Launches BIPS, NG-SIEM, CICMS, and NG-SOC.
 
-2. **Deploy the web application**  
+2. **Launch the training platform**
    ```bash
-   sudo subcase_1b/scripts/web_vuln_start.sh
-   ```  
-   Installs and runs DVWA on port 8080.
+   sudo subcase_1b/scripts/training_platform_start.sh
+   ```
+   Sends simulated phishing emails to the trainee.
 
-3. **Run the attacker simulation**  
+3. **Run the trainee simulation**
    ```bash
-   sudo subcase_1b/scripts/attacker_start.sh
-   ```  
-   Generates network reconnaissance against the target.
+   sudo subcase_1b/scripts/trainee_start.sh
+   ```
+   Logs receipt of the phishing email.
 
-4. **Monitor with NG-SOC tools**  
+4. **Monitor with NG-SOC tools**
    Use BIPS for intrusion prevention alerts, NG-SIEM for event correlation, CICMS for case tracking, and NG-SOC for dashboard visibility.
 
 ## Expected Outcomes
 
-- DVWA reachable at `http://<vm-ip>:8080` with default credentials.
+- Phishing log written to `/var/log/training_platform/phishing.log`.
+- Trainee mailbox updated at `/var/mail/trainee`.
 - BIPS (5500), NG-SIEM (5601), CICMS (5800), and NG-SOC (5900) running.
-- Attacker activity recorded in NG-SIEM and BIPS, with cases optionally opened in CICMS.
 
 ## References
 
-- [`web_vuln_start.sh`](../subcase_1b/scripts/web_vuln_start.sh)
-- [`attacker_start.sh`](../subcase_1b/scripts/attacker_start.sh)
+- [`training_platform_start.sh`](../subcase_1b/scripts/training_platform_start.sh)
+- [`trainee_start.sh`](../subcase_1b/scripts/trainee_start.sh)
 - [`soc_server_start.sh`](../subcase_1b/scripts/soc_server_start.sh)
-

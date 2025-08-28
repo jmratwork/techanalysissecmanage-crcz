@@ -12,24 +12,26 @@ network:
   gateway: "10.10.0.1"
 playbook: "ansible/playbook.yml"
 nodes:
-  attacker:
-    image: "kali:latest"
-    role: "attacker"
+  training_platform:
+    image: "random-education-platform:latest"
+    role: "platform"
+    services:
+      - "Random Education Platform"
     ip: "10.10.0.2"
     subnet: "10.10.0.0/24"
     gateway: "10.10.0.1"
     startup_scripts:
-      - path: "scripts/attacker_start.sh"
-        args: "--init --verbose"
-  web_vuln:
-    image: "vulnerable-web:latest"
-    role: "target"
+      - path: "scripts/training_platform_start.sh"
+        args: "--campaign phishing-101"
+  trainee_workstation:
+    image: "trainee-workstation:latest"
+    role: "trainee"
     ip: "10.10.0.3"
     subnet: "10.10.0.0/24"
     gateway: "10.10.0.1"
     startup_scripts:
-      - path: "scripts/web_vuln_start.sh"
-        args: "--seed data01"
+      - path: "scripts/trainee_start.sh"
+        args: "--check-mail"
   soc_server:
     image: "soc-platform:latest"
     role: "soc"
@@ -45,5 +47,5 @@ nodes:
       - path: "scripts/soc_server_start.sh"
         args: "--enable-logging"
 links:
-  - [attacker, web_vuln]
-  - [web_vuln, soc_server]
+  - [trainee_workstation, training_platform]
+  - [training_platform, soc_server]
