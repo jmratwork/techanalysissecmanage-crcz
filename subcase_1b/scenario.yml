@@ -1,0 +1,5 @@
+---
+version: "1.0"
+name: "subcase_1b"
+description: "Scenario for subcase 1b"
+playbook: "ansible/playbook.yml"

@@ -1,0 +1,8 @@
+---
+- name: Deploy BIPS configuration
+  template:
+    src: bips.conf.j2
+    dest: /etc/bips/bips.conf
+    owner: root
+    group: root
+    mode: "0644"

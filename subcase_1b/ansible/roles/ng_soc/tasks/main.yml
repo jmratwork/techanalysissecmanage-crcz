@@ -1,0 +1,8 @@
+---
+- name: Deploy NG-SOC configuration
+  template:
+    src: ng_soc.conf.j2
+    dest: /etc/ng_soc/config.yml
+    owner: root
+    group: root
+    mode: "0644"
