@@ -3,6 +3,7 @@ filebeat.inputs:
   - type: log
     paths:
       - /var/log/*.log
-output.logstash:
-  hosts: ["{{ siem_ingest_host | default(siem_host | default('localhost')) }}:{{ siem_ingest_port | default(5044) }}"]
-  protocol: "{{ siem_ingest_protocol | default('tcp') }}"
+# NG-SIEM collector output
+# ng_siem_collector_host and ng_siem_collector_port provide the collector endpoint
+output.ng_siem:
+  hosts: ["{{ ng_siem_collector_host | default('localhost') }}:{{ ng_siem_collector_port | default(5044) }}"]
