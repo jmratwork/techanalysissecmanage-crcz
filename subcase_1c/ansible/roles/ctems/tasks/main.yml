@@ -20,6 +20,15 @@
     mode: "0644"
   become: yes
 
+- name: Configure CTI feed URL
+  ansible.builtin.template:
+    src: cti_feed.env.j2
+    dest: /etc/ctems/cti_feed.env
+    owner: root
+    group: root
+    mode: "0644"
+  become: yes
+
 - name: Deploy malware simulation scripts
   ansible.builtin.copy:
     src: "{{ item }}"
