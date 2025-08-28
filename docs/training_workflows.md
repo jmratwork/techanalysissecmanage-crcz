@@ -19,7 +19,7 @@ Trainees should familiarize themselves with fundamental concepts in network secu
 
 ## SOC Analyst Workflow
 
-1. **Monitoring** – Continuously observe alerts and logs from NG-SOC tools such as Wazuh, Suricata, and Zeek.
+1. **Monitoring** – Continuously observe alerts, configurations, and exposure metrics using NG-SOC components like BIPS for behavioral intrusion prevention, NG-SIEM for log correlation, CICMS for case management, and CTEMS for exposure tracking.
 2. **Triage and Analysis** – Validate alerts, correlate data across tools, and escalate significant events.
 3. **Response** – Coordinate containment or remediation actions and document all steps taken for post-incident review.
 
