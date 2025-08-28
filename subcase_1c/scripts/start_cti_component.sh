@@ -4,6 +4,12 @@ set -euo pipefail
 CTEMS_PORT="${CTEMS_PORT:-5700}"
 NG_SIEM_PORT="${NG_SIEM_PORT:-5601}"
 
+if [ -f /etc/ctems/cti_feed.env ]; then
+    # shellcheck disable=SC1091
+    . /etc/ctems/cti_feed.env
+    export CTI_FEED_URL
+fi
+
 install_deps() {
     if [ "${SKIP_INSTALL:-0}" -eq 1 ]; then
         return
