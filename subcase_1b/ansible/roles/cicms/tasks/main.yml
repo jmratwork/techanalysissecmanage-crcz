@@ -1,9 +1,7 @@
 ---
-- name: Install CICMS and MISP
+- name: Install CICMS
   ansible.builtin.apt:
-    name:
-      - cicms
-      - misp
+    name: cicms
     state: present
     update_cache: yes
   become: yes
@@ -17,14 +15,6 @@
     mode: '0644'
   become: yes
 
-- name: Configure MISP
-  ansible.builtin.template:
-    src: misp.conf.j2
-    dest: /etc/misp/misp.conf
-    owner: root
-    group: root
-    mode: '0644'
-  become: yes
 
 - name: Enable and start CICMS service
   ansible.builtin.service:
@@ -33,9 +23,3 @@
     enabled: yes
   become: yes
 
-- name: Enable and start MISP service
-  ansible.builtin.service:
-    name: misp
-    state: started
-    enabled: yes
-  become: yes
