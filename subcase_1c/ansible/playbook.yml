@@ -4,6 +4,8 @@
   roles:
     - ng_soc
     - ng_siem
+    - bips
+    - cicms
 
 - hosts: cti_components
   become: true

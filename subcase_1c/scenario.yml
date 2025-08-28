@@ -36,12 +36,14 @@ nodes:
     services:
       - "NG-SOC"
       - "NG-SIEM"
+      - "BIPS"
+      - "CICMS"
     ip: "10.20.0.4"
     subnet: "10.20.0.0/24"
     gateway: "10.20.0.1"
     startup_scripts:
       - path: "scripts/start_soc_services.sh"
-        args: "--services NG-SOC,NG-SIEM"
+        args: "--services NG-SOC,NG-SIEM,BIPS,CICMS"
   cti_component:
     image: "cti-platform:latest"
     role: "cti"
