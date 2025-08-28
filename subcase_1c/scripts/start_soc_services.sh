@@ -3,7 +3,7 @@ set -euo pipefail
 
 BIPS_PORT="${BIPS_PORT:-5500}"
 NG_SIEM_PORT="${NG_SIEM_PORT:-5601}"
-CTEMS_PORT="${CTEMS_PORT:-5700}"
+CICMS_PORT="${CICMS_PORT:-5800}"
 
 install_deps() {
     if [ "${SKIP_INSTALL:-0}" -eq 1 ]; then
@@ -26,4 +26,4 @@ start_component() {
 install_deps
 start_component bips "$BIPS_PORT"
 start_component ng_siem "$NG_SIEM_PORT"
-start_component ctems "$CTEMS_PORT"
+start_component cicms "$CICMS_PORT"
