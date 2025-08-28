@@ -3,6 +3,7 @@
     url: "{{ ngsoc_repo_url }}/ctems/ctems-agent.deb"
     dest: "/tmp/ctems-agent.deb"
     mode: "0644"
+    checksum: "{{ ctems_agent_checksum }}"
   become: yes
 
 - name: Install CTEMS
