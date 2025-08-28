@@ -1,0 +1,16 @@
+---
+- name: Deploy CTEMS configuration
+  template:
+    src: ctems.conf.j2
+    dest: /etc/ctems/config.yml
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Deploy malware simulation script
+  copy:
+    src: load_malware_simulation.ps1
+    dest: /opt/ctems/load_malware_simulation.ps1
+    owner: root
+    group: root
+    mode: "0755"
