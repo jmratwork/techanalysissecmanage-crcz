@@ -23,6 +23,8 @@ load_inventory_var() {
 
 DVWA_REPO="${DVWA_REPO:-$(load_inventory_var dvwa_repo)}"
 DVWA_ARCHIVE="${DVWA_ARCHIVE:-$(load_inventory_var dvwa_archive)}"
+DVWA_ARCHIVE_CHECKSUM="${DVWA_ARCHIVE_CHECKSUM:-$(load_inventory_var dvwa_archive_checksum)}"
+DVWA_GIT_COMMIT="${DVWA_GIT_COMMIT:-$(load_inventory_var dvwa_git_commit)}"
 
 if [ -z "${DVWA_ARCHIVE:-}" ]; then
     DEFAULT_ARCHIVE="$SCRIPT_DIR/../dvwa.tar.gz"
@@ -38,18 +40,62 @@ install_deps() {
     apt-get install -y git php php-mysqli
 }
 
+log_error() {
+    mkdir -p "$LOG_DIR"
+    echo "$1" | tee -a "$LOG_DIR/error.log" >&2
+}
+
+verify_checksum() {
+    local file="$1"
+    local expected="$2"
+    [ -z "$expected" ] && return 0
+    local algo="${expected%%:*}"
+    local expected_hash="${expected#*:}"
+    local actual_hash=""
+    case "$algo" in
+        sha256)
+            actual_hash=$(sha256sum "$file" | awk '{print $1}')
+            ;;
+        sha1)
+            actual_hash=$(sha1sum "$file" | awk '{print $1}')
+            ;;
+        md5)
+            actual_hash=$(md5sum "$file" | awk '{print $1}')
+            ;;
+        *)
+            log_error "Unsupported checksum algorithm: $algo"
+            return 1
+            ;;
+    esac
+    if [ "$actual_hash" != "$expected_hash" ]; then
+        log_error "Checksum verification failed for $file"
+        return 1
+    fi
+}
+
 fetch_dvwa() {
     if [ -d "$WEB_ROOT" ]; then
         return
     fi
 
     if [ -n "${DVWA_ARCHIVE:-}" ] && [ -f "$DVWA_ARCHIVE" ]; then
+        if ! verify_checksum "$DVWA_ARCHIVE" "$DVWA_ARCHIVE_CHECKSUM"; then
+            exit 1
+        fi
         mkdir -p "$(dirname "$WEB_ROOT")"
         tar -xzf "$DVWA_ARCHIVE" -C "$(dirname "$WEB_ROOT")"
     elif [ -n "${DVWA_REPO:-}" ]; then
         git clone "$DVWA_REPO" "$WEB_ROOT"
+        if [ -n "${DVWA_GIT_COMMIT:-}" ]; then
+            local actual_commit
+            actual_commit=$(git -C "$WEB_ROOT" rev-parse HEAD)
+            if [ "$actual_commit" != "$DVWA_GIT_COMMIT" ]; then
+                log_error "DVWA repository commit mismatch"
+                exit 1
+            fi
+        fi
     else
-        echo "DVWA source not provided. Set DVWA_ARCHIVE or DVWA_REPO." >&2
+        log_error "DVWA source not provided. Set DVWA_ARCHIVE or DVWA_REPO."
         exit 1
     fi
 
