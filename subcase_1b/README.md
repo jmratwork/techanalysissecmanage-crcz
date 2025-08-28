@@ -1,35 +1,14 @@
-# Subcase 1b Vulnerable Web App
+# Subcase 1b Phishing Training
 
-Design a comprehensive cyber security training plan focused on conducting network penetration tests (to educate trainees identifying security vulnerabilities based on a similar environment of an NREN) to identify security vulnerabilities in CYNET's network(s). This proactive approach involves a) theoretical training regarding penetration testing and vulnerability assessments and b) briefing of organisational policies and procedures related to pen tests, aiming to equip CYNET staff with the necessary capabilities to find and fix any potential weaknesses before bad actors can take advantage of them.
-
-The `web_vuln_start.sh` script installs the [Damn Vulnerable Web Application (DVWA)](https://github.com/digininja/DVWA) from a configurable source and launches it for trainees. The application can be cloned from a Git repository or extracted from a prepackaged archive bundled with the scenario for offline use.
+This scenario demonstrates a phishing training environment. A training platform sends simulated phishing emails to a trainee workstation, while the SOC server monitors related events using BIPS, NG-SIEM, NG-SOC, and CICMS.
 
 ## Usage
 
+Run the startup scripts to generate sample phishing activity:
+
 ```bash
-sudo subcase_1b/scripts/web_vuln_start.sh
+sudo subcase_1b/scripts/training_platform_start.sh
+sudo subcase_1b/scripts/trainee_start.sh
 ```
 
-The script places DVWA in `/var/www/dvwa`, creates `/usr/local/bin/run_dvwa.sh`, and starts the application on port `8080`. Logs are written to `/var/log/web_vuln/dvwa.log`.
-
-### Configuration
-
-Environment variables or Ansible inventory values can be used to configure deployment:
-
-- `WEB_PORT` – Port for the built-in PHP server (default `8080`).
-- `DVWA_REPO` – Git URL to clone DVWA from.
-- `DVWA_ARCHIVE` – Path to a prepacked DVWA `tar.gz` archive. If not provided, the script looks for `subcase_1b/dvwa.tar.gz`.
-
-If both `DVWA_ARCHIVE` and `DVWA_REPO` are supplied, the archive takes precedence.
-
-## Credentials and Setup
-
-1. Browse to `http://<vm-ip>:8080/setup.php` and click **Create/Reset Database**.
-2. Use the default database credentials:
-   - Username: `dvwa`
-   - Password: `p@ssw0rd`
-3. Log into DVWA with:
-   - Username: `admin`
-   - Password: `password`
-
-For offline deployments place a `dvwa.tar.gz` archive alongside the scenario or specify `DVWA_ARCHIVE` to its location. To clone from a repository, set `DVWA_REPO` via an environment variable or by defining `dvwa_repo`/`dvwa_archive` in the Ansible inventory for the `web_vuln` host.
+Logs are written to `/var/log/training_platform/phishing.log` and `/var/mail/trainee` respectively.
