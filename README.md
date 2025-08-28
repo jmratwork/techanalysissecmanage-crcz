@@ -7,7 +7,7 @@ This repository contains materials for deploying and managing security analysis 
 - Active account on [CyberRangeCZ](https://www.cyberrange.cz/) with permissions to deploy KYPO scenarios.
 - SSH access to the range and ability to run privileged commands.
 - Local tools: `git`, `kubectl`, `helm`, and a modern web browser.
-- Recommended familiarity with NG-SOC components, including BIPS for behavioral intrusion prevention, NG-SIEM for event correlation, CICMS for incident collaboration, and CTEMS for threat exposure management.
+- Recommended familiarity with NG-SOC components, including BIPS for behavioral intrusion prevention, NG-SIEM for event correlation, CICMS for incident collaboration, and CTEMS for CTI sharing and threat exposure management.
 
 ## Deployment on CyberRangeCZ
 
@@ -19,7 +19,7 @@ This repository contains materials for deploying and managing security analysis 
 2. **Authenticate to CyberRangeCZ** – Ensure VPN or direct connectivity and log into the portal.
 3. **Prepare the Scenario** – Upload required images or scripts (e.g., `subcase_1c/scripts/benign_malware_simulator.ps1`) to the appropriate KYPO repositories.
 4. **Launch the Scenario** – Use the KYPO interface to create a new exercise and point it to this repository. Configure network ranges and participants as needed.
-5. **Monitor the Exercise** – During execution, analysts should track alerts and manage cases using NG-SOC components such as BIPS, NG-SIEM, CICMS, and CTEMS, following the workflow described in [`docs/training_workflows.md`](docs/training_workflows.md).
+5. **Monitor the Exercise** – During execution, analysts should track alerts and manage cases using NG-SOC components such as BIPS, NG-SIEM, CICMS, and CTEMS (for CTI sharing), following the workflow described in [`docs/training_workflows.md`](docs/training_workflows.md).
 
 ## Teardown
 
