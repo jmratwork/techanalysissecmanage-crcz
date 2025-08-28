@@ -1,6 +1,6 @@
 # TechAnalysisSecManage KYPO
 
-This repository provides complete, ready‑to‑deploy instructions for two independent KYPO (CyberRangeCZ) scenarios using only the NG‑SOC components from the activity diagram: BIPS, NG‑SIEM, NG‑SOC, CICMS, CTEMS. It includes file layouts, Ansible roles, and step‑by‑step workflows so instructors and trainees can complete the training without confusion. One scenario delivers phishing‑email identification training with a policy briefing through the Random Education Platform, while the other models malware simulation and CTI integration. This repository contains materials for deploying and managing security analysis exercises on KYPO using this platform.
+This repository provides complete, ready‑to‑deploy instructions for two independent KYPO (CyberRangeCZ) scenarios using only the NG‑SOC components from the activity diagram: BIPS, NG‑SIEM, NG‑SOC, CICMS, CTEMS. It includes file layouts, Ansible roles, and step‑by‑step workflows so instructors and trainees can complete the training without confusion. One scenario delivers phishing‑awareness training with a policy briefing through the Random Education Platform, while the other models malware simulation and CTI integration. This repository contains materials for deploying and managing security analysis exercises on KYPO using this platform.
 
 ## Prerequisites
 
@@ -38,7 +38,7 @@ Additional theoretical background and workflow guidance can be found in [`docs/t
 
 ## Scenario Guides
 
-- [Subcase 1b – Phishing Training](docs/subcase_1b_guide.md)
-Subcase 1b delivers phishing‑email identification training and a policy briefing via the Random Education Platform. It includes a trainee workstation and a SOC node running BIPS, NG‑SIEM, NG‑SOC, and CICMS, with detailed network assignments and startup scripts.
+- [Subcase 1b – Phishing-Awareness Training](docs/subcase_1b_guide.md)
+Subcase 1b delivers phishing‑awareness training and a policy briefing via the Random Education Platform. It includes a trainee workstation and a SOC node running BIPS, NG‑SIEM, NG‑SOC, and CICMS, with detailed network assignments and startup scripts.
 - [Subcase 1c – Malware Simulation and CTI Integration](docs/subcase_1c_guide.md)
 Subcase 1c models a malware incident response exercise, adding a C2 server, a CTI component running CTEMS, and corresponding services for NG‑SIEM, BIPS, CICMS, and NG‑SOC. The roles download NG‑SOC packages with checksum verification, and the scripts launch services and simulations for training.
