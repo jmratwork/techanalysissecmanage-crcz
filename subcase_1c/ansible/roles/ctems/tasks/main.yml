@@ -1,16 +1,32 @@
 ---
-- name: Deploy CTEMS configuration
-  template:
+- name: Install CTEMS
+  ansible.builtin.apt:
+    name: ctems
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Configure CTEMS
+  ansible.builtin.template:
     src: ctems.conf.j2
     dest: /etc/ctems/config.yml
     owner: root
     group: root
     mode: "0644"
+  become: yes
 
 - name: Deploy malware simulation script
-  copy:
+  ansible.builtin.copy:
     src: load_malware_simulation.ps1
     dest: /opt/ctems/load_malware_simulation.ps1
     owner: root
     group: root
     mode: "0755"
+  become: yes
+
+- name: Enable and start CTEMS service
+  ansible.builtin.service:
+    name: ctems
+    state: started
+    enabled: yes
+  become: yes

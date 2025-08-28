@@ -1,24 +1,23 @@
 ---
-- name: Deploy NG-SIEM configuration
-  template:
+- name: Install NG-SIEM
+  ansible.builtin.apt:
+    name: ng-siem
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Configure NG-SIEM
+  ansible.builtin.template:
     src: ng_siem.conf.j2
     dest: /etc/ng_siem/config.yml
     owner: root
     group: root
     mode: "0644"
+  become: yes
 
-- name: Deploy Filebeat configuration
-  template:
-    src: filebeat.yml.j2
-    dest: /etc/filebeat/filebeat.yml
-    owner: root
-    group: root
-    mode: "0644"
-
-- name: Deploy Winlogbeat configuration
-  template:
-    src: winlogbeat.yml.j2
-    dest: /etc/winlogbeat/winlogbeat.yml
-    owner: root
-    group: root
-    mode: "0644"
+- name: Enable and start NG-SIEM service
+  ansible.builtin.service:
+    name: ng-siem
+    state: started
+    enabled: yes
+  become: yes

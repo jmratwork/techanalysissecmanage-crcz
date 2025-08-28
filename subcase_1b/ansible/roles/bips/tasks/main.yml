@@ -1,4 +1,23 @@
 ---
-- name: Simulate Suricata deployment
-  ansible.builtin.debug:
-    msg: "Suricata deployed and running"
+- name: Install BIPS
+  ansible.builtin.apt:
+    name: bips
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Configure BIPS
+  ansible.builtin.template:
+    src: bips.conf.j2
+    dest: /etc/bips/bips.conf
+    owner: root
+    group: root
+    mode: '0644'
+  become: yes
+
+- name: Enable and start BIPS service
+  ansible.builtin.service:
+    name: bips
+    state: started
+    enabled: yes
+  become: yes

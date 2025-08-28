@@ -1,9 +1,23 @@
 ---
-- name: Deploy Filebeat configuration
-  ansible.builtin.template:
-    src: filebeat.yml.j2
-    dest: /tmp/filebeat.yml
+- name: Install NG-SIEM
+  ansible.builtin.apt:
+    name: ng-siem
+    state: present
+    update_cache: yes
+  become: yes
 
-- name: Simulate Elastic Stack installation
-  ansible.builtin.debug:
-    msg: "Elastic Stack components installed"
+- name: Configure NG-SIEM
+  ansible.builtin.template:
+    src: ng_siem.conf.j2
+    dest: /etc/ng_siem/config.yml
+    owner: root
+    group: root
+    mode: '0644'
+  become: yes
+
+- name: Enable and start NG-SIEM service
+  ansible.builtin.service:
+    name: ng-siem
+    state: started
+    enabled: yes
+  become: yes
