@@ -22,9 +22,14 @@ Simulate benign malware activity and integrate threat intelligence feeds to exer
    sudo subcase_1c/scripts/start_c2_server.sh
    ```
 
-4. **Execute the malware simulation on a Windows host**  
+4. **Execute the malware simulation on a Windows host**
    ```powershell
+   $env:BEACON_URL = "http://localhost:5601/beacon"  # optional override
    .\subcase_1c\scripts\benign_malware_simulator.ps1 -BeaconCount 3
+   ```
+   The beacon URL can also be set directly via the `-BeaconUrl` parameter:
+   ```powershell
+   .\subcase_1c\scripts\benign_malware_simulator.ps1 -BeaconCount 3 -BeaconUrl http://ng-siem.local/beacon
    ```
    or load via [`load_malware_simulation.ps1`](../subcase_1c/scripts/load_malware_simulation.ps1).
 
