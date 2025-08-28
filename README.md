@@ -1,6 +1,6 @@
 # TechAnalysisSecManage KYPO
 
-This repository contains materials for deploying and managing security analysis exercises on KYPO using this platform.
+This repository provides complete, ready‑to‑deploy instructions for two independent KYPO (CyberRangeCZ) scenarios using only the NG‑SOC components from the activity diagram: BIPS, NG‑SIEM, NG‑SOC, CICMS, CTEMS. It includes file layouts, Ansible roles, and step‑by‑step workflows so instructors and trainees can complete the training without confusion. This repository contains materials for deploying and managing security analysis exercises on KYPO using this platform.
 
 ## Prerequisites
 
