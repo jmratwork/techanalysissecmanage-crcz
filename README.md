@@ -1,6 +1,6 @@
 # TechAnalysisSecManage KYPO
 
-This repository contains materials for deploying and managing security analysis exercises on CyberRangeCZ using the KYPO platform.
+This repository contains materials for deploying and managing security analysis exercises on KYPO using this platform.
 
 ## Prerequisites
 
@@ -9,7 +9,7 @@ This repository contains materials for deploying and managing security analysis 
 - Local tools: `git`, `kubectl`, `helm`, and a modern web browser.
 - Recommended familiarity with NG-SOC components, including BIPS for behavioral intrusion prevention, NG-SIEM for event correlation, CICMS for incident collaboration, and CTEMS for CTI sharing and threat exposure management.
 
-## Deployment on CyberRangeCZ
+## Deployment on KYPO
 
 1. **Clone the Repository**
    ```bash
@@ -39,4 +39,6 @@ Additional theoretical background and workflow guidance can be found in [`docs/t
 ## Scenario Guides
 
 - [Subcase 1b – Vulnerable Web App](docs/subcase_1b_guide.md)
+Subcase 1b provisions an attacker, a vulnerable web host, and a SOC node running BIPS, NG‑SIEM, NG‑SOC, and CICMS, with detailed network assignments and startup scripts.
 - [Subcase 1c – Malware Simulation and CTI Integration](docs/subcase_1c_guide.md)
+Subcase 1c models a malware incident response exercise, adding a C2 server, a CTI component running CTEMS, and corresponding services for NG‑SIEM, BIPS, CICMS, and NG‑SOC. The roles download NG‑SOC packages with checksum verification, and the scripts launch services and simulations for training.
