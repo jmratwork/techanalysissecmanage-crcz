@@ -3,6 +3,7 @@
     url: "{{ ngsoc_repo_url }}/ng-siem/ng-siem-server.deb"
     dest: "/tmp/ng-siem-server.deb"
     mode: "0644"
+    checksum: "{{ ng_siem_server_checksum }}"
   become: yes
 
 - name: Install NG-SIEM

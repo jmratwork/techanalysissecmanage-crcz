@@ -3,6 +3,7 @@
     url: "{{ ngsoc_repo_url }}/bips/bips-agent.deb"
     dest: "/tmp/bips-agent.deb"
     mode: "0644"
+    checksum: "{{ bips_agent_checksum }}"
   become: yes
 
 - name: Install BIPS
