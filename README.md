@@ -1,6 +1,6 @@
 # TechAnalysisSecManage KYPO
 
-This repository provides complete, ready‑to‑deploy instructions for double KYPO (CyberRangeCZ) scenarios using only the NG‑SOC components from the activity diagram: BIPS, NG‑SIEM, NG‑SOC, CICMS, CTEMS. It includes file layouts, Ansible roles, and step‑by‑step workflows so instructors and trainees can complete the training without confusion. One scenario delivers phishing‑awareness training with a policy briefing through the Random Education Platform, while the other models malware simulation and CTI integration. This repository contains materials for deploying and managing security analysis exercises on KYPO using this platform.
+This repository provides complete, ready‑to‑deploy instructions for double KYPO (CyberRangeCZ) scenarios using only the NG‑SOC components from the activity diagram: BIPS, NG‑SIEM, NG‑SOC, CICMS, etc. It includes file layouts, Ansible roles, and step‑by‑step workflows so instructors and trainees can complete the training without confusion. One scenario delivers phishing‑awareness training with a policy briefing through the Random Education Platform, while the other models malware simulation and CTI integration. This repository contains materials for deploying and managing security analysis exercises on KYPO using this platform.
 
 ## Prerequisites
 
