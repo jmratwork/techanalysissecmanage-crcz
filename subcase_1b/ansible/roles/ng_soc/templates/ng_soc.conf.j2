@@ -1,2 +1,5 @@
 # NG-SOC configuration
-ng_soc_setting: {{ ng_soc_setting | default('default_value') }}
+dashboard: /etc/ng_soc/ngsoc-dashboard.ndjson
+api:
+  endpoint: {{ soc_api_endpoint | default('https://soc.internal.local') }}
+  token: {{ soc_api_token | default('changeme') }}

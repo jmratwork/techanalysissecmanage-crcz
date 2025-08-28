@@ -1,15 +1,38 @@
----
+- name: Download NG-SIEM package
+  ansible.builtin.get_url:
+    url: "https://packages.internal.example.com/ng-siem/ng-siem-server.deb"
+    dest: "/tmp/ng-siem-server.deb"
+    mode: "0644"
+  become: yes
+
 - name: Install NG-SIEM
   ansible.builtin.apt:
-    name: ng-siem
+    deb: "/tmp/ng-siem-server.deb"
     state: present
-    update_cache: yes
   become: yes
 
 - name: Configure NG-SIEM
   ansible.builtin.template:
     src: ng_siem.conf.j2
     dest: /etc/ng_siem/config.yml
+    owner: root
+    group: root
+    mode: "0644"
+  become: yes
+
+- name: Configure Filebeat
+  ansible.builtin.template:
+    src: filebeat.yml.j2
+    dest: /etc/ng_siem/filebeat.yml
+    owner: root
+    group: root
+    mode: "0644"
+  become: yes
+
+- name: Configure Winlogbeat
+  ansible.builtin.template:
+    src: winlogbeat.yml.j2
+    dest: /etc/ng_siem/winlogbeat.yml
     owner: root
     group: root
     mode: "0644"

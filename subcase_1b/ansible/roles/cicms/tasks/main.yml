@@ -1,9 +1,14 @@
----
+- name: Download CICMS package
+  ansible.builtin.get_url:
+    url: "https://packages.internal.example.com/cicms/cicms-server.deb"
+    dest: "/tmp/cicms-server.deb"
+    mode: "0644"
+  become: yes
+
 - name: Install CICMS
   ansible.builtin.apt:
-    name: cicms
+    deb: "/tmp/cicms-server.deb"
     state: present
-    update_cache: yes
   become: yes
 
 - name: Configure CICMS

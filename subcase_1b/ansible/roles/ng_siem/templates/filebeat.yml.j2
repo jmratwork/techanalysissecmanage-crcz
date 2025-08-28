@@ -1,7 +1,7 @@
-# Filebeat configuration placeholder
+# Filebeat configuration
 filebeat.inputs:
   - type: log
     paths:
       - /var/log/*.log
-output.console:
-  pretty: true
+output.logstash:
+  hosts: ["{{ siem_host | default('localhost:5044') }}"]

@@ -1,7 +1,7 @@
-# Filebeat configuration template
-# NG-SIEM ingestion endpoint configuration
-# Variables:
-#   ng_siem_host - NG-SIEM endpoint host (default: 'ng-siem.cynet.local')
-#   ng_siem_port - NG-SIEM ingestion port (default: 9443)
-output.ngsiem:
-  hosts: ['{{ ng_siem_host | default("ng-siem.cynet.local") }}:{{ ng_siem_port | default(9443) }}']
+# Filebeat configuration
+filebeat.inputs:
+  - type: log
+    paths:
+      - /var/log/*.log
+output.logstash:
+  hosts: ["{{ siem_host | default('localhost:5044') }}"]

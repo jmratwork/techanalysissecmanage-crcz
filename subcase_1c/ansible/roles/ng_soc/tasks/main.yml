@@ -1,9 +1,14 @@
----
+- name: Download NG-SOC package
+  ansible.builtin.get_url:
+    url: "https://packages.internal.example.com/ng-soc/ng-soc-platform.deb"
+    dest: "/tmp/ng-soc-platform.deb"
+    mode: "0644"
+  become: yes
+
 - name: Install NG-SOC
   ansible.builtin.apt:
-    name: ng-soc
+    deb: "/tmp/ng-soc-platform.deb"
     state: present
-    update_cache: yes
   become: yes
 
 - name: Configure NG-SOC
