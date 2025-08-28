@@ -1,6 +1,6 @@
 - name: Download CICMS package
   ansible.builtin.get_url:
-    url: "https://packages.internal.example.com/cicms/cicms-server.deb"
+    url: "{{ ngsoc_repo_url }}/cicms/cicms-server.deb"
     dest: "/tmp/cicms-server.deb"
     mode: "0644"
   become: yes

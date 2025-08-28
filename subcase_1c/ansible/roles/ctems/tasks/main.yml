@@ -1,6 +1,6 @@
 - name: Download CTEMS package
   ansible.builtin.get_url:
-    url: "https://packages.internal.example.com/ctems/ctems-agent.deb"
+    url: "{{ ngsoc_repo_url }}/ctems/ctems-agent.deb"
     dest: "/tmp/ctems-agent.deb"
     mode: "0644"
   become: yes

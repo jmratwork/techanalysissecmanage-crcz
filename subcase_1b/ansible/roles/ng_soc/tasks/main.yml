@@ -1,6 +1,6 @@
 - name: Download NG-SOC package
   ansible.builtin.get_url:
-    url: "https://packages.internal.example.com/ng-soc/ng-soc-platform.deb"
+    url: "{{ ngsoc_repo_url }}/ng-soc/ng-soc-platform.deb"
     dest: "/tmp/ng-soc-platform.deb"
     mode: "0644"
   become: yes

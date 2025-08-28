@@ -1,6 +1,6 @@
 - name: Download BIPS package
   ansible.builtin.get_url:
-    url: "https://packages.internal.example.com/bips/bips-agent.deb"
+    url: "{{ ngsoc_repo_url }}/bips/bips-agent.deb"
     dest: "/tmp/bips-agent.deb"
     mode: "0644"
   become: yes
