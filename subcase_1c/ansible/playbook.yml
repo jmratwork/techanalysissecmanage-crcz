@@ -1,9 +1,12 @@
 ---
-- hosts: all
+- hosts: soc_servers
   become: true
   roles:
-    - bips
-    - ng_siem
     - ng_soc
-    - cicms
+    - ng_siem
+
+- hosts: cti_components
+  become: true
+  roles:
     - ctems
+    - ng_siem
