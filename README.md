@@ -17,7 +17,7 @@ This repository contains materials for deploying and managing security analysis 
    cd techanalysissecmanage_kypo
    ```
 2. **Authenticate to CyberRangeCZ** – Ensure VPN or direct connectivity and log into the portal.
-3. **Prepare the Scenario** – Upload required images or scripts (e.g., `benign_malware_simulator.ps1`) to the appropriate KYPO repositories.
+3. **Prepare the Scenario** – Upload required images or scripts (e.g., `subcase_1c/scripts/benign_malware_simulator.ps1`) to the appropriate KYPO repositories.
 4. **Launch the Scenario** – Use the KYPO interface to create a new exercise and point it to this repository. Configure network ranges and participants as needed.
 5. **Monitor the Exercise** – During execution, analysts should track alerts and manage cases using NG-SOC components such as BIPS, NG-SIEM, CICMS, and CTEMS, following the workflow described in [`docs/training_workflows.md`](docs/training_workflows.md).
 

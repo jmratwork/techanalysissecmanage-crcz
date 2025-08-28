@@ -20,13 +20,16 @@
     mode: "0644"
   become: yes
 
-- name: Deploy malware simulation script
+- name: Deploy malware simulation scripts
   ansible.builtin.copy:
-    src: load_malware_simulation.ps1
-    dest: /opt/ctems/load_malware_simulation.ps1
+    src: "{{ item }}"
+    dest: "/opt/ctems/{{ item }}"
     owner: root
     group: root
     mode: "0755"
+  loop:
+    - load_malware_simulation.ps1
+    - benign_malware_simulator.ps1
   become: yes
 
 - name: Enable and start CTEMS service
