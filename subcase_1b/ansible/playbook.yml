@@ -1,8 +1,5 @@
 ---
-- hosts: soc_server
+- hosts: cyber_range
   become: true
   roles:
-    - bips
-    - ng_siem
-    - ng_soc
-    - cicms
+    - cyber_range_setup

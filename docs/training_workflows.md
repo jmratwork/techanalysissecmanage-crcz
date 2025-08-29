@@ -1,6 +1,6 @@
 # Training Materials and Workflows
 
-This document outlines the theoretical training materials and the workflow expectations for both trainees and SOC analysts operating within the KYPO cyber range environment. The primary scenario focuses on phishing‑email identification training coupled with a policy briefing so participants learn both how to spot malicious messages and how organizational procedures apply.
+This document outlines the theoretical training materials and the workflow expectations for both trainees and instructors operating within the KYPO cyber range environment. The primary scenario focuses on penetration testing and vulnerability assessment training using a Cyber Range environment that mirrors CYNET's network. Participants learn how to discover and document vulnerabilities while following organizational procedures.
 
 ## Theoretical Background
 
@@ -9,18 +9,17 @@ Trainees should familiarize themselves with fundamental concepts in network secu
 - Fundamentals of TCP/IP networking
 - Common attack vectors and the kill chain methodology
 - Basics of log analysis and threat intelligence
-- Overview of Security Operations Center (SOC) responsibilities
+- Overview of vulnerability assessment and penetration testing methodologies
 
 ## Trainee Workflow
 
-1. **Scenario Preparation** – Review the scenario description, policy briefing, and objectives. Ensure access to required accounts and tools within CyberRangeCZ.
-2. **Hands-on Investigation** – Use the Random Education Platform (REP) to inspect simulated emails, decide whether they are phishing attempts, and note which policy applies.
-3. **Reporting** – Compile findings into an incident report, highlighting indicators of compromise, applicable policy references, and suggested mitigations.
+1. **Scenario Preparation** – Review the scenario description and objectives. Ensure access to required accounts and tools within CyberRangeCZ.
+2. **Hands-on Investigation** – Use the training platform to follow course instructions and run semi-automated penetration tests against the Cyber Range.
+3. **Reporting** – Compile findings into an assessment report, highlighting discovered vulnerabilities, applicable policy references, and suggested mitigations.
 
-## SOC Analyst Workflow
+## Instructor Workflow
 
-1. **Monitoring** – Follow the BIPS → NG‑SIEM → NG‑SOC → CICMS chain to observe alerts, correlate events, and open cases. CTEMS remains available for CTI sharing and exposure tracking where applicable.
-2. **Triage and Analysis** – Validate alerts, correlate data across tools, and escalate significant events using the same chain of tools.
-3. **Response** – Coordinate containment or remediation actions and document all steps taken for post-incident review.
+1. **Monitoring** – Ensure the Cyber Range and training platform are functioning and collect trainee reports.
+2. **Evaluation** – Review results, correlate findings where necessary, and provide feedback or remediation guidance.
 
-These workflows ensure that trainees gain practical experience while SOC analysts maintain operational readiness within the simulated environment.
+These workflows ensure that trainees gain practical experience while instructors maintain oversight within the simulated environment.

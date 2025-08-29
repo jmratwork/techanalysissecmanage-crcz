@@ -1,7 +1,7 @@
 ---
 version: "1.0"
 name: "subcase_1b"
-description: "Scenario for subcase 1b"
+description: "Penetration testing training scenario for subcase 1b"
 metadata:
   author: "TechAnalysisSecManage"
   category: "training"
@@ -13,39 +13,36 @@ network:
 playbook: "ansible/playbook.yml"
 nodes:
   training_platform:
-    image: "random-education-platform:latest"
-    role: "platform"
+    image: "course-platform:latest"
+    role: "instructor"
     services:
-      - "Random Education Platform"
+      - "Course Management"
     ip: "10.10.0.2"
     subnet: "10.10.0.0/24"
     gateway: "10.10.0.1"
     startup_scripts:
       - path: "scripts/training_platform_start.sh"
-        args: "--campaign phishing-101"
+        args: "--course pentest-101"
   trainee_workstation:
-    image: "trainee-workstation:latest"
+    image: "pentest-workstation:latest"
     role: "trainee"
     ip: "10.10.0.3"
     subnet: "10.10.0.0/24"
     gateway: "10.10.0.1"
     startup_scripts:
       - path: "scripts/trainee_start.sh"
-        args: "--check-mail"
-  soc_server:
-    image: "soc-platform:latest"
-    role: "soc"
+        args: "--target 10.10.0.4"
+  cyber_range:
+    image: "cyber-range-sim:latest"
+    role: "range"
     services:
-      - "BIPS"
-      - "NG-SIEM"
-      - "NG-SOC"
-      - "CICMS"
+      - "Simulated CYNET Network"
     ip: "10.10.0.4"
     subnet: "10.10.0.0/24"
     gateway: "10.10.0.1"
     startup_scripts:
-      - path: "scripts/soc_server_start.sh"
-        args: "--enable-logging"
+      - path: "scripts/cyber_range_start.sh"
+        args: "--vuln-profile baseline"
 links:
+  - [trainee_workstation, cyber_range]
   - [trainee_workstation, training_platform]
-  - [training_platform, soc_server]
