@@ -1,0 +1,10 @@
+---
+name: Host Isolation
+description: Disconnect a compromised host from the network to prevent lateral movement.
+parameters:
+  host: Target hostname or IP
+steps:
+  - description: Block inbound traffic to the host
+    command: "sudo iptables -A INPUT -s {{host}} -j DROP"
+  - description: Disable network interface
+    command: "sudo ip link set eth0 down"

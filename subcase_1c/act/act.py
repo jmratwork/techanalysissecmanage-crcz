@@ -17,15 +17,27 @@ def isolate_host(host: str) -> None:
     print(f"[ACT] Isolating host: {host}")
 
 
+def eradicate_malware(host: str) -> None:
+    """Simulate malware eradication."""
+    print(f"[ACT] Eradicating malware on: {host}")
+
+
+def recover_host(host: str) -> None:
+    """Simulate restoring services after eradication."""
+    print(f"[ACT] Recovering host: {host}")
+
+
 def monitor(target: str) -> None:
     """Default fallback action."""
     print(f"[ACT] Monitoring target: {target}")
 
 
 ACTIONS = {
-    "block_ip": block_ip,
-    "isolate_host": isolate_host,
-    "monitor": monitor,
+    "block_ip": {"func": block_ip, "playbook": "../playbooks/isolation.yml"},
+    "isolate_host": {"func": isolate_host, "playbook": "../playbooks/isolation.yml"},
+    "eradicate_malware": {"func": eradicate_malware, "playbook": "../playbooks/eradication.yml"},
+    "recover_host": {"func": recover_host, "playbook": "../playbooks/recovery.yml"},
+    "monitor": {"func": monitor, "playbook": None},
 }
 
 
@@ -34,16 +46,23 @@ def act() -> "Response":
     """Receive event data, query Decide, and apply recommended mitigation."""
     payload = request.get_json(force=True)
     target = payload.get("target", "")
+    mitigation = payload.get("mitigation")
 
-    # Query Decide for recommended mitigation
-    response = requests.post(DECIDE_URL, json=payload, timeout=5)
-    mitigation = response.json().get("mitigation", "monitor")
+    if mitigation is None:
+        # Query Decide for recommended mitigation
+        response = requests.post(DECIDE_URL, json=payload, timeout=5)
+        mitigation = response.json().get("mitigation", "monitor")
+
+    info = ACTIONS.get(mitigation, ACTIONS["monitor"])
+
+    if info.get("playbook"):
+        print(f"[ACT] Refer to {info['playbook']} for manual steps")
 
     # Execute the corresponding action
-    action = ACTIONS.get(mitigation, monitor)
+    action = info["func"]
     action(target)
 
-    return jsonify({"mitigation": mitigation, "target": target})
+    return jsonify({"mitigation": mitigation, "target": target, "playbook": info.get("playbook")})
 
 
 if __name__ == "__main__":
