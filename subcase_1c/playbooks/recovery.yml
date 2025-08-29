@@ -1,0 +1,10 @@
+---
+name: Service Recovery
+description: Restore normal operations after eradication.
+parameters:
+  host: Target hostname or IP
+steps:
+  - description: Re-enable network interface
+    command: "ssh {{host}} 'sudo ip link set eth0 up'"
+  - description: Verify critical services
+    command: "ssh {{host}} 'systemctl status critical.service'"

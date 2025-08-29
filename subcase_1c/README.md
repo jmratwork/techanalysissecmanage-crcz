@@ -55,3 +55,33 @@ For a cross-reference of tools, versions, and documentation, see the [NG-SOC com
    ```
 
 For deeper guidance and troubleshooting tips, see [the Subcase 1c guide](../docs/subcase_1c_guide.md).
+
+## Playbook Execution Examples
+The Act service references YAML playbooks stored in `subcase_1c/playbooks/`. Analysts can trigger a specific playbook by overriding the desired mitigation when calling the service:
+
+### Isolation
+```bash
+curl -X POST http://localhost:8100/act \
+     -H 'Content-Type: application/json' \
+     -d '{"target":"192.168.56.10","mitigation":"isolate_host"}'
+```
+
+### Eradication
+```bash
+curl -X POST http://localhost:8100/act \
+     -H 'Content-Type: application/json' \
+     -d '{"target":"192.168.56.10","mitigation":"eradicate_malware"}'
+```
+
+### Recovery
+```bash
+curl -X POST http://localhost:8100/act \
+     -H 'Content-Type: application/json' \
+     -d '{"target":"192.168.56.10","mitigation":"recover_host"}'
+```
+
+Playbook steps can be customized by editing the corresponding YAML file and validating changes with:
+
+```bash
+python subcase_1c/scripts/validate_playbooks.py
+```
