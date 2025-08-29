@@ -9,14 +9,30 @@ if [ -f /etc/misp/cti_feed.env ]; then
     export CTI_FEED_URL
 fi
 
+APT_UPDATED=0
+apt_update_once() {
+    if [ "$APT_UPDATED" -eq 0 ]; then
+        export DEBIAN_FRONTEND=noninteractive
+        if ! apt-get update -y; then
+            echo "$(date) apt-get update failed" >&2
+            return 1
+        fi
+        APT_UPDATED=1
+    fi
+}
+
 install_deps() {
     if [ "${SKIP_INSTALL:-0}" -eq 1 ]; then
         return
     fi
 
     if ! command -v timeout >/dev/null 2>&1; then
-        apt-get update -y
-        apt-get install -y coreutils
+        apt_update_once || return 1
+        export DEBIAN_FRONTEND=noninteractive
+        if ! apt-get install -y coreutils; then
+            echo "$(date) failed to install coreutils" >&2
+            return 1
+        fi
     fi
 }
 

@@ -6,14 +6,30 @@ CTI_FETCH_INTERVAL="${CTI_FETCH_INTERVAL:-300}"
 OUTPUT_DIR="${CTI_FEED_OUTPUT_DIR:-/var/log/misp}"
 export OUTPUT_DIR
 
+APT_UPDATED=0
+apt_update_once() {
+    if [ "$APT_UPDATED" -eq 0 ]; then
+        export DEBIAN_FRONTEND=noninteractive
+        if ! apt-get update -y; then
+            echo "$(date) apt-get update failed" >&2
+            return 1
+        fi
+        APT_UPDATED=1
+    fi
+}
+
 install_deps() {
     if [ "${SKIP_INSTALL:-0}" -eq 1 ]; then
         return
     fi
 
     if ! command -v curl >/dev/null 2>&1; then
-        apt-get update -y
-        apt-get install -y curl
+        apt_update_once || return 1
+        export DEBIAN_FRONTEND=noninteractive
+        if ! apt-get install -y curl; then
+            echo "$(date) failed to install curl" >&2
+            return 1
+        fi
     fi
 }
 
