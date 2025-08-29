@@ -10,6 +10,8 @@ Simulate benign malware activity and integrate threat intelligence feeds to exer
    sudo subcase_1c/scripts/start_soc_services.sh
    ```
    Launches BIPS, NG-SIEM, CICMS, and NG-SOC.
+   BIPS now includes a Suricata IDS with a lightweight ML classifier that
+   processes alerts and enriches rules using indicators from the MISP feed.
    Port checks rely on Bash's `/dev/tcp` and `timeout` rather than `netcat`.
 
 2. **Start CTI component and ingest feeds**
@@ -51,6 +53,7 @@ Simulate benign malware activity and integrate threat intelligence feeds to exer
 
 - [`start_soc_services.sh`](../subcase_1c/scripts/start_soc_services.sh)
 - [`start_cti_component.sh`](../subcase_1c/scripts/start_cti_component.sh)
+- [`bips_start.sh`](../subcase_1c/scripts/bips_start.sh)
 - [`fetch-cti-feed.service`](../subcase_1c/ansible/roles/misp/templates/fetch-cti-feed.service.j2)
 - [`start_c2_server.sh`](../subcase_1c/scripts/start_c2_server.sh)
 - [`benign_malware_simulator.ps1`](../subcase_1c/scripts/benign_malware_simulator.ps1)
