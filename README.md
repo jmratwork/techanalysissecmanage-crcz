@@ -22,6 +22,16 @@ This repository provides complete, ready‑to‑deploy instructions for double K
 4. **Launch the Scenario** – Use the KYPO interface to create a new exercise and point it to this repository. Configure network ranges and participants as needed.
 5. **Monitor the Exercise** – During execution, analysts should track alerts and manage cases using NG-SOC components such as BIPS, NG-SIEM, CICMS, and MISP (for CTI sharing), following the workflow described in [`docs/training_workflows.md`](docs/training_workflows.md).
 
+### Phishing Quiz Module
+
+Running `subcase_1b/scripts/training_platform_start.sh` launches a training platform that now includes a phishing-awareness quiz. Once the service is up, the following endpoints can be used to interact with the quiz:
+
+- `GET /quiz/start` – obtain questions.
+- `POST /quiz/submit` – send answers and record the score.
+- `GET /quiz/score` – retrieve stored scores per user and course.
+
+See [`docs/subcase_1b_guide.md`](docs/subcase_1b_guide.md) for detailed examples.
+
 ## Teardown
 
 1. Stop the scenario from the KYPO dashboard.
