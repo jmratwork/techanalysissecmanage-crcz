@@ -4,19 +4,39 @@ set -euo pipefail
 C2_BIND_IP="${C2_BIND_IP:-0.0.0.0}"
 C2_PORT="${C2_PORT:-9001}"
 
+APT_UPDATED=0
+apt_update_once() {
+    if [ "$APT_UPDATED" -eq 0 ]; then
+        export DEBIAN_FRONTEND=noninteractive
+        if ! apt-get update -y; then
+            echo "$(date) apt-get update failed" >&2
+            return 1
+        fi
+        APT_UPDATED=1
+    fi
+}
+
 install_deps() {
     if [ "${SKIP_INSTALL:-0}" -eq 1 ]; then
         return
     fi
 
     if ! command -v python3 >/dev/null 2>&1; then
-        apt-get update -y
-        apt-get install -y python3
+        apt_update_once || return 1
+        export DEBIAN_FRONTEND=noninteractive
+        if ! apt-get install -y python3; then
+            echo "$(date) failed to install python3" >&2
+            return 1
+        fi
     fi
 
     if ! command -v nc >/dev/null 2>&1; then
-        apt-get update -y
-        apt-get install -y netcat
+        apt_update_once || return 1
+        export DEBIAN_FRONTEND=noninteractive
+        if ! apt-get install -y netcat; then
+            echo "$(date) failed to install netcat" >&2
+            return 1
+        fi
     fi
 }
 
