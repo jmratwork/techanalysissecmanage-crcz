@@ -15,10 +15,14 @@ install_deps() {
         return
     fi
 
-    if ! command -v nc >/dev/null 2>&1; then
+    if ! command -v timeout >/dev/null 2>&1; then
         apt-get update -y
-        apt-get install -y netcat
+        apt-get install -y coreutils
     fi
+}
+
+check_port() {
+    timeout 5 bash -c "cat < /dev/null > /dev/tcp/$1/$2"
 }
 
 start_misp() {
@@ -28,7 +32,7 @@ start_misp() {
             echo "$(date) misp failed to start" >>/var/log/misp/service.log
             return 1
         fi
-        nc -z localhost "${MISP_PORT}" >>/var/log/misp/service.log 2>&1 || {
+        check_port localhost "${MISP_PORT}" >>/var/log/misp/service.log 2>&1 || {
             echo "$(date) misp port check failed" >>/var/log/misp/service.log
             return 1
         }
@@ -45,7 +49,7 @@ start_ng_siem() {
             echo "$(date) ng-siem failed to start" >>/var/log/ng_siem/service.log
             return 1
         fi
-        nc -z localhost "${NG_SIEM_PORT}" >>/var/log/ng_siem/service.log 2>&1 || {
+        check_port localhost "${NG_SIEM_PORT}" >>/var/log/ng_siem/service.log 2>&1 || {
             echo "$(date) ng-siem port check failed" >>/var/log/ng_siem/service.log
             return 1
         }

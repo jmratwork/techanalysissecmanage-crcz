@@ -5,17 +5,19 @@ Simulate benign malware activity and integrate threat intelligence feeds to exer
 
 ## Tasks
 
-1. **Start SOC services**  
+1. **Start SOC services**
    ```bash
    sudo subcase_1c/scripts/start_soc_services.sh
-   ```  
+   ```
    Launches BIPS, NG-SIEM, CICMS, and NG-SOC.
+   Port checks rely on Bash's `/dev/tcp` and `timeout` rather than `netcat`.
 
 2. **Start CTI component and ingest feeds**
    ```bash
    sudo subcase_1c/scripts/start_cti_component.sh
    ```
    Runs MISP, starts the `fetch-cti-feed` systemd service, and verifies NG-SIEM.
+   Port verification uses the same built-in method to avoid disallowed tools.
 
 3. **Launch the C2 server**  
    ```bash

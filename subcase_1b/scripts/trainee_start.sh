@@ -5,15 +5,15 @@ TARGET="${TARGET:-10.10.0.4}"
 SCAN_LOG="${SCAN_LOG:-/var/log/trainee/scans.log}"
 
 install_deps() {
-    if ! command -v nmap >/dev/null 2>&1; then
+    if ! command -v rustscan >/dev/null 2>&1; then
         apt-get update -y
-        apt-get install -y nmap
+        apt-get install -y rustscan
     fi
 }
 
 run_scan() {
     mkdir -p "$(dirname "$SCAN_LOG")"
-    if nmap -Pn "$TARGET" >> "$SCAN_LOG" 2>&1; then
+    if rustscan -a "$TARGET" >> "$SCAN_LOG" 2>&1; then
         echo "$(date) Completed scan against $TARGET" >> "$SCAN_LOG"
     else
         echo "$(date) Scan failed for $TARGET" >> "$SCAN_LOG"
