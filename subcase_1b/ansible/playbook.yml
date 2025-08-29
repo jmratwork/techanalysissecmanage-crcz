@@ -3,3 +3,19 @@
   become: true
   roles:
     - cyber_range_setup
+
+- hosts: trainee_workstations
+  become: true
+  roles:
+    - bips
+
+- hosts: training_platform
+  become: true
+  roles:
+    - cicms
+
+- hosts: soc_server
+  become: true
+  roles:
+    - ng_siem
+    - ng_soc
