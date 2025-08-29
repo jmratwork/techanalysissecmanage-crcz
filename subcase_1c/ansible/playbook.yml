@@ -7,6 +7,7 @@
     - bips
     - cicms
     - decide
+    - act
 
 - hosts: cti_components
   become: true

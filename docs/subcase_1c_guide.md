@@ -9,7 +9,7 @@ Simulate benign malware activity and integrate threat intelligence feeds to exer
    ```bash
    sudo subcase_1c/scripts/start_soc_services.sh
    ```
-   Launches BIPS, NG-SIEM, CICMS, and NG-SOC.
+   Launches BIPS, NG-SIEM, CICMS, NG-SOC, Decide, and Act.
    BIPS now includes a Suricata IDS with a lightweight ML classifier that
    processes alerts and enriches rules using indicators from the MISP feed.
    Port checks rely on Bash's `/dev/tcp` and `timeout` rather than `netcat`.
@@ -42,16 +42,25 @@ Simulate benign malware activity and integrate threat intelligence feeds to exer
 5. **Observe telemetry in NG-SOC tools**
    Monitor BIPS, NG-SIEM, CICMS, NG-SOC, and MISP for beacons, file drops, and CTI correlations.
 
-6. **Request mitigation guidance**
-   Send NG-SIEM or BIPS events to `http://soc_server:8000/recommend` to receive suggested actions from the Decide service. The Act orchestrator consumes this API to automate response steps.
+6. **Request mitigation guidance and apply response**
+   ```bash
+   python3 subcase_1c/scripts/apply_mitigation.py 192.0.2.10 --source ng-siem --severity 5
+   ```
+   The script contacts the Act service, which queries Decide for a recommendation and executes the suggested mitigation on the target.
+
+## Decide→Act Architecture
+
+The Decide service analyzes event data and returns a mitigation recommendation via its `/recommend` API.
+The Act service exposes `/act`, forwards the event to Decide, and executes predefined actions such as `block_ip` or `isolate_host` based on the recommendation.
 
 ## Expected Outcomes
 
-- SOC services accessible on ports 5500 (BIPS), 5601 (NG-SIEM), 5800 (CICMS), and 5900 (NG-SOC).
+- SOC services accessible on ports 5500 (BIPS), 5601 (NG-SIEM), 5800 (CICMS), 5900 (NG-SOC), 8000 (Decide), and 8100 (Act).
 - MISP running on port 8443 with threat feed ingested.
 - C2 server responding on port 9001.
 - Benign malware simulator generates HTTP beacons and file artifacts detected by NG-SOC components.
 - Decide service available on port 8000 returning mitigation recommendations.
+- Act service reachable on port 8100 executing mitigation actions.
 
 ## References
 
@@ -60,6 +69,7 @@ Simulate benign malware activity and integrate threat intelligence feeds to exer
 - [`bips_start.sh`](../subcase_1c/scripts/bips_start.sh)
 - [`fetch-cti-feed.service`](../subcase_1c/ansible/roles/misp/templates/fetch-cti-feed.service.j2)
 - [`start_c2_server.sh`](../subcase_1c/scripts/start_c2_server.sh)
+- [`apply_mitigation.py`](../subcase_1c/scripts/apply_mitigation.py)
 - [`benign_malware_simulator.ps1`](../subcase_1c/scripts/benign_malware_simulator.ps1)
 - [`load_malware_simulation.ps1`](../subcase_1c/scripts/load_malware_simulation.ps1)
 - [NG-SOC components matrix](ngsoc_components_matrix.md)
