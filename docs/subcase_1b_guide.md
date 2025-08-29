@@ -9,6 +9,11 @@ Provide self-paced training on penetration testing and vulnerability assessments
 flowchart TD
     Instructor -->|creates courses| TrainingPlatform
     TrainingPlatform -->|provisions| CyberRange
+    CyberRange --> Randomization
+    Randomization --> BIPS
+    BIPS --> NG_SIEM
+    NG_SIEM -->|executes playbook| CICMS
+    CICMS --> NG_SOC
     Trainee -->|scans| CyberRange
     Trainee -->|submits findings| Instructor
 ```
@@ -25,7 +30,29 @@ flowchart TD
    sudo subcase_1b/scripts/training_platform_start.sh --course pentest-101
    ```
    Creates the self-paced course and prepares related scenarios.
-3. **Review Trainee Reports** – Evaluate submitted findings from penetration test runs.
+3. **Initialize Security Pipeline**
+   - Start Randomization Evaluation Platform
+     ```bash
+     sudo subcase_1b/scripts/randomization_platform_start.sh
+     ```
+   - Start BIPS
+     ```bash
+     sudo subcase_1b/scripts/bips_start.sh
+     ```
+   - Start NG-SIEM and process attachments
+     ```bash
+     sudo subcase_1b/scripts/ng_siem_start.sh
+     ```
+     Registers any attachments, executes the CA/CND Playbook through the CA Module for Integration, and stores results in MongoDB.
+   - Start CICMS
+     ```bash
+     sudo subcase_1b/scripts/cicms_start.sh
+     ```
+   - Start NG-SOC
+     ```bash
+     sudo subcase_1b/scripts/ng_soc_start.sh
+     ```
+4. **Review Trainee Reports** – Evaluate submitted findings from penetration test runs.
 
 ## Trainee Steps
 
@@ -48,3 +75,8 @@ flowchart TD
 - [`training_platform_start.sh`](../subcase_1b/scripts/training_platform_start.sh)
 - [`trainee_start.sh`](../subcase_1b/scripts/trainee_start.sh)
 - [`cyber_range_start.sh`](../subcase_1b/scripts/cyber_range_start.sh)
+- [`randomization_platform_start.sh`](../subcase_1b/scripts/randomization_platform_start.sh)
+- [`bips_start.sh`](../subcase_1b/scripts/bips_start.sh)
+- [`ng_siem_start.sh`](../subcase_1b/scripts/ng_siem_start.sh)
+- [`cicms_start.sh`](../subcase_1b/scripts/cicms_start.sh)
+- [`ng_soc_start.sh`](../subcase_1b/scripts/ng_soc_start.sh)
