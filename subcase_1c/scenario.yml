@@ -47,7 +47,7 @@ nodes:
     image: "cti-platform:latest"
     role: "cti"
     services:
-      - "CTEMS"
+      - "MISP"
       - "NG-SIEM"
     ip: "10.20.0.5"
     subnet: "10.20.0.0/24"

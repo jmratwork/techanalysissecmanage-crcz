@@ -8,4 +8,4 @@ This matrix centralizes references for NG-SOC tools and their documentation. Rep
 | NG-SIEM | TBD | NG-SIEM | TBD | TBD | https://example.com/ng-siem |
 | NG-SOC | TBD | NG-SOC Platform | TBD | TBD | https://example.com/ng-soc |
 | CICMS | TBD | CICMS | TBD | TBD | https://example.com/cicms |
-| CTEMS | TBD | CTI Component | TBD | TBD | https://example.com/ctems |
+| MISP | TBD | CTI Component | TBD | TBD | https://www.misp-project.org/ |

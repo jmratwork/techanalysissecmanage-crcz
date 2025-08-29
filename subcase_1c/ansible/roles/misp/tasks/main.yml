@@ -1,21 +1,21 @@
-- name: Download CTEMS package
+- name: Download MISP package
   ansible.builtin.get_url:
-    url: "{{ ngsoc_repo_url }}/ctems/ctems-agent.deb"
-    dest: "/tmp/ctems-agent.deb"
+    url: "{{ ngsoc_repo_url }}/misp/misp-agent.deb"
+    dest: "/tmp/misp-agent.deb"
     mode: "0644"
-    checksum: "{{ ctems_agent_checksum }}"
+    checksum: "{{ misp_agent_checksum }}"
   become: yes
 
-- name: Install CTEMS
+- name: Install MISP
   ansible.builtin.apt:
-    deb: "/tmp/ctems-agent.deb"
+    deb: "/tmp/misp-agent.deb"
     state: present
   become: yes
 
-- name: Configure CTEMS
+- name: Configure MISP
   ansible.builtin.template:
-    src: ctems.conf.j2
-    dest: /etc/ctems/config.yml
+    src: misp.conf.j2
+    dest: /etc/misp/config.yml
     owner: root
     group: root
     mode: "0644"
@@ -24,7 +24,7 @@
 - name: Configure CTI feed URL
   ansible.builtin.template:
     src: cti_feed.env.j2
-    dest: /etc/ctems/cti_feed.env
+    dest: /etc/misp/cti_feed.env
     owner: root
     group: root
     mode: "0644"
@@ -33,7 +33,7 @@
 - name: Deploy malware simulation scripts
   ansible.builtin.copy:
     src: "{{ item.src }}"
-    dest: "/opt/ctems/{{ item.dest }}"
+    dest: "/opt/misp/{{ item.dest }}"
     owner: root
     group: root
     mode: "0755"
@@ -44,9 +44,9 @@
       dest: benign_malware_simulator.ps1
   become: yes
 
-- name: Enable and start CTEMS service
+- name: Enable and start MISP service
   ansible.builtin.service:
-    name: ctems
+    name: misp
     state: started
     enabled: yes
   become: yes
@@ -65,7 +65,7 @@
 - name: Deploy CTI feed fetcher script
   ansible.builtin.copy:
     src: fetch_cti_feed.sh
-    dest: /opt/ctems/fetch_cti_feed.sh
+    dest: /opt/misp/fetch_cti_feed.sh
     owner: root
     group: root
     mode: "0755"
