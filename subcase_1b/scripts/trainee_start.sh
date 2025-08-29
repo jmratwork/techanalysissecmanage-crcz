@@ -3,6 +3,7 @@ set -euo pipefail
 
 TARGET="${TARGET:-10.10.0.4}"
 SCAN_LOG="${SCAN_LOG:-/var/log/trainee/scans.log}"
+INGEST_URL="${INGEST_URL:-http://localhost:5000/scan}"
 SERVICE_DIR="$(dirname "$0")/../training_platform"
 CLI="python $SERVICE_DIR/cli.py"
 TRAINEE="${TRAINEE:-trainee}"
@@ -22,11 +23,14 @@ apt_update_once() {
 }
 
 install_deps() {
-    if ! command -v rustscan >/dev/null 2>&1; then
+    local missing=()
+    command -v rustscan >/dev/null 2>&1 || missing+=(rustscan)
+    command -v jq >/dev/null 2>&1 || missing+=(jq)
+    if [ ${#missing[@]} -gt 0 ]; then
         apt_update_once || return 1
         export DEBIAN_FRONTEND=noninteractive
-        if ! apt-get install -y rustscan; then
-            echo "$(date) failed to install rustscan" >&2
+        if ! apt-get install -y "${missing[@]}"; then
+            echo "$(date) failed to install ${missing[*]}" >&2
             return 1
         fi
     fi
@@ -34,10 +38,21 @@ install_deps() {
 
 run_scan() {
     mkdir -p "$(dirname "$SCAN_LOG")"
-    if rustscan -a "$TARGET" >> "$SCAN_LOG" 2>&1; then
+    if result=$(rustscan -a "$TARGET" 2>&1); then
+        printf '%s\n' "$result" >> "$SCAN_LOG"
         echo "$(date) Completed scan against $TARGET" >> "$SCAN_LOG"
+        send_results "$result"
     else
         echo "$(date) Scan failed for $TARGET" >> "$SCAN_LOG"
+    fi
+}
+
+send_results() {
+    local output="$1"
+    if command -v curl >/dev/null 2>&1; then
+        payload=$(jq -n --arg target "$TARGET" --arg output "$output" '{target:$target, output:$output}')
+        curl -s -H "Content-Type: application/json" -X POST -d "$payload" "$INGEST_URL" >/dev/null 2>&1 || \
+            echo "$(date) Failed to send scan results to $INGEST_URL" >> "$SCAN_LOG"
     fi
 }
 

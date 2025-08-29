@@ -47,10 +47,11 @@ flowchart TD
      sudo subcase_1b/scripts/bips_start.sh
      ```
    - Start NG-SIEM and process attachments
-     ```bash
-     sudo subcase_1b/scripts/ng_siem_start.sh
-     ```
-     Registers any attachments, executes the CA/CND Playbook through the CA Module for Integration, and stores results in MongoDB.
+    ```bash
+    sudo subcase_1b/scripts/ng_siem_start.sh
+    ```
+    Starts an ingestion service for trainee scan results, registers any attachments,
+    executes the CA/CND Playbook through the CA Module for Integration, and stores results in MongoDB.
    - Start CICMS
      ```bash
      sudo subcase_1b/scripts/cicms_start.sh
@@ -69,7 +70,7 @@ flowchart TD
    ```bash
    sudo subcase_1b/scripts/trainee_start.sh --target 10.10.0.4
    ```
-   The script employs `rustscan` instead of `nmap` to comply with the approved tool list and reports completion back to the training platform.
+   The script employs `rustscan` instead of `nmap`, sends the scan output to the NG-SIEM ingestion endpoint, and reports completion back to the training platform.
 4. Document discovered vulnerabilities and provide them to the instructor.
 
 ## Expected Outcomes
@@ -77,6 +78,7 @@ flowchart TD
 - Course creation logs at `/var/log/training_platform/courses.log`.
 - Cyber Range initialization logs at `/var/log/cyber_range/launch.log`.
 - Trainee scan results at `/var/log/trainee/scans.log` and progress stored in the training platform.
+- Scan documents stored in MongoDB collection `scans` for later analysis.
 
 ## References
 
@@ -86,5 +88,6 @@ flowchart TD
 - [`randomization_platform_start.sh`](../subcase_1b/scripts/randomization_platform_start.sh)
 - [`bips_start.sh`](../subcase_1b/scripts/bips_start.sh)
 - [`ng_siem_start.sh`](../subcase_1b/scripts/ng_siem_start.sh)
+- [`ng_siem/app.py`](../subcase_1b/ng_siem/app.py)
 - [`cicms_start.sh`](../subcase_1b/scripts/cicms_start.sh)
 - [`ng_soc_start.sh`](../subcase_1b/scripts/ng_soc_start.sh)

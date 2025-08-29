@@ -7,6 +7,40 @@ PLAYBOOK="${PLAYBOOK:-/opt/playbooks/ca_cnd.yml}"
 MONGO_URI="${MONGO_URI:-mongodb://localhost:27017}"
 MONGO_DB="${MONGO_DB:-ng_siem}"
 MONGO_COLLECTION="${MONGO_COLLECTION:-results}"
+SCANS_COLLECTION="${SCANS_COLLECTION:-scans}"
+INGEST_PORT="${INGEST_PORT:-5000}"
+
+APT_UPDATED=0
+apt_update_once() {
+    if [ "$APT_UPDATED" -eq 0 ]; then
+        export DEBIAN_FRONTEND=noninteractive
+        if apt-get update -y; then
+            APT_UPDATED=1
+        else
+            echo "$(date) apt-get update failed" >> "$SIEM_LOG"
+            return 1
+        fi
+    fi
+}
+
+start_ingest_service() {
+    local service_dir="$(dirname "$0")/../ng_siem"
+    if ! python3 - <<'PY' 2>/dev/null
+import flask, pymongo
+PY
+    then
+        apt_update_once || return 1
+        export DEBIAN_FRONTEND=noninteractive
+        if ! apt-get install -y python3-flask python3-pymongo >> "$SIEM_LOG" 2>&1; then
+            echo "$(date) Failed to install python dependencies" >> "$SIEM_LOG"
+            return 1
+        fi
+    fi
+    MONGO_COLLECTION="$SCANS_COLLECTION" INGEST_PORT="$INGEST_PORT" \
+        python3 "$service_dir/app.py" >> "$SIEM_LOG" 2>&1 &
+    INGEST_PID=$!
+    echo "$(date) Ingest service listening on port $INGEST_PORT" >> "$SIEM_LOG"
+}
 
 log_attachments() {
     mkdir -p "$(dirname "$SIEM_LOG")"
@@ -48,5 +82,7 @@ store_results() {
     fi
 }
 
+start_ingest_service
 log_attachments
 execute_playbook
+wait "$INGEST_PID"
