@@ -24,7 +24,8 @@ For a cross-reference of tools, versions, and documentation, see the [NG-SOC com
 1. **Service initialization** – The instructor provisions the exercise inside the RandomSec LMS and launches NG-SOC services with [scripts/start_soc_services.sh](scripts/start_soc_services.sh).
 2. **CTI ingestion** – The trainee activates the CTI component using [scripts/start_cti_component.sh](scripts/start_cti_component.sh) so threat intelligence flows into the SOC.
 3. **SOC analysis** – Acting as a SOC analyst, the trainee investigates alerts produced by [scripts/start_c2_server.sh](scripts/start_c2_server.sh) and [scripts/benign_malware_simulator.ps1](scripts/benign_malware_simulator.ps1), documenting findings in the platform.
-4. **Instructor feedback** – Results and lessons learned are submitted back through the RandomSec LMS where instructors review the analysis and provide guidance.
+4. **Automated mitigation** – NG-SIEM and BIPS forward events to the Decide service, which recommends responses consumed by the Act orchestrator.
+5. **Instructor feedback** – Results and lessons learned are submitted back through the RandomSec LMS where instructors review the analysis and provide guidance.
 
 ## Execution Steps
 > **Note:** The startup scripts in this subcase expect `systemctl`. If systemd is unavailable, run them with `DIRECT_START=1` in the environment to use fallback `service` or direct commands.
@@ -44,6 +45,13 @@ For a cross-reference of tools, versions, and documentation, see the [NG-SOC com
    ```powershell
    $env:BEACON_URL = "http://localhost:5601/beacon"  # optional override
    .\subcase_1c\scripts\benign_malware_simulator.ps1 -BeaconCount 3
+   ```
+
+5. **Query mitigation recommendations**
+   ```bash
+   curl -X POST http://localhost:8000/recommend \
+        -H 'Content-Type: application/json' \
+        -d '{"source":"ng-siem","severity":5}'
    ```
 
 For deeper guidance and troubleshooting tips, see [the Subcase 1c guide](../docs/subcase_1c_guide.md).

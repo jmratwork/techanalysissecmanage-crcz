@@ -6,6 +6,7 @@
     - ng_siem
     - bips
     - cicms
+    - decide
 
 - hosts: cti_components
   become: true
