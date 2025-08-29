@@ -73,6 +73,26 @@ flowchart TD
    The script employs `rustscan` instead of `nmap`, sends the scan output to the NG-SIEM ingestion endpoint, and reports completion back to the training platform.
 4. Document discovered vulnerabilities and provide them to the instructor.
 
+## Phishing Awareness Quiz
+
+The training platform includes a short phishing quiz to reinforce social engineering concepts. Trainees can use the following REST endpoints once authenticated:
+
+- **Start quiz**
+  ```bash
+  curl "http://localhost:5000/quiz/start?token=$TOKEN&course_id=$COURSE_ID"
+  ```
+- **Submit answers**
+  ```bash
+  curl -X POST http://localhost:5000/quiz/submit -H 'Content-Type: application/json' \
+       -d '{"token":"'$TOKEN'","course_id":"'$COURSE_ID'","answers":{"q1":0,"q2":1}}'
+  ```
+- **Retrieve score**
+  ```bash
+  curl "http://localhost:5000/quiz/score?token=$TOKEN&course_id=$COURSE_ID"
+  ```
+
+Scores are stored per user and course so progress can be tracked over time.
+
 ## Expected Outcomes
 
 - Course creation logs at `/var/log/training_platform/courses.log`.

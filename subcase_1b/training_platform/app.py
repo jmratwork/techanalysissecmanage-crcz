@@ -1,6 +1,8 @@
 import uuid
 from flask import Flask, request, jsonify
 
+import phishing_quiz
+
 app = Flask(__name__)
 
 # In-memory stores
@@ -9,6 +11,7 @@ tokens = {}  # token -> username
 courses = {}  # course_id -> {title, content, instructor}
 invites = {}  # invite_code -> {course_id, email}
 progress = {}  # (course_id, username) -> progress
+quiz_results = {}  # (course_id, username) -> {answers, score}
 
 
 def authenticate(token):
@@ -110,6 +113,9 @@ def get_progress():
     username = request.args.get('username') or tokens[token]
     value = progress.get((course_id, username), 0)
     return jsonify({'progress': value})
+
+
+phishing_quiz.init_app(app, authenticate, tokens, quiz_results)
 
 
 if __name__ == '__main__':
