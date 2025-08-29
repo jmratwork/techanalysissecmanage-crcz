@@ -101,3 +101,18 @@ links:
   - [bips, ng_siem]
   - [ng_siem, cicms]
   - [cicms, ng_soc]
+scenarios:
+  - id: "dvwa_sql_injection"
+    title: "DVWA SQL Injection Lab"
+    description: >
+      Exploit SQL injection vulnerabilities in the DVWA service exposed on
+      port 8000.
+    services:
+      - "vuln_web"
+      - "trainee_workstation"
+  - id: "weak_ssh_credentials"
+    title: "Weak SSH Credentials Lab"
+    description: >
+      Brute-force weak SSH passwords on the trainee workstation container.
+    services:
+      - "trainee_workstation"
