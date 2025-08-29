@@ -62,6 +62,7 @@ flowchart TD
    ```bash
    sudo subcase_1b/scripts/trainee_start.sh --target 10.10.0.4
    ```
+   The script employs `rustscan` instead of `nmap` to comply with the approved tool list.
 4. Document discovered vulnerabilities and provide them to the instructor.
 
 ## Expected Outcomes

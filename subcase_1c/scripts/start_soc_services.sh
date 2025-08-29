@@ -11,10 +11,14 @@ install_deps() {
         return
     fi
 
-    if ! command -v nc >/dev/null 2>&1; then
+    if ! command -v timeout >/dev/null 2>&1; then
         apt-get update -y
-        apt-get install -y netcat
+        apt-get install -y coreutils
     fi
+}
+
+check_port() {
+    timeout 5 bash -c "cat < /dev/null > /dev/tcp/$1/$2"
 }
 
 start_bips() {
@@ -24,7 +28,7 @@ start_bips() {
             echo "$(date) bips failed to start" >>/var/log/bips/service.log
             return 1
         fi
-        nc -z localhost "${BIPS_PORT}" >>/var/log/bips/service.log 2>&1 || {
+        check_port localhost "${BIPS_PORT}" >>/var/log/bips/service.log 2>&1 || {
             echo "$(date) bips port check failed" >>/var/log/bips/service.log
             return 1
         }
@@ -41,7 +45,7 @@ start_ng_siem() {
             echo "$(date) ng-siem failed to start" >>/var/log/ng_siem/service.log
             return 1
         fi
-        nc -z localhost "${NG_SIEM_PORT}" >>/var/log/ng_siem/service.log 2>&1 || {
+        check_port localhost "${NG_SIEM_PORT}" >>/var/log/ng_siem/service.log 2>&1 || {
             echo "$(date) ng-siem port check failed" >>/var/log/ng_siem/service.log
             return 1
         }
@@ -58,7 +62,7 @@ start_cicms() {
             echo "$(date) cicms failed to start" >>/var/log/cicms/service.log
             return 1
         fi
-        nc -z localhost "${CICMS_PORT}" >>/var/log/cicms/service.log 2>&1 || {
+        check_port localhost "${CICMS_PORT}" >>/var/log/cicms/service.log 2>&1 || {
             echo "$(date) cicms port check failed" >>/var/log/cicms/service.log
             return 1
         }
@@ -75,7 +79,7 @@ start_ng_soc() {
             echo "$(date) ng-soc failed to start" >>/var/log/ng_soc/service.log
             return 1
         fi
-        nc -z localhost "${NG_SOC_PORT}" >>/var/log/ng_soc/service.log 2>&1 || {
+        check_port localhost "${NG_SOC_PORT}" >>/var/log/ng_soc/service.log 2>&1 || {
             echo "$(date) ng-soc port check failed" >>/var/log/ng_soc/service.log
             return 1
         }
