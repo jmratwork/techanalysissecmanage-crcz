@@ -51,6 +51,17 @@
     enabled: yes
   become: yes
 
+- name: Install CTI enrichment dependencies
+  ansible.builtin.apt:
+    name:
+      - python3
+      - python3-pip
+      - python3-requests
+      - python3-stix2
+    state: present
+    update_cache: yes
+  become: yes
+
 - name: Deploy CTI feed fetcher script
   ansible.builtin.copy:
     src: fetch_cti_feed.sh
