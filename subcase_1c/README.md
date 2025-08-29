@@ -18,6 +18,12 @@ Simulate benign malware activity and integrate threat intelligence feeds to exer
 - CICMS
 - CTEMS
 
+## Workflow
+1. **Service initialization** – The instructor provisions the exercise inside the RandomSec LMS and launches NG-SOC services with [scripts/start_soc_services.sh](scripts/start_soc_services.sh).
+2. **CTI ingestion** – The trainee activates the CTI component using [scripts/start_cti_component.sh](scripts/start_cti_component.sh) so threat intelligence flows into the SOC.
+3. **SOC analysis** – Acting as a SOC analyst, the trainee investigates alerts produced by [scripts/start_c2_server.sh](scripts/start_c2_server.sh) and [scripts/benign_malware_simulator.ps1](scripts/benign_malware_simulator.ps1), documenting findings in the platform.
+4. **Instructor feedback** – Results and lessons learned are submitted back through the RandomSec LMS where instructors review the analysis and provide guidance.
+
 ## Execution Steps
 1. **Start SOC services**
    ```bash
