@@ -1,6 +1,17 @@
 #!/bin/bash
 set -euo pipefail
 
+USE_SYSTEMCTL=1
+if ! command -v systemctl >/dev/null 2>&1; then
+    if [ "${DIRECT_START:-0}" -eq 1 ]; then
+        USE_SYSTEMCTL=0
+        echo "systemctl not found; using direct start mode" >&2
+    else
+        echo "systemctl command not found. Set DIRECT_START=1 to run without systemd." >&2
+        exit 1
+    fi
+fi
+
 C2_BIND_IP="${C2_BIND_IP:-0.0.0.0}"
 C2_PORT="${C2_PORT:-9001}"
 
@@ -44,7 +55,8 @@ setup_c2() {
     mkdir -p /opt/c2_server
     cp "$(dirname "$0")/c2_server.py" /opt/c2_server/c2_server.py
 
-    cat >/etc/systemd/system/c2_server.service <<EOF
+    if [ "$USE_SYSTEMCTL" -eq 1 ]; then
+        cat >/etc/systemd/system/c2_server.service <<EOF
 [Unit]
 Description=Simple C2 Server
 After=network.target
@@ -62,24 +74,34 @@ ExecStartPre=/bin/mkdir -p /var/log/c2_server
 WantedBy=multi-user.target
 EOF
 
-    systemctl daemon-reload
-    systemctl enable c2_server.service >/dev/null 2>&1 || true
+        systemctl daemon-reload
+        systemctl enable c2_server.service >/dev/null 2>&1 || true
+    fi
 }
 
 start_c2() {
     mkdir -p /var/log/c2_server
-    if systemctl start c2_server.service >>/var/log/c2_server/service.log 2>&1; then
-        if ! systemctl is-active --quiet c2_server.service; then
-            echo "$(date) c2_server failed to start" >>/var/log/c2_server/service.log
+    if [ "$USE_SYSTEMCTL" -eq 1 ]; then
+        if systemctl start c2_server.service >>/var/log/c2_server/service.log 2>&1; then
+            if ! systemctl is-active --quiet c2_server.service; then
+                echo "$(date) c2_server failed to start" >>/var/log/c2_server/service.log
+                return 1
+            fi
+            nc -z localhost "${C2_PORT}" >>/var/log/c2_server/service.log 2>&1 || {
+                echo "$(date) c2_server port check failed" >>/var/log/c2_server/service.log
+                return 1
+            }
+        else
+            echo "$(date) failed to run systemctl start c2_server" >>/var/log/c2_server/service.log
             return 1
         fi
+    else
+        nohup /usr/bin/python3 /opt/c2_server/c2_server.py >>/var/log/c2_server/service.log 2>&1 &
+        sleep 1
         nc -z localhost "${C2_PORT}" >>/var/log/c2_server/service.log 2>&1 || {
             echo "$(date) c2_server port check failed" >>/var/log/c2_server/service.log
             return 1
         }
-    else
-        echo "$(date) failed to run systemctl start c2_server" >>/var/log/c2_server/service.log
-        return 1
     fi
 }
 

@@ -7,7 +7,8 @@ This repository provides complete, ready‑to‑deploy instructions for double K
 - Active account on [CyberRangeCZ](https://www.cyberrange.cz/) with permissions to deploy KYPO scenarios.
 - SSH access to the range and ability to run privileged commands.
 - Local tools: `git`, `kubectl`, `helm`, and a modern web browser.
- - Recommended familiarity with NG-SOC components, including BIPS for behavioral intrusion prevention, NG-SIEM for event correlation, CICMS for incident collaboration, and MISP for CTI sharing.
+- Recommended familiarity with NG-SOC components, including BIPS for behavioral intrusion prevention, NG-SIEM for event correlation, CICMS for incident collaboration, and MISP for CTI sharing.
+- The provided startup scripts rely on `systemctl`. If your environment lacks systemd, set `DIRECT_START=1` to attempt starting services with legacy `service` commands or direct scripts.
 
 ## Deployment on KYPO
 

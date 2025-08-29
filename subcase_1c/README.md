@@ -27,6 +27,7 @@ For a cross-reference of tools, versions, and documentation, see the [NG-SOC com
 4. **Instructor feedback** – Results and lessons learned are submitted back through the RandomSec LMS where instructors review the analysis and provide guidance.
 
 ## Execution Steps
+> **Note:** The startup scripts in this subcase expect `systemctl`. If systemd is unavailable, run them with `DIRECT_START=1` in the environment to use fallback `service` or direct commands.
 1. **Start SOC services**
    ```bash
    sudo subcase_1c/scripts/start_soc_services.sh
