@@ -2,7 +2,6 @@
 set -euo pipefail
 
 MISP_PORT="${MISP_PORT:-8443}"
-NG_SIEM_PORT="${NG_SIEM_PORT:-5601}"
 
 if [ -f /etc/misp/cti_feed.env ]; then
     # shellcheck disable=SC1091
@@ -27,6 +26,9 @@ check_port() {
 
 start_misp() {
     mkdir -p /var/log/misp
+    if systemctl is-active --quiet misp; then
+        return 0
+    fi
     if systemctl start misp >>/var/log/misp/service.log 2>&1; then
         if ! systemctl is-active --quiet misp; then
             echo "$(date) misp failed to start" >>/var/log/misp/service.log
@@ -42,25 +44,11 @@ start_misp() {
     fi
 }
 
-start_ng_siem() {
-    mkdir -p /var/log/ng_siem
-    if systemctl start ng-siem >>/var/log/ng_siem/service.log 2>&1; then
-        if ! systemctl is-active --quiet ng-siem; then
-            echo "$(date) ng-siem failed to start" >>/var/log/ng_siem/service.log
-            return 1
-        fi
-        check_port localhost "${NG_SIEM_PORT}" >>/var/log/ng_siem/service.log 2>&1 || {
-            echo "$(date) ng-siem port check failed" >>/var/log/ng_siem/service.log
-            return 1
-        }
-    else
-        echo "$(date) failed to run systemctl start ng-siem" >>/var/log/ng_siem/service.log
-        return 1
-    fi
-}
-
 start_fetch_cti_feed() {
     mkdir -p /var/log/misp
+    if systemctl is-active --quiet fetch-cti-feed; then
+        return 0
+    fi
     if systemctl start fetch-cti-feed >>/var/log/misp/service.log 2>&1; then
         if ! systemctl is-active --quiet fetch-cti-feed; then
             echo "$(date) fetch-cti-feed failed to start" >>/var/log/misp/service.log
@@ -74,5 +62,4 @@ start_fetch_cti_feed() {
 
 install_deps
 start_misp
-start_ng_siem
 start_fetch_cti_feed
