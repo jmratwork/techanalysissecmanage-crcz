@@ -1,6 +1,17 @@
 #!/bin/bash
 set -euo pipefail
 
+USE_SYSTEMCTL=1
+if ! command -v systemctl >/dev/null 2>&1; then
+    if [ "${DIRECT_START:-0}" -eq 1 ]; then
+        USE_SYSTEMCTL=0
+        echo "systemctl not found; using direct start mode" >&2
+    else
+        echo "systemctl command not found. Set DIRECT_START=1 to run without systemd." >&2
+        exit 1
+    fi
+fi
+
 MISP_PORT="${MISP_PORT:-8443}"
 
 if [ -f /etc/misp/cti_feed.env ]; then
@@ -42,37 +53,68 @@ check_port() {
 
 start_misp() {
     mkdir -p /var/log/misp
-    if systemctl is-active --quiet misp; then
-        return 0
-    fi
-    if systemctl start misp >>/var/log/misp/service.log 2>&1; then
-        if ! systemctl is-active --quiet misp; then
-            echo "$(date) misp failed to start" >>/var/log/misp/service.log
+    if [ "$USE_SYSTEMCTL" -eq 1 ]; then
+        if systemctl is-active --quiet misp; then
+            return 0
+        fi
+        if systemctl start misp >>/var/log/misp/service.log 2>&1; then
+            if ! systemctl is-active --quiet misp; then
+                echo "$(date) misp failed to start" >>/var/log/misp/service.log
+                return 1
+            fi
+            check_port localhost "${MISP_PORT}" >>/var/log/misp/service.log 2>&1 || {
+                echo "$(date) misp port check failed" >>/var/log/misp/service.log
+                return 1
+            }
+        else
+            echo "$(date) failed to run systemctl start misp" >>/var/log/misp/service.log
             return 1
         fi
-        check_port localhost "${MISP_PORT}" >>/var/log/misp/service.log 2>&1 || {
-            echo "$(date) misp port check failed" >>/var/log/misp/service.log
-            return 1
-        }
     else
-        echo "$(date) failed to run systemctl start misp" >>/var/log/misp/service.log
-        return 1
+        if command -v service >/dev/null 2>&1; then
+            if service misp start >>/var/log/misp/service.log 2>&1; then
+                check_port localhost "${MISP_PORT}" >>/var/log/misp/service.log 2>&1 || {
+                    echo "$(date) misp port check failed" >>/var/log/misp/service.log
+                    return 1
+                }
+            else
+                echo "$(date) failed to run service misp start" >>/var/log/misp/service.log
+                return 1
+            fi
+        else
+            echo "$(date) service command not found" >>/var/log/misp/service.log
+            return 1
+        fi
     fi
 }
 
 start_fetch_cti_feed() {
     mkdir -p /var/log/misp
-    if systemctl is-active --quiet fetch-cti-feed; then
-        return 0
-    fi
-    if systemctl start fetch-cti-feed >>/var/log/misp/service.log 2>&1; then
-        if ! systemctl is-active --quiet fetch-cti-feed; then
-            echo "$(date) fetch-cti-feed failed to start" >>/var/log/misp/service.log
+    if [ "$USE_SYSTEMCTL" -eq 1 ]; then
+        if systemctl is-active --quiet fetch-cti-feed; then
+            return 0
+        fi
+        if systemctl start fetch-cti-feed >>/var/log/misp/service.log 2>&1; then
+            if ! systemctl is-active --quiet fetch-cti-feed; then
+                echo "$(date) fetch-cti-feed failed to start" >>/var/log/misp/service.log
+                return 1
+            fi
+        else
+            echo "$(date) failed to run systemctl start fetch-cti-feed" >>/var/log/misp/service.log
             return 1
         fi
     else
-        echo "$(date) failed to run systemctl start fetch-cti-feed" >>/var/log/misp/service.log
-        return 1
+        if command -v service >/dev/null 2>&1; then
+            if service fetch-cti-feed start >>/var/log/misp/service.log 2>&1; then
+                true
+            else
+                echo "$(date) failed to run service fetch-cti-feed start" >>/var/log/misp/service.log
+                return 1
+            fi
+        else
+            echo "$(date) service command not found" >>/var/log/misp/service.log
+            return 1
+        fi
     fi
 }
 
