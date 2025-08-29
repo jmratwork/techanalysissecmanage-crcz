@@ -1,9 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
-CTI_FEED_URL="${CTI_FEED_URL:-https://ctems.internal.example.com/taxii2/collections/indicators/objects}"
+CTI_FEED_URL="${CTI_FEED_URL:-https://misp.internal.example.com/taxii2/collections/indicators/objects}"
 CTI_FETCH_INTERVAL="${CTI_FETCH_INTERVAL:-300}"
-OUTPUT_DIR="${CTI_FEED_OUTPUT_DIR:-/var/log/ctems}"
+OUTPUT_DIR="${CTI_FEED_OUTPUT_DIR:-/var/log/misp}"
 export OUTPUT_DIR
 
 install_deps() {
@@ -65,8 +65,8 @@ with open(out_path, "w") as fh:
     json.dump([o for o in enriched], fh)
 PYEOF
 
-            if command -v ctems-cli >/dev/null 2>&1; then
-                ctems-cli ingest "${OUTPUT_DIR}/cti_enriched.json" >>"${OUTPUT_DIR}/ingest.log" 2>&1 || true
+            if command -v misp-cli >/dev/null 2>&1; then
+                misp-cli ingest "${OUTPUT_DIR}/cti_enriched.json" >>"${OUTPUT_DIR}/ingest.log" 2>&1 || true
             fi
         fi
         sleep "$CTI_FETCH_INTERVAL"

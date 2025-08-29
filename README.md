@@ -7,7 +7,7 @@ This repository provides complete, ready‑to‑deploy instructions for double K
 - Active account on [CyberRangeCZ](https://www.cyberrange.cz/) with permissions to deploy KYPO scenarios.
 - SSH access to the range and ability to run privileged commands.
 - Local tools: `git`, `kubectl`, `helm`, and a modern web browser.
-- Recommended familiarity with NG-SOC components, including BIPS for behavioral intrusion prevention, NG-SIEM for event correlation, CICMS for incident collaboration, and CTEMS for CTI sharing and threat exposure management.
+- Recommended familiarity with NG-SOC components, including BIPS for behavioral intrusion prevention, NG-SIEM for event correlation, CICMS for incident collaboration, and MISP for CTI sharing and threat exposure management.
 
 ## Deployment on KYPO
 
@@ -19,7 +19,7 @@ This repository provides complete, ready‑to‑deploy instructions for double K
 2. **Authenticate to CyberRangeCZ** – Ensure VPN or direct connectivity and log into the portal.
 3. **Prepare the Scenario** – Upload required images or scripts (e.g., `subcase_1c/scripts/benign_malware_simulator.ps1`) to the appropriate KYPO repositories.
 4. **Launch the Scenario** – Use the KYPO interface to create a new exercise and point it to this repository. Configure network ranges and participants as needed.
-5. **Monitor the Exercise** – During execution, analysts should track alerts and manage cases using NG-SOC components such as BIPS, NG-SIEM, CICMS, and CTEMS (for CTI sharing), following the workflow described in [`docs/training_workflows.md`](docs/training_workflows.md).
+5. **Monitor the Exercise** – During execution, analysts should track alerts and manage cases using NG-SOC components such as BIPS, NG-SIEM, CICMS, and MISP (for CTI sharing), following the workflow described in [`docs/training_workflows.md`](docs/training_workflows.md).
 
 ## Teardown
 
@@ -32,7 +32,7 @@ This repository provides complete, ready‑to‑deploy instructions for double K
 
 - **Connectivity Issues** – Confirm VPN status and that required ports (e.g., 22 for SSH) are open.
 - **Scenario Fails to Start** – Ensure all prerequisite images are uploaded and that the repository path is correct.
-- **Tool-Specific Logs** – Consult documentation for [BIPS](https://ngsoc.example.com/bips), [NG-SIEM](https://ngsoc.example.com/ng-siem), [CICMS](https://ngsoc.example.com/cicms), and [CTEMS](https://ngsoc.example.com/ctems).
+- **Tool-Specific Logs** – Consult documentation for [BIPS](https://ngsoc.example.com/bips), [NG-SIEM](https://ngsoc.example.com/ng-siem), [CICMS](https://ngsoc.example.com/cicms), and [MISP](https://ngsoc.example.com/misp).
 
 Additional theoretical background and workflow guidance can be found in [`docs/training_workflows.md`](docs/training_workflows.md).
 
@@ -43,4 +43,4 @@ Additional theoretical background and workflow guidance can be found in [`docs/t
 - [Subcase 1b – Penetration Testing Training](docs/subcase_1b_guide.md)
 Subcase 1b delivers self-paced penetration testing and vulnerability assessment training using a dedicated training platform, a trainee workstation, and a Cyber Range simulation of CYNET's network.
 - [Subcase 1c – Malware Simulation and CTI Integration](docs/subcase_1c_guide.md)
-Subcase 1c models a malware incident response exercise, adding a C2 server, a CTI component running CTEMS, and corresponding services for NG‑SIEM, BIPS, CICMS, and NG‑SOC. The roles download NG‑SOC packages with checksum verification, and the scripts launch services and simulations for training.
+Subcase 1c models a malware incident response exercise, adding a C2 server, a CTI component running MISP, and corresponding services for NG‑SIEM, BIPS, CICMS, and NG‑SOC. The roles download NG‑SOC packages with checksum verification, and the scripts launch services and simulations for training.

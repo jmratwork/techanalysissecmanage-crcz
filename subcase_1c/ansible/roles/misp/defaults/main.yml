@@ -1,4 +1,4 @@
 ---
 # Base URL for NG-SOC package repository. Override in inventory or group vars.
 ngsoc_repo_url: "https://packages.internal.example.com"
-ctems_agent_checksum: "sha256:880dab7c445872663d4dd4326bf6b0c49337b467ae03247c092cdf052116fdaa"
+misp_agent_checksum: "sha256:880dab7c445872663d4dd4326bf6b0c49337b467ae03247c092cdf052116fdaa"

@@ -9,14 +9,14 @@ Simulate benign malware activity and integrate threat intelligence feeds to exer
 - **infected_host** – Windows victim that runs the benign malware simulator
 - **c2_server** – Command-and-control server for beaconing traffic
 - **soc_server** – Hosts NG-SOC platform services
-- **cti_component** – Runs CTEMS and feeds threat intelligence to the SOC
+- **cti_component** – Runs MISP and feeds threat intelligence to the SOC
 
 ## Required NG-SOC Components
 - BIPS
 - NG-SIEM
 - NG-SOC
 - CICMS
-- CTEMS
+- MISP
 
 For a cross-reference of tools, versions, and documentation, see the [NG-SOC components matrix](../docs/ngsoc_components_matrix.md).
 

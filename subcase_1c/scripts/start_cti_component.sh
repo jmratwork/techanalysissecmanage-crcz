@@ -1,12 +1,12 @@
 #!/bin/bash
 set -euo pipefail
 
-CTEMS_PORT="${CTEMS_PORT:-5700}"
+MISP_PORT="${MISP_PORT:-8443}"
 NG_SIEM_PORT="${NG_SIEM_PORT:-5601}"
 
-if [ -f /etc/ctems/cti_feed.env ]; then
+if [ -f /etc/misp/cti_feed.env ]; then
     # shellcheck disable=SC1091
-    . /etc/ctems/cti_feed.env
+    . /etc/misp/cti_feed.env
     export CTI_FEED_URL
 fi
 
@@ -21,19 +21,19 @@ install_deps() {
     fi
 }
 
-start_ctems() {
-    mkdir -p /var/log/ctems
-    if systemctl start ctems >>/var/log/ctems/service.log 2>&1; then
-        if ! systemctl is-active --quiet ctems; then
-            echo "$(date) ctems failed to start" >>/var/log/ctems/service.log
+start_misp() {
+    mkdir -p /var/log/misp
+    if systemctl start misp >>/var/log/misp/service.log 2>&1; then
+        if ! systemctl is-active --quiet misp; then
+            echo "$(date) misp failed to start" >>/var/log/misp/service.log
             return 1
         fi
-        nc -z localhost "${CTEMS_PORT}" >>/var/log/ctems/service.log 2>&1 || {
-            echo "$(date) ctems port check failed" >>/var/log/ctems/service.log
+        nc -z localhost "${MISP_PORT}" >>/var/log/misp/service.log 2>&1 || {
+            echo "$(date) misp port check failed" >>/var/log/misp/service.log
             return 1
         }
     else
-        echo "$(date) failed to run systemctl start ctems" >>/var/log/ctems/service.log
+        echo "$(date) failed to run systemctl start misp" >>/var/log/misp/service.log
         return 1
     fi
 }
@@ -56,19 +56,19 @@ start_ng_siem() {
 }
 
 start_fetch_cti_feed() {
-    mkdir -p /var/log/ctems
-    if systemctl start fetch-cti-feed >>/var/log/ctems/service.log 2>&1; then
+    mkdir -p /var/log/misp
+    if systemctl start fetch-cti-feed >>/var/log/misp/service.log 2>&1; then
         if ! systemctl is-active --quiet fetch-cti-feed; then
-            echo "$(date) fetch-cti-feed failed to start" >>/var/log/ctems/service.log
+            echo "$(date) fetch-cti-feed failed to start" >>/var/log/misp/service.log
             return 1
         fi
     else
-        echo "$(date) failed to run systemctl start fetch-cti-feed" >>/var/log/ctems/service.log
+        echo "$(date) failed to run systemctl start fetch-cti-feed" >>/var/log/misp/service.log
         return 1
     fi
 }
 
 install_deps
-start_ctems
+start_misp
 start_ng_siem
 start_fetch_cti_feed

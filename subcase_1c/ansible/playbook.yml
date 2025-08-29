@@ -10,5 +10,5 @@
 - hosts: cti_components
   become: true
   roles:
-    - ctems
+    - misp
     - ng_siem
