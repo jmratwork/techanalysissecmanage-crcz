@@ -3,6 +3,11 @@ set -euo pipefail
 
 TARGET="${TARGET:-10.10.0.4}"
 SCAN_LOG="${SCAN_LOG:-/var/log/trainee/scans.log}"
+SERVICE_DIR="$(dirname "$0")/../training_platform"
+CLI="python $SERVICE_DIR/cli.py"
+TRAINEE="${TRAINEE:-trainee}"
+PASSWORD="${PASSWORD:-changeme}"
+COURSE_ID="${COURSE_ID:-}"
 
 APT_UPDATED=0
 apt_update_once() {
@@ -36,5 +41,17 @@ run_scan() {
     fi
 }
 
+report_progress() {
+    $CLI register --username "$TRAINEE" --password "$PASSWORD" --role trainee >/dev/null 2>&1 || true
+    TOKEN="$($CLI login --username "$TRAINEE" --password "$PASSWORD")"
+    if [ -z "$COURSE_ID" ]; then
+        COURSE_ID="$($CLI list-courses --token "$TOKEN" | python -c 'import sys,json; data=json.load(sys.stdin); print(next(iter(data.keys()), ""))')"
+    fi
+    if [ -n "$COURSE_ID" ]; then
+        $CLI update-progress --token "$TOKEN" --course-id "$COURSE_ID" --username "$TRAINEE" --progress 100 >/dev/null 2>&1 || true
+    fi
+}
+
 install_deps
 run_scan
+report_progress
