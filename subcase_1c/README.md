@@ -18,6 +18,8 @@ Simulate benign malware activity and integrate threat intelligence feeds to exer
 - CICMS
 - CTEMS
 
+For a cross-reference of tools, versions, and documentation, see the [NG-SOC components matrix](../docs/ngsoc_components_matrix.md).
+
 ## Workflow
 1. **Service initialization** – The instructor provisions the exercise inside the RandomSec LMS and launches NG-SOC services with [scripts/start_soc_services.sh](scripts/start_soc_services.sh).
 2. **CTI ingestion** – The trainee activates the CTI component using [scripts/start_cti_component.sh](scripts/start_cti_component.sh) so threat intelligence flows into the SOC.

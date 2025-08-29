@@ -51,4 +51,5 @@ Simulate benign malware activity and integrate threat intelligence feeds to exer
 - [`start_c2_server.sh`](../subcase_1c/scripts/start_c2_server.sh)
 - [`benign_malware_simulator.ps1`](../subcase_1c/scripts/benign_malware_simulator.ps1)
 - [`load_malware_simulation.ps1`](../subcase_1c/scripts/load_malware_simulation.ps1)
+- [NG-SOC components matrix](ngsoc_components_matrix.md)
 
