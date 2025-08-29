@@ -23,6 +23,9 @@ check_port() {
 
 start_bips() {
     mkdir -p /var/log/bips
+    if systemctl is-active --quiet bips; then
+        return 0
+    fi
     if systemctl start bips >>/var/log/bips/service.log 2>&1; then
         if ! systemctl is-active --quiet bips; then
             echo "$(date) bips failed to start" >>/var/log/bips/service.log
@@ -40,6 +43,9 @@ start_bips() {
 
 start_ng_siem() {
     mkdir -p /var/log/ng_siem
+    if systemctl is-active --quiet ng-siem; then
+        return 0
+    fi
     if systemctl start ng-siem >>/var/log/ng_siem/service.log 2>&1; then
         if ! systemctl is-active --quiet ng-siem; then
             echo "$(date) ng-siem failed to start" >>/var/log/ng_siem/service.log
@@ -57,6 +63,9 @@ start_ng_siem() {
 
 start_cicms() {
     mkdir -p /var/log/cicms
+    if systemctl is-active --quiet cicms; then
+        return 0
+    fi
     if systemctl start cicms >>/var/log/cicms/service.log 2>&1; then
         if ! systemctl is-active --quiet cicms; then
             echo "$(date) cicms failed to start" >>/var/log/cicms/service.log
@@ -74,6 +83,9 @@ start_cicms() {
 
 start_ng_soc() {
     mkdir -p /var/log/ng_soc
+    if systemctl is-active --quiet ng-soc; then
+        return 0
+    fi
     if systemctl start ng-soc >>/var/log/ng_soc/service.log 2>&1; then
         if ! systemctl is-active --quiet ng-soc; then
             echo "$(date) ng-soc failed to start" >>/var/log/ng_soc/service.log
