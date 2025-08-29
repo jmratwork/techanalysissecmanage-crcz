@@ -1,0 +1,18 @@
+# Post-Incident Process
+
+This document describes the steps to handle the post-incident report generated for Subcase 1c.
+
+## Review the Report
+1. Execute `subcase_1c/scripts/generate_post_incident_report.sh` after the incident ends.
+2. Locate the timestamped file in the `reports/` directory.
+3. Examine the NG‑SIEM, BIPS and Act sections to understand the event timeline and impacts.
+
+## Apply Patches
+1. Identify required fixes based on findings in the report.
+2. Apply patches to affected systems, validating them in a staging environment first.
+3. Record applied patches and verification steps.
+
+## Update Scenario Infrastructure
+1. Update playbooks, configurations or images to include the patches.
+2. Rebuild or redeploy the lab to ensure changes take effect.
+3. Commit infrastructure updates and note them for future iterations.
