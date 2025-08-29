@@ -29,7 +29,14 @@ flowchart TD
    ```bash
    sudo subcase_1b/scripts/training_platform_start.sh --course pentest-101
    ```
-   Creates the self-paced course and prepares related scenarios.
+   Starts the Flask service, registers the instructor, and creates the course via the REST API.
+
+   To invite a learner:
+   ```bash
+   TOKEN=$(python subcase_1b/training_platform/cli.py login --username instructor --password changeme)
+   COURSE_ID=$(python subcase_1b/training_platform/cli.py list-courses --token "$TOKEN" | python -c 'import sys,json; d=json.load(sys.stdin); print(next(iter(d.keys())))')
+   python subcase_1b/training_platform/cli.py invite --token "$TOKEN" --course-id "$COURSE_ID" --email learner@example.com
+   ```
 3. **Initialize Security Pipeline**
    - Start Randomization Evaluation Platform
      ```bash
@@ -62,14 +69,14 @@ flowchart TD
    ```bash
    sudo subcase_1b/scripts/trainee_start.sh --target 10.10.0.4
    ```
-   The script employs `rustscan` instead of `nmap` to comply with the approved tool list.
+   The script employs `rustscan` instead of `nmap` to comply with the approved tool list and reports completion back to the training platform.
 4. Document discovered vulnerabilities and provide them to the instructor.
 
 ## Expected Outcomes
 
 - Course creation logs at `/var/log/training_platform/courses.log`.
 - Cyber Range initialization logs at `/var/log/cyber_range/launch.log`.
-- Trainee scan results at `/var/log/trainee/scans.log`.
+- Trainee scan results at `/var/log/trainee/scans.log` and progress stored in the training platform.
 
 ## References
 

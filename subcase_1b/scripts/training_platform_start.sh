@@ -1,23 +1,24 @@
 #!/bin/bash
 set -euo pipefail
 
-COURSE_DIR="${COURSE_DIR:-/var/courses}"
+SERVICE_DIR="$(dirname "$0")/../training_platform"
+CLI="python $SERVICE_DIR/cli.py"
+INSTRUCTOR="${INSTRUCTOR:-instructor}"
+PASSWORD="${PASSWORD:-changeme}"
 COURSE_NAME="${COURSE_NAME:-PenTest 101}"
+COURSE_CONTENT="${COURSE_CONTENT:-Introduction to penetration testing}"
 LOG_FILE="${LOG_FILE:-/var/log/training_platform/courses.log}"
-RANGE_SCENARIO_DIR="${RANGE_SCENARIO_DIR:-/var/cyber_range}"
 
-create_course() {
-    mkdir -p "$COURSE_DIR"
-    mkdir -p "$(dirname "$LOG_FILE")"
-    local course_file="$COURSE_DIR/${COURSE_NAME// /_}.md"
-    echo "# $COURSE_NAME\nThis course covers penetration testing and vulnerability assessment." > "$course_file"
-    echo "$(date) Created course $COURSE_NAME at $course_file" >> "$LOG_FILE"
-}
+mkdir -p "$(dirname "$LOG_FILE")"
 
-prepare_cyber_range() {
-    mkdir -p "$RANGE_SCENARIO_DIR"
-    echo "$(date) Prepared cyber range scenario directory at $RANGE_SCENARIO_DIR" >> "$LOG_FILE"
-}
+# start service in background
+python "$SERVICE_DIR/app.py" >/tmp/training_platform_server.log 2>&1 &
+sleep 1
 
-create_course
-prepare_cyber_range
+# register instructor if needed and obtain token
+$CLI register --username "$INSTRUCTOR" --password "$PASSWORD" --role instructor >/dev/null 2>&1 || true
+TOKEN="$($CLI login --username "$INSTRUCTOR" --password "$PASSWORD")"
+
+# create course via API
+$CLI create-course --token "$TOKEN" --title "$COURSE_NAME" --content "$COURSE_CONTENT"
+echo "$(date) Instructor $INSTRUCTOR created course $COURSE_NAME" >> "$LOG_FILE"
