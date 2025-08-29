@@ -18,6 +18,8 @@ Simulate benign malware activity and integrate threat intelligence feeds to exer
    ```
    Runs MISP, starts the `fetch-cti-feed` systemd service, and verifies NG-SIEM.
    Port verification uses the same built-in method to avoid disallowed tools.
+   Use `CTI_OFFLINE=1` or run the fetch script with `--offline` to skip external
+   downloads when network access is unavailable.
 
 3. **Launch the C2 server**  
    ```bash
