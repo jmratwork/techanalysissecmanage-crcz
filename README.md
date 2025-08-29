@@ -38,6 +38,8 @@ Additional theoretical background and workflow guidance can be found in [`docs/t
 
 ## Scenario Guides
 
+![Pilot CYNET](PUC%20-%20CYNET.png)
+
 - [Subcase 1b – Phishing-Awareness Training](docs/subcase_1b_guide.md)
 Subcase 1b delivers phishing‑awareness training and a policy briefing via the Random Education Platform. It includes a trainee workstation and a SOC node running BIPS, NG‑SIEM, NG‑SOC, and CICMS, with detailed network assignments and startup scripts.
 - [Subcase 1c – Malware Simulation and CTI Integration](docs/subcase_1c_guide.md)
