@@ -41,3 +41,7 @@ Trainees should familiarize themselves with fundamental concepts in network secu
 5. **Final Evaluation** – Review submitted reports and platform evaluation results. *Validation:* each trainee’s submission status is recorded in the grading dashboard. *Artifacts:* completed grading rubric and evaluation summaries.
 
 These workflows ensure that trainees gain practical experience while instructors maintain oversight within the simulated environment.
+
+## Post-Incident Reporting and Iteration
+
+Run `subcase_1c/scripts/generate_post_incident_report.sh` once evaluations are complete to gather NG‑SIEM, BIPS and Act logs. Review the resulting file in `reports/` following the guidance in `docs/post_incident_process.md` and update playbooks or teaching materials accordingly before the next training cycle.
