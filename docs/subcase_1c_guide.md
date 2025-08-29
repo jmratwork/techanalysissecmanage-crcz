@@ -39,8 +39,11 @@ Simulate benign malware activity and integrate threat intelligence feeds to exer
    ```
    or load via [`load_malware_simulation.ps1`](../subcase_1c/scripts/load_malware_simulation.ps1).
 
-5. **Observe telemetry in NG-SOC tools**  
+5. **Observe telemetry in NG-SOC tools**
    Monitor BIPS, NG-SIEM, CICMS, NG-SOC, and MISP for beacons, file drops, and CTI correlations.
+
+6. **Request mitigation guidance**
+   Send NG-SIEM or BIPS events to `http://soc_server:8000/recommend` to receive suggested actions from the Decide service. The Act orchestrator consumes this API to automate response steps.
 
 ## Expected Outcomes
 
@@ -48,6 +51,7 @@ Simulate benign malware activity and integrate threat intelligence feeds to exer
 - MISP running on port 8443 with threat feed ingested.
 - C2 server responding on port 9001.
 - Benign malware simulator generates HTTP beacons and file artifacts detected by NG-SOC components.
+- Decide service available on port 8000 returning mitigation recommendations.
 
 ## References
 
