@@ -11,6 +11,32 @@ Trainees should familiarize themselves with fundamental concepts in network secu
 - Basics of log analysis and threat intelligence
 - Overview of vulnerability assessment and penetration testing methodologies
 
+## Inscripción
+
+Trainees are invited and registered through the training platform CLI in
+`subcase_1b/training_platform/cli.py`. The script contacts the Open edX
+service via `open_edx_client.py` to create course entries and confirm the
+enrollment. Instructors typically bootstrap the platform with
+`subcase_1b/scripts/training_platform_start.sh`, which starts the API that
+handles these enrollment requests.
+
+## Ejecución de laboratorio
+
+Once enrolled, trainees launch the hands‑on lab in the KYPO cyber range.
+The environment is provisioned using `subcase_1b/scripts/cyber_range_start.sh`
+and individualized scans can be executed with
+`subcase_1b/scripts/trainee_start.sh --target <ip>`. Scenario specifics are
+described in `subcase_1b/scenario.yml` and the corresponding topology file
+`sandboxes/topology_subcase_1b.yaml`.
+
+## Evaluación
+
+Exercise results are submitted to the new results module implemented in
+`subcase_1b/training_platform/results_service.py`. The service appends
+entries to `results.json` and relays progress back to Open edX using the
+same `open_edx_client.py` helper so that learner dashboards reflect the
+outcome of the lab.
+
 ## Trainee Workflow
 
 1. **Scenario Preparation** – Review the scenario description and objectives. Ensure access to required accounts and tools within CyberRangeCZ.
