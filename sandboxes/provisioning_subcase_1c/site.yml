@@ -1,0 +1,28 @@
+---
+- hosts: infected_host
+  tasks:
+    - name: Enable PowerShell logging
+      ansible.builtin.command: powershell Set-ExecutionPolicy RemoteSigned -Force
+
+- hosts: c2_server
+  become: yes
+  tasks:
+    - name: Install Python runtime
+      apt:
+        name: python3
+        state: present
+
+- hosts: soc_server
+  become: yes
+  tasks:
+    - name: Start SOC services
+      service:
+        name: soc-platform
+        state: started
+        enabled: yes
+
+- hosts: cti_component
+  become: yes
+  tasks:
+    - name: Synchronize CTI feeds
+      command: /usr/local/bin/misp-sync --auto
