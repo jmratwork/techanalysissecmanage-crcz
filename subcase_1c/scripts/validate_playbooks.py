@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Basic validation for YAML playbooks."""
+"""Basic validation for CACAO-style YAML playbooks."""
 import sys
 import pathlib
 import yaml
 
-REQUIRED_TOP_LEVEL = {"name", "description", "steps"}
-REQUIRED_STEP_KEYS = {"description", "command"}
+REQUIRED_TOP_LEVEL = {"id", "name", "description", "start", "actions"}
+REQUIRED_ACTION_KEYS = {"description", "command"}
 
 
 def validate_playbook(path: pathlib.Path) -> None:
@@ -14,11 +14,14 @@ def validate_playbook(path: pathlib.Path) -> None:
     missing = REQUIRED_TOP_LEVEL - data.keys()
     if missing:
         raise ValueError(f"missing keys: {', '.join(sorted(missing))}")
-    if not isinstance(data["steps"], list) or not data["steps"]:
-        raise ValueError("steps must be a non-empty list")
-    for idx, step in enumerate(data["steps"], start=1):
-        if REQUIRED_STEP_KEYS - step.keys():
-            raise ValueError(f"step {idx} missing keys")
+    actions = data["actions"]
+    if not isinstance(actions, dict) or not actions:
+        raise ValueError("actions must be a non-empty mapping")
+    if data["start"] not in actions:
+        raise ValueError("start action not defined in actions")
+    for name, action in actions.items():
+        if REQUIRED_ACTION_KEYS - action.keys():
+            raise ValueError(f"action '{name}' missing keys")
 
 
 def main() -> int:

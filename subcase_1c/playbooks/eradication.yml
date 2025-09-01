@@ -1,10 +1,13 @@
 ---
+id: eradication
 name: Malware Eradication
 description: Remove malicious artifacts from an infected host.
-parameters:
-  host: Target hostname or IP
-steps:
-  - description: Run antivirus scan
+start: av_scan
+actions:
+  av_scan:
+    description: Run antivirus scan
     command: "ssh {{host}} 'sudo clamscan -r /'"
-  - description: Delete quarantined files
+    next: clean_quarantine
+  clean_quarantine:
+    description: Delete quarantined files
     command: "ssh {{host}} 'sudo rm -rf /quarantine/*'"
