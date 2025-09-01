@@ -3,37 +3,39 @@ name: "subcase_1c_topology"
 description: "Malware simulation environment for subcase 1c"
 hosts:
   infected_host:
-    image: "windows10:latest"
+    image: kali
+    flavor: small
     interfaces:
-      - network: internal
+      - network: malnet
         ip: 10.20.0.2
   c2_server:
-    image: "c2-server:latest"
+    image: debian-11
+    flavor: medium
     interfaces:
-      - network: internal
+      - network: malnet
         ip: 10.20.0.3
   soc_server:
-    image: "soc-platform:latest"
+    image: debian-11
+    flavor: medium
     interfaces:
-      - network: internal
+      - network: malnet
         ip: 10.20.0.4
   cti_component:
-    image: "cti-platform:latest"
+    image: debian-11
+    flavor: medium
     interfaces:
-      - network: internal
+      - network: malnet
         ip: 10.20.0.5
 routers:
   router:
     interfaces:
-      - network: internal
+      - network: malnet
         ip: 10.20.0.1
 networks:
-  internal:
+  malnet:
     prefix: 10.20.0.0/24
 base_box:
-  images:
-    linux: ubuntu-20.04
-    windows: windows10
+  image: debian-11
   users:
     - username: kypo
       password: kypo
