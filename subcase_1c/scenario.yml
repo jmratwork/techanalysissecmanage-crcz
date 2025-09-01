@@ -59,3 +59,10 @@ links:
   - [infected_host, c2_server]
   - [infected_host, soc_server]
   - [soc_server, cti_component]
+alerts:
+  - source: malware_detection
+    notify: email
+    description: "Notify SOC when malware is detected"
+  - source: bips
+    notify: syslog
+    description: "Notify SOC on intrusion detection"
