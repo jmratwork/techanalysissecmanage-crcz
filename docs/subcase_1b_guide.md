@@ -93,6 +93,24 @@ The training platform includes a short phishing quiz to reinforce social enginee
 
 Scores are stored per user and course so progress can be tracked over time.
 
+## Evaluation Flow
+
+Trainee actions within the Cyber Range can be submitted back to the
+training platform using the `POST /results` endpoint. The endpoint
+calculates basic metrics such as quiz score and time spent on an
+exercise and writes them to `results.json`. An internal progress value
+is updated and forwarded to the Open edX `/courseware/` API so that the
+learner's status is reflected in the LMS.
+
+```bash
+curl -X POST http://localhost:5000/results \
+     -H 'Content-Type: application/json' \
+     -d '{"token":"'$TOKEN'","course_id":"'$COURSE_ID'","score":2,"start_time":0,"end_time":42}'
+```
+
+The recorded metrics allow instructors to review completion times and
+quiz performance when assessing learner progress.
+
 ## Expected Outcomes
 
 - Course creation logs at `/var/log/training_platform/courses.log`.

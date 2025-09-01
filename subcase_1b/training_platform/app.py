@@ -1,7 +1,10 @@
 import uuid
+import time
 from flask import Flask, request, jsonify
 
 import phishing_quiz
+from open_edx_client import OpenEdXClient
+from results_service import append_result
 
 app = Flask(__name__)
 
@@ -12,6 +15,8 @@ courses = {}  # course_id -> {title, content, instructor}
 invites = {}  # invite_code -> {course_id, email}
 progress = {}  # (course_id, username) -> progress
 quiz_results = {}  # (course_id, username) -> {answers, score}
+
+open_edx = OpenEdXClient()
 
 
 def authenticate(token):
@@ -113,6 +118,39 @@ def get_progress():
     username = request.args.get('username') or tokens[token]
     value = progress.get((course_id, username), 0)
     return jsonify({'progress': value})
+
+
+@app.route('/results', methods=['POST'])
+def post_results():
+    data = request.get_json(force=True)
+    token = data.get('token')
+    user = authenticate(token)
+    if not user:
+        return jsonify({'error': 'unauthorized'}), 403
+    course_id = data.get('course_id')
+    username = data.get('username') or tokens[token]
+    start = data.get('start_time')
+    end = data.get('end_time')
+    score = data.get('score', 0)
+    duration = None
+    if start is not None and end is not None:
+        try:
+            duration = float(end) - float(start)
+        except (TypeError, ValueError):
+            duration = None
+    result = {
+        'course_id': course_id,
+        'username': username,
+        'score': score,
+        'duration': duration,
+        'details': data.get('details', {}),
+        'timestamp': time.time(),
+    }
+    append_result(result)
+    progress_value = data.get('progress', score)
+    progress[(course_id, username)] = progress_value
+    open_edx.update_progress(username, course_id, progress_value)
+    return jsonify({'status': 'recorded', 'metrics': {'score': score, 'duration': duration}})
 
 
 phishing_quiz.init_app(app, authenticate, tokens, quiz_results)

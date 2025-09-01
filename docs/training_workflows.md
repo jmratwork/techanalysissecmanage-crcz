@@ -22,6 +22,14 @@ Trainees should familiarize themselves with fundamental concepts in network secu
 1. **Monitoring** – Ensure the Cyber Range and training platform are functioning and collect trainee reports.
 2. **Evaluation** – Review results, correlate findings where necessary, and provide feedback or remediation guidance.
 
+### Evaluation Flow Integration
+
+Both trainees and instructors can submit exercise outcomes through the
+training platform's `POST /results` endpoint. The service stores metrics
+such as completion time and quiz scores in `results.json`, updates local
+course progress, and relays that progress to the Open edX
+`/courseware/` API so that learner dashboards show the latest status.
+
 ## Subcase 1c: Malware Handling
 
 ### Trainee Activities
