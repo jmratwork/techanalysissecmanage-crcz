@@ -51,6 +51,21 @@ def cmd_get_progress(args):
     print(resp.get('progress', 0))
 
 
+def cmd_submit_results(args):
+    payload = {
+        'token': args.token,
+        'course_id': args.course_id,
+        'score': args.score,
+        'start_time': args.start_time,
+        'end_time': args.end_time,
+    }
+    if args.progress is not None:
+        payload['progress'] = args.progress
+    if args.details:
+        payload['details'] = json.loads(args.details)
+    post('/results', payload)
+
+
 def main():
     parser = argparse.ArgumentParser(description='Training platform CLI')
     sub = parser.add_subparsers(dest='cmd')
@@ -94,6 +109,16 @@ def main():
     p.add_argument('--course-id', required=True)
     p.add_argument('--username', required=True)
     p.set_defaults(func=cmd_get_progress)
+
+    p = sub.add_parser('submit-results')
+    p.add_argument('--token', required=True)
+    p.add_argument('--course-id', required=True)
+    p.add_argument('--score', type=int, default=0)
+    p.add_argument('--start-time', type=float, required=True)
+    p.add_argument('--end-time', type=float, required=True)
+    p.add_argument('--progress', type=int)
+    p.add_argument('--details', help='JSON string with extra details')
+    p.set_defaults(func=cmd_submit_results)
 
     args = parser.parse_args()
     if not hasattr(args, 'func'):
