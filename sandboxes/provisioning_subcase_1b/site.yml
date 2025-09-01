@@ -1,0 +1,69 @@
+---
+- hosts: training_platform
+  become: yes
+  tasks:
+    - name: Install course platform
+      apt:
+        name: apache2
+        state: present
+
+- hosts: trainee_workstation
+  become: yes
+  tasks:
+    - name: Install pentest tools
+      apt:
+        name:
+          - nmap
+          - sqlmap
+        state: present
+
+- hosts: cyber_range
+  become: yes
+  tasks:
+    - name: Enable IP forwarding
+      sysctl:
+        name: net.ipv4.ip_forward
+        value: '1'
+        sysctl_set: yes
+
+- hosts: randomization_platform
+  become: yes
+  tasks:
+    - name: Install Python prerequisites
+      apt:
+        name: python3-pip
+        state: present
+
+- hosts: bips
+  become: yes
+  tasks:
+    - name: Install BIPS service
+      apt:
+        name: bips
+        state: present
+
+- hosts: ng_siem
+  become: yes
+  tasks:
+    - name: Start SIEM service
+      service:
+        name: ng-siem
+        state: started
+        enabled: yes
+
+- hosts: cicms
+  become: yes
+  tasks:
+    - name: Ensure log directory exists
+      file:
+        path: /var/log/cicms
+        state: directory
+
+- hosts: ng_soc
+  become: yes
+  tasks:
+    - name: Start SOC dashboard
+      service:
+        name: ng-soc
+        state: started
+        enabled: yes

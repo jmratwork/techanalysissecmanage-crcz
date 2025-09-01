@@ -55,3 +55,21 @@ Additional theoretical background and workflow guidance can be found in [`docs/t
 Subcase 1b delivers self-paced penetration testing and vulnerability assessment training using a dedicated training platform, a trainee workstation, and a Cyber Range simulation of CYNET's network.
 - [Subcase 1c – Malware Simulation and CTI Integration](docs/subcase_1c_guide.md)
 Subcase 1c models a malware incident response exercise, adding a C2 server, a CTI component running MISP, and corresponding services for NG‑SIEM, BIPS, CICMS, and NG‑SOC. The roles download NG‑SOC packages with checksum verification, and the scripts launch services and simulations for training.
+
+## KYPO Training Packaging
+
+After adding or modifying sandbox definitions, you can validate and publish the training module using the `kypo` CLI:
+
+1. **Validate** the training specification:
+   ```bash
+   kypo training validate training.yaml
+   ```
+2. **Pack** the training for distribution:
+   ```bash
+   kypo training pack training.yaml
+   ```
+3. **Publish** the package to a KYPO portal:
+   ```bash
+   kypo training publish training.yaml
+   ```
+   The publish command expects authentication details appropriate for your KYPO instance.

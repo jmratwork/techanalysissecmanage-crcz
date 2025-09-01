@@ -1,0 +1,39 @@
+---
+name: "subcase_1c_topology"
+description: "Malware simulation environment for subcase 1c"
+hosts:
+  infected_host:
+    image: "windows10:latest"
+    interfaces:
+      - network: internal
+        ip: 10.20.0.2
+  c2_server:
+    image: "c2-server:latest"
+    interfaces:
+      - network: internal
+        ip: 10.20.0.3
+  soc_server:
+    image: "soc-platform:latest"
+    interfaces:
+      - network: internal
+        ip: 10.20.0.4
+  cti_component:
+    image: "cti-platform:latest"
+    interfaces:
+      - network: internal
+        ip: 10.20.0.5
+routers:
+  router:
+    interfaces:
+      - network: internal
+        ip: 10.20.0.1
+networks:
+  internal:
+    prefix: 10.20.0.0/24
+base_box:
+  images:
+    linux: ubuntu-20.04
+    windows: windows10
+  users:
+    - username: kypo
+      password: kypo
