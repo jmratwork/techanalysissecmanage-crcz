@@ -2,6 +2,15 @@
 
 This scenario provides self-paced courses for penetration testing and vulnerability assessments. The Training Instructor uses the training platform to create new courses and configure Cyber Range scenarios that emulate CYNET's network infrastructure. Trainees execute semi-automated penetration test assessments to discover potential vulnerabilities and attack entry points.
 
+## Simplified Workflow
+
+```mermaid
+flowchart LR
+    A[Open edX inscripción] --> B[KYPO lab]
+    B --> C[Módulo de resultados]
+    C --> D[Actualización Open edX]
+```
+
 ## Usage
 
 Run the startup scripts to deploy the exercise:
