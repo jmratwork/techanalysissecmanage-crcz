@@ -1,30 +1,15 @@
-import json
+from pathlib import Path
+
 from flask import Flask, request, jsonify
 import requests
 
+from soar_engine import SoarEngine
+
 DECIDE_URL = "http://localhost:8000/recommend"
+PLAYBOOK_DIR = Path(__file__).resolve().parent.parent / "playbooks"
 
 app = Flask(__name__)
-
-
-def block_ip(ip: str) -> None:
-    """Simulate blocking an IP address."""
-    print(f"[ACT] Blocking IP: {ip}")
-
-
-def isolate_host(host: str) -> None:
-    """Simulate isolating a host from the network."""
-    print(f"[ACT] Isolating host: {host}")
-
-
-def eradicate_malware(host: str) -> None:
-    """Simulate malware eradication."""
-    print(f"[ACT] Eradicating malware on: {host}")
-
-
-def recover_host(host: str) -> None:
-    """Simulate restoring services after eradication."""
-    print(f"[ACT] Recovering host: {host}")
+engine = SoarEngine(PLAYBOOK_DIR)
 
 
 def monitor(target: str) -> None:
@@ -33,10 +18,9 @@ def monitor(target: str) -> None:
 
 
 ACTIONS = {
-    "block_ip": {"func": block_ip, "playbook": "../playbooks/isolation.yml"},
-    "isolate_host": {"func": isolate_host, "playbook": "../playbooks/isolation.yml"},
-    "eradicate_malware": {"func": eradicate_malware, "playbook": "../playbooks/eradication.yml"},
-    "recover_host": {"func": recover_host, "playbook": "../playbooks/recovery.yml"},
+    "isolate_host": {"func": engine.isolate_host, "playbook": "isolation"},
+    "eradicate_malware": {"func": engine.eradicate_malware, "playbook": "eradication"},
+    "recover_host": {"func": lambda host: engine.execute("recovery", host=host), "playbook": "recovery"},
     "monitor": {"func": monitor, "playbook": None},
 }
 
@@ -54,15 +38,14 @@ def act() -> "Response":
         mitigation = response.json().get("mitigation", "monitor")
 
     info = ACTIONS.get(mitigation, ACTIONS["monitor"])
-
-    if info.get("playbook"):
-        print(f"[ACT] Refer to {info['playbook']} for manual steps")
-
-    # Execute the corresponding action
     action = info["func"]
     action(target)
 
-    return jsonify({"mitigation": mitigation, "target": target, "playbook": info.get("playbook")})
+    return jsonify({
+        "mitigation": mitigation,
+        "target": target,
+        "playbook": info.get("playbook"),
+    })
 
 
 if __name__ == "__main__":

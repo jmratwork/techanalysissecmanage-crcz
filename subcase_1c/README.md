@@ -1,7 +1,9 @@
 # Subcase 1c Malware Handling Training
 
 ## Objective
-Design a comprehensive cyber security training plan focused on handling and mitigating malware attacks. This proactive approach involves theoretical and practical training on the utilization of automation techniques, tools and technologies, and incident response procedures to detect, contain, eradicate, and recover from malware attacks. Through this subcase, CYNET will improve its protection capabilities and capacities using state-of-the-art technology and solutions to better prepare, detect, and stop malware attacks. Furthermore, relevant intelligence (CTI) is shared with the appropriate audience (other entities and authorities) to enhance collective defense efforts and improve overall cybersecurity resilience.
+Design a comprehensive cyber security training plan focused on handling and mitigating malware attacks. This proactive approach
+involves theoretical and practical training on the utilization of automation techniques, tools and technologies, and incident response procedures to detect, contain, eradicate, and recover from malware attacks. Through this subcase, CYNET will improve its
+protection capabilities and capacities using state-of-the-art technology and solutions to better prepare, detect, and stop malware attacks. Furthermore, relevant intelligence (CTI) is shared with the appropriate audience (other entities and authorities) to enhance collective defense efforts and improve overall cybersecurity resilience.
 
 Simulate benign malware activity and integrate threat intelligence feeds to exercise NG-SOC components.
 
@@ -57,7 +59,7 @@ For a cross-reference of tools, versions, and documentation, see the [NG-SOC com
 For deeper guidance and troubleshooting tips, see [the Subcase 1c guide](../docs/subcase_1c_guide.md).
 
 ## Playbook Execution Examples
-The Act service references YAML playbooks stored in `subcase_1c/playbooks/`. Analysts can trigger a specific playbook by overriding the desired mitigation when calling the service:
+The Act service now leverages a lightweight **SoarEngine** that parses CACAO-style YAML playbooks from `subcase_1c/playbooks/`. Each playbook defines a starting action and a set of ordered actions. When an incident is posted to `/act`, the engine renders commands with the provided target and prints the simulated execution steps.
 
 ### Isolation
 ```bash
@@ -80,7 +82,7 @@ curl -X POST http://localhost:8100/act \
      -d '{"target":"192.168.56.10","mitigation":"recover_host"}'
 ```
 
-Playbook steps can be customized by editing the corresponding YAML file and validating changes with:
+Playbooks can be edited and validated with:
 
 ```bash
 python subcase_1c/scripts/validate_playbooks.py
