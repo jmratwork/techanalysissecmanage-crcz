@@ -111,6 +111,32 @@ curl -X POST http://localhost:5000/results \
 The recorded metrics allow instructors to review completion times and
 quiz performance when assessing learner progress.
 
+## KYPO Lab Integration
+
+The training platform can launch [KYPO](https://www.kypo.muni.cz/) labs
+using the LTI 1.3 protocol. Configure the following environment
+variables before starting the platform so that launch URLs can be
+generated:
+
+| Variable | Description |
+| -------- | ----------- |
+| `KYPO_URL` | Base URL of the KYPO LTI provider (default `http://localhost:5000`). |
+| `LTI_CLIENT_ID` | Client identifier issued by KYPO. |
+| `LTI_DEPLOYMENT_ID` | Deployment identifier for the integration. |
+| `LTI_TOOL_PRIVATE_KEY` | RSA private key used to sign LTI launch tokens. It may contain the key itself or a path to a key file. |
+
+When Open edX needs to start a KYPO session it should call the new
+endpoint on the training platform:
+
+```bash
+curl -X POST http://localhost:5000/kypo/launch \
+     -H 'Content-Type: application/json' \
+     -d '{"token":"'$TOKEN'","lab_id":"intro-lab"}'
+```
+
+The response contains a pre-signed URL in the `launch_url` field. The
+LMS should redirect the learner’s browser to that URL to open the lab.
+
 ## Expected Outcomes
 
 - Course creation logs at `/var/log/training_platform/courses.log`.

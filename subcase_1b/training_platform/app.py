@@ -153,6 +153,33 @@ def post_results():
     return jsonify({'status': 'recorded', 'metrics': {'score': score, 'duration': duration}})
 
 
+@app.route('/kypo/launch', methods=['POST'])
+def kypo_launch():
+    """Generate an LTI launch URL for a KYPO lab.
+
+    The endpoint expects a JSON body with a valid authentication token
+    and ``lab_id`` identifying the KYPO exercise. The response contains
+    a pre-signed LTI launch URL that the caller can redirect the user to
+    in order to start the session.
+    """
+
+    data = request.get_json(force=True)
+    token = data.get('token')
+    lab_id = data.get('lab_id')
+
+    user = authenticate(token)
+    if not user or not lab_id:
+        return jsonify({'error': 'unauthorized'}), 403
+
+    username = tokens[token]
+    try:
+        launch_url = open_edx.generate_launch_url(username, lab_id)
+    except Exception as exc:  # pragma: no cover - configuration errors
+        return jsonify({'error': str(exc)}), 500
+
+    return jsonify({'launch_url': launch_url})
+
+
 phishing_quiz.init_app(app, authenticate, tokens, quiz_results)
 
 
