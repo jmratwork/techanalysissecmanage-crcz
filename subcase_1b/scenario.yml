@@ -116,3 +116,11 @@ scenarios:
       Brute-force weak SSH passwords on the trainee workstation container.
     services:
       - "trainee_workstation"
+  - id: "buffer_overflow_practice"
+    title: "Buffer Overflow Lab"
+    description: >
+      Develop basic buffer overflow exploits against a vulnerable program
+      provided within the cyber range.
+    services:
+      - "trainee_workstation"
+      - "cyber_range"
