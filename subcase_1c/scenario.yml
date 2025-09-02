@@ -43,6 +43,7 @@ nodes:
     gateway: "10.20.0.1"
     startup_scripts:
       - path: "scripts/start_soc_services.sh"
+      - path: "scripts/bips_start.sh"
   cti_component:
     image: "cti-platform:latest"
     role: "cti"
