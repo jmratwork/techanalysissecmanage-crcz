@@ -20,7 +20,7 @@ for tool in "${TOOLS_TO_INSTALL[@]}"; do
 done
 
 # Base packages
-apt-get install -y nmap gvm python3-pip git
+apt-get install -y nmap gvm python3-pip git curl
 
 # Install OWASP ZAP via snap
 if ! command -v snap >/dev/null 2>&1; then
@@ -29,6 +29,31 @@ if ! command -v snap >/dev/null 2>&1; then
     ln -s /var/lib/snapd/snap /snap
 fi
 snap install zaproxy --classic
+
+# Configure and verify OpenVAS (Greenbone)
+gvm-setup
+gvm-start
+# Wait for Greenbone web interface on 9392
+for i in {1..30}; do
+    if curl -k -sSf https://127.0.0.1:9392 >/dev/null 2>&1; then
+        break
+    fi
+    sleep 1
+done
+curl -k -sSf https://127.0.0.1:9392 >/dev/null 2>&1
+gvm-stop
+
+# Launch ZAP in daemon mode to verify availability
+zaproxy -daemon -port 8090 -host 127.0.0.1 &
+ZAP_PID=$!
+for i in {1..30}; do
+    if curl -sSf http://127.0.0.1:8090/ >/dev/null 2>&1; then
+        break
+    fi
+    sleep 1
+done
+curl -sSf http://127.0.0.1:8090/ >/dev/null 2>&1
+zaproxy -cmd -shutdown >/dev/null 2>&1 || kill "$ZAP_PID" || true
 
 # Install MITRE Caldera
 if [ ! -d /opt/caldera ]; then
