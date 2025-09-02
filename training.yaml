@@ -14,6 +14,6 @@ training:
         - id: subcase_1b
           topology: sandboxes/topology_subcase_1b.yaml
           provisioning: sandboxes/provisioning_subcase_1b/site.yml
-        - id: subcase_1c
+        - id: subcase_1c  # see docs/subcase_1c_guide.md for deployment and validation steps
           topology: sandboxes/topology_subcase_1c.yaml
           provisioning: sandboxes/provisioning_subcase_1c/site.yml

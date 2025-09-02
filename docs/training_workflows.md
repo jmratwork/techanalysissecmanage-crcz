@@ -76,6 +76,9 @@ course progress, and relays that progress to the Open edX
 
 ## Subcase 1c: Malware Handling
 
+For detailed deployment, attack simulation, and validation procedures see the
+[Subcase 1c guide](subcase_1c_guide.md).
+
 ### Trainee Activities
 
 1. **Lab Deployment** – Start the Subcase 1c lab in the KYPO interface. *Validation:* confirm all virtual machines show a **running** state in the platform dashboard. *Artifacts:* screenshot of the deployment status and exported topology details.
