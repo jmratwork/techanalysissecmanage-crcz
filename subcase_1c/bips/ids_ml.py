@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 from typing import Iterable, List
 
@@ -16,6 +17,10 @@ import joblib
 import requests
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
+
+sys.path.append(str(Path(__file__).resolve().parents[2]))
+from soc_alerts.notifier import Notifier
+from soc_alerts.service import AlertService
 
 MODEL_FILE = Path(__file__).with_name("model.joblib")
 DEFAULT_ALERT_FILE = Path("/var/log/suricata/eve.json")
@@ -122,14 +127,37 @@ def main() -> None:
         action="store_true",
         help="Fetch MISP feed and append indicators to Suricata rules",
     )
+    parser.add_argument(
+        "--notify-method",
+        choices=["email", "syslog"],
+        default="syslog",
+        help="Notification channel for SOC alerts",
+    )
+    parser.add_argument(
+        "--email-to",
+        help="Destination email when using email notification",
+    )
     args = parser.parse_args()
 
     if args.update_rules:
         update_rules_from_misp(args.misp_url, DEFAULT_RULE_FILE)
 
+    notify_config = {"method": args.notify_method}
+    if args.notify_method == "email":
+        if not args.email_to:
+            parser.error("--email-to required with --notify-method=email")
+        notify_config["to"] = args.email_to
+    notifier = Notifier(notify_config)
+    alert_service = AlertService(notifier)
+
     results = process_alerts(args.alert_file)
     write_alerts(results)
     for res in results:
+        if res.get("label") == 1:
+            event = res.get("event", {})
+            signature = event.get("alert", {}).get("signature", "malicious")
+            host = event.get("dest_ip") or event.get("src_ip") or "unknown"
+            alert_service.handle_event("ids_ml", signature, host)
         print(json.dumps(res))
 
 
