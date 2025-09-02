@@ -12,6 +12,9 @@ This repository provides complete, ready‑to‑deploy instructions for double K
 
 ## Deployment on KYPO
 
+See [deployment manual](docs/deployment_manual.md) for detailed steps including VM preparation, service orchestration, teardown, and environment reset.
+
+
 1. **Clone the Repository**
    ```bash
    git clone https://github.com/example/techanalysissecmanage_kypo.git
