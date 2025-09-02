@@ -1,4 +1,7 @@
+import os
+
 import numpy as np
+import requests
 from sklearn.tree import DecisionTreeClassifier
 from flask import Flask, request, jsonify
 
@@ -34,6 +37,19 @@ def recommend():
     prediction = model.predict(features)[0]
     mitigation = MITIGATIONS.get(prediction, "monitor")
     return jsonify({"mitigation": mitigation})
+
+
+@app.post("/incident")
+def escalate_incident():
+    """Forward a confirmed incident to the CICMS/DFIR system."""
+    incident = request.get_json(force=True)
+    cicms_url = os.environ.get("CICMS_URL", "http://localhost:5800/incidents")
+    try:
+        response = requests.post(cicms_url, json=incident, timeout=5)
+        response.raise_for_status()
+    except Exception as exc:  # pragma: no cover - network failure
+        return jsonify({"status": "error", "message": str(exc)}), 502
+    return jsonify({"status": "escalated"})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000)
