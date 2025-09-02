@@ -30,6 +30,35 @@
     mode: "0644"
   become: yes
 
+- name: Ensure BIPS log directory exists
+  ansible.builtin.file:
+    path: /var/log/bips
+    state: directory
+    mode: "0755"
+  become: yes
+
+- name: Enable BIPS log input for Filebeat
+  ansible.builtin.blockinfile:
+    path: /etc/ng_siem/filebeat.yml
+    marker: "# {mark} ANSIBLE MANAGED BLOCK BIPS"
+    insertafter: '^filebeat.inputs:'
+    block: |2
+      - type: log
+        paths:
+          - /var/log/bips/alerts.json
+        fields:
+          log_type: bips
+        json.keys_under_root: true
+        json.add_error_key: true
+  become: yes
+
+- name: Restart Filebeat
+  ansible.builtin.service:
+    name: filebeat
+    state: restarted
+    enabled: yes
+  become: yes
+
 - name: Configure Winlogbeat
   ansible.builtin.template:
     src: winlogbeat.yml.j2
