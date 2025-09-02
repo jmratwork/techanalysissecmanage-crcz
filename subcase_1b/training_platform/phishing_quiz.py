@@ -4,23 +4,101 @@ from flask import request, jsonify
 quiz_questions = [
     {
         'id': 'q1',
-        'question': 'Which action is commonly associated with a phishing email?',
+        'question': 'What is the safest response to an unexpected password reset email?',
         'options': [
-            'Requesting sensitive information urgently',
-            'Providing official company updates',
-            'Sending calendar invites only',
-            'Confirming a meeting room booking'
+            'Click the link and change your password',
+            'Ignore the email',
+            'Verify the request through an official channel'
+        ],
+        'answer': 2
+    },
+    {
+        'id': 'q2',
+        'question': 'Which URL is likely malicious?',
+        'options': [
+            'https://accounts.example.com',
+            'http://login.example.com.security-update.co',
+            'https://intranet.example.com/profile'
+        ],
+        'answer': 1
+    },
+    {
+        'id': 'q3',
+        'question': 'Why should you hover over links before clicking?',
+        'options': [
+            'To check the true destination',
+            'To download the attachment',
+            'To enable pop-up blockers'
         ],
         'answer': 0
     },
     {
-        'id': 'q2',
-        'question': 'What is a good first step when you suspect a link is malicious?',
+        'id': 'q4',
+        'question': 'You receive an email from your bank asking you to update your details via an attached form. What should you do?',
         'options': [
-            'Click it to verify contents',
-            'Hover over the link to inspect the URL',
-            'Forward it to colleagues',
-            'Ignore and delete without reporting'
+            'Open the form and fill in your details',
+            'Contact the bank using an official phone number',
+            'Reply to the email with your information'
+        ],
+        'answer': 1
+    },
+    {
+        'id': 'q5',
+        'question': 'Which attachment file type is most likely to contain malware?',
+        'options': [
+            'invoice.pdf',
+            'update.exe',
+            'report.txt'
+        ],
+        'answer': 1
+    },
+    {
+        'id': 'q6',
+        'question': 'Which is a sign of a spear phishing attempt?',
+        'options': [
+            'A mass email advertising a new product',
+            'An email referencing a project you are working on',
+            'A system notification from your antivirus software'
+        ],
+        'answer': 1
+    },
+    {
+        'id': 'q7',
+        'question': 'You notice a login page uses http instead of https. What should you do?',
+        'options': [
+            'Proceed with entering your credentials',
+            'Close the page and report it to IT',
+            'Ignore the difference and continue'
+        ],
+        'answer': 1
+    },
+    {
+        'id': 'q8',
+        'question': 'An email threatens account suspension unless you act immediately. What tactic is the attacker using?',
+        'options': [
+            'Urgency and fear',
+            'Routine company policy',
+            'Technical jargon'
+        ],
+        'answer': 0
+    },
+    {
+        'id': 'q9',
+        'question': 'What is the best way to verify a suspicious email from a coworker?',
+        'options': [
+            'Reply to the email asking if it\'s legitimate',
+            'Call the coworker using a known number',
+            'Forward it to others to ask their opinion'
+        ],
+        'answer': 1
+    },
+    {
+        'id': 'q10',
+        'question': 'After clicking on a suspicious link, what should you do first?',
+        'options': [
+            'Delete your browsing history',
+            'Disconnect from the network and inform IT',
+            'Continue working to avoid suspicion'
         ],
         'answer': 1
     }
