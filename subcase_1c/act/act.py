@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Set
 
 from flask import Flask, request, jsonify
 import requests
@@ -10,6 +11,8 @@ PLAYBOOK_DIR = Path(__file__).resolve().parent.parent / "playbooks"
 
 app = Flask(__name__)
 engine = SoarEngine(PLAYBOOK_DIR)
+
+ACKNOWLEDGED_ALERTS: Set[str] = set()
 
 
 def monitor(target: str) -> None:
@@ -45,6 +48,24 @@ def act() -> "Response":
         "mitigation": mitigation,
         "target": target,
         "playbook": info.get("playbook"),
+    })
+
+
+@app.post("/acknowledge")
+def acknowledge() -> "Response":
+    """Record that an analyst acknowledged an alert."""
+    data = request.get_json(force=True)
+    alert_id = data.get("alert_id")
+    analyst = data.get("analyst", "unknown")
+    if not alert_id:
+        return jsonify({"status": "error", "message": "alert_id required"}), 400
+
+    ACKNOWLEDGED_ALERTS.add(alert_id)
+    print(f"[ACT] Analyst {analyst} acknowledged alert {alert_id}")
+    return jsonify({
+        "status": "acknowledged",
+        "alert_id": alert_id,
+        "analyst": analyst,
     })
 
 

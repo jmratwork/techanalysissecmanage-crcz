@@ -18,6 +18,7 @@ CICMS_PORT="${CICMS_PORT:-5800}"
 NG_SOC_PORT="${NG_SOC_PORT:-5900}"
 DECIDE_PORT="${DECIDE_PORT:-8000}"
 ACT_PORT="${ACT_PORT:-8100}"
+SIEM_UI_PORT="${SIEM_UI_PORT:-5602}"
 
 APT_UPDATED=0
 apt_update_once() {
@@ -108,6 +109,33 @@ start_ng_siem() {
         echo "$(date) failed to run $compose_cmd up" >>/var/log/ng_siem/service.log
         return 1
     fi
+}
+
+start_siem_ui() {
+    mkdir -p /var/log/siem_ui
+    if ! command -v docker >/dev/null 2>&1; then
+        echo "$(date) docker command not found" >>/var/log/siem_ui/service.log
+        return 1
+    fi
+
+    if ! docker ps --format '{{.Names}}' | grep -q '^kibana$'; then
+        if docker ps -a --format '{{.Names}}' | grep -q '^kibana$'; then
+            docker start kibana >>/var/log/siem_ui/service.log 2>&1 || {
+                echo "$(date) failed to start existing kibana container" >>/var/log/siem_ui/service.log
+                return 1
+            }
+        else
+            docker run -d --name kibana -p "${SIEM_UI_PORT}:5601" kibana:7.17.0 >>/var/log/siem_ui/service.log 2>&1 || {
+                echo "$(date) failed to run kibana container" >>/var/log/siem_ui/service.log
+                return 1
+            }
+        fi
+    fi
+
+    check_port localhost "${SIEM_UI_PORT}" >>/var/log/siem_ui/service.log 2>&1 || {
+        echo "$(date) siem-ui port check failed" >>/var/log/siem_ui/service.log
+        return 1
+    }
 }
 
 start_cicms() {
@@ -261,6 +289,7 @@ start_act() {
 install_deps
 start_bips
 start_ng_siem
+start_siem_ui
 start_cicms
 start_ng_soc
 start_decide
