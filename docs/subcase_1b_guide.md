@@ -70,7 +70,17 @@ flowchart TD
    ```bash
    sudo subcase_1b/scripts/trainee_start.sh --target 10.10.0.4
    ```
-   The script employs `rustscan` instead of `nmap`, sends the scan output to the NG-SIEM ingestion endpoint, and reports completion back to the training platform.
+   The script sequentially executes:
+   - `rustscan` for port enumeration
+   - an OpenVAS quick scan via `gvm-script`
+   - an OWASP ZAP quick scan that saves an HTML report
+
+   Output from each tool is appended to `/var/log/trainee/scans.log`. Successful runs record messages such as:
+   - `Completed rustscan against 10.10.0.4`
+   - `Completed OpenVAS scan against 10.10.0.4`
+   - `Completed OWASP ZAP scan against 10.10.0.4`
+
+   Results are forwarded to the NG-SIEM ingestion endpoint and completion is reported back to the training platform.
 4. Document discovered vulnerabilities and provide them to the instructor.
 
 ## Phishing Awareness Quiz

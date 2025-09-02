@@ -23,28 +23,72 @@ apt_update_once() {
 }
 
 install_deps() {
-    local missing=()
-    command -v rustscan >/dev/null 2>&1 || missing+=(rustscan)
-    command -v jq >/dev/null 2>&1 || missing+=(jq)
-    if [ ${#missing[@]} -gt 0 ]; then
+    local apt_missing=()
+    local snap_missing=()
+    command -v rustscan >/dev/null 2>&1 || apt_missing+=(rustscan)
+    command -v jq >/dev/null 2>&1 || apt_missing+=(jq)
+    command -v gvm-script >/dev/null 2>&1 || apt_missing+=(gvm)
+    command -v zaproxy >/dev/null 2>&1 || snap_missing+=(zaproxy)
+    if [ ${#apt_missing[@]} -gt 0 ]; then
         apt_update_once || return 1
         export DEBIAN_FRONTEND=noninteractive
-        if ! apt-get install -y "${missing[@]}"; then
-            echo "$(date) failed to install ${missing[*]}" >&2
+        if ! apt-get install -y "${apt_missing[@]}"; then
+            echo "$(date) failed to install ${apt_missing[*]}" >&2
             return 1
+        fi
+    fi
+    if [ ${#snap_missing[@]} -gt 0 ]; then
+        apt_update_once || return 1
+        export DEBIAN_FRONTEND=noninteractive
+        if ! command -v snap >/dev/null 2>&1; then
+            apt-get install -y snapd
+            systemctl enable --now snapd.socket
+            ln -s /var/lib/snapd/snap /snap || true
+        fi
+        snap install "${snap_missing[@]}" --classic
+    fi
+}
+
+run_rustscan() {
+    if result=$(rustscan -a "$TARGET" 2>&1); then
+        printf '%s\n' "$result" >> "$SCAN_LOG"
+        echo "$(date) Completed rustscan against $TARGET" >> "$SCAN_LOG"
+        send_results "$result"
+    else
+        echo "$(date) Rustscan failed for $TARGET" >> "$SCAN_LOG"
+    fi
+}
+
+run_openvas_scan() {
+    if command -v gvm-script >/dev/null 2>&1; then
+        if result=$(gvm-script --gmp-username admin --gmp-password admin socket /usr/share/gvm/scripts/quick-scan.gmp "$TARGET" 2>&1); then
+            printf '%s\n' "$result" >> "$SCAN_LOG"
+            echo "$(date) Completed OpenVAS scan against $TARGET" >> "$SCAN_LOG"
+            send_results "$result"
+        else
+            echo "$(date) OpenVAS scan failed for $TARGET" >> "$SCAN_LOG"
         fi
     fi
 }
 
-run_scan() {
-    mkdir -p "$(dirname "$SCAN_LOG")"
-    if result=$(rustscan -a "$TARGET" 2>&1); then
-        printf '%s\n' "$result" >> "$SCAN_LOG"
-        echo "$(date) Completed scan against $TARGET" >> "$SCAN_LOG"
-        send_results "$result"
-    else
-        echo "$(date) Scan failed for $TARGET" >> "$SCAN_LOG"
+run_zap_scan() {
+    if command -v zaproxy >/dev/null 2>&1; then
+        report=$(mktemp /tmp/zap-XXXX.html)
+        if zaproxy -cmd -quickurl "http://$TARGET" -quickout "$report" >/dev/null 2>&1; then
+            echo "$(date) Completed OWASP ZAP scan against $TARGET" >> "$SCAN_LOG"
+            send_results "$(cat "$report")"
+        else
+            echo "$(date) OWASP ZAP scan failed for $TARGET" >> "$SCAN_LOG"
+        fi
+        rm -f "$report"
     fi
+}
+
+run_scans() {
+    mkdir -p "$(dirname "$SCAN_LOG")"
+    run_rustscan
+    run_openvas_scan
+    run_zap_scan
 }
 
 send_results() {
@@ -68,5 +112,5 @@ report_progress() {
 }
 
 install_deps
-run_scan
+run_scans
 report_progress
