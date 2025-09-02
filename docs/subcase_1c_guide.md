@@ -1,10 +1,10 @@
 # Subcase 1c Guide: Malware Simulation and CTI Integration
 
-## Objective
+This guide walks through deploying the Subcase 1c environment, running the
+benign malware simulator, and validating that NG‑SOC components respond as
+expected.
 
-Simulate benign malware activity and integrate threat intelligence feeds to exercise NG-SOC components.
-
-## Tasks
+## Deployment
 
 1. **Start SOC services**
 
@@ -12,10 +12,8 @@ Simulate benign malware activity and integrate threat intelligence feeds to exer
    sudo subcase_1c/scripts/start_soc_services.sh
    ```
 
-   Launches BIPS, NG-SIEM, CICMS, NG-SOC, Decide, and Act.
-   BIPS now includes a Suricata IDS with a lightweight ML classifier that
-   processes alerts and enriches rules using indicators from the MISP feed.
-   Port checks rely on Bash's `/dev/tcp` and `timeout` rather than `netcat`.
+   Launches BIPS, NG‑SIEM, CICMS, NG‑SOC, Decide, and Act. Port checks rely on
+   Bash's `/dev/tcp` and `timeout` rather than external utilities.
 
 2. **Start CTI component and ingest feeds**
 
@@ -23,10 +21,9 @@ Simulate benign malware activity and integrate threat intelligence feeds to exer
    sudo subcase_1c/scripts/start_cti_component.sh
    ```
 
-   Runs MISP, starts the `fetch-cti-feed` systemd service, and verifies NG-SIEM.
-   Port verification uses the same built-in method to avoid disallowed tools.
-   Use `CTI_OFFLINE=1` or run the fetch script with `--offline` to skip external
-   downloads when network access is unavailable.
+   Runs MISP, starts the `fetch-cti-feed` systemd service, and verifies
+   NG‑SIEM. Use `CTI_OFFLINE=1` or run the fetch script with `--offline` to
+   skip external downloads when network access is unavailable.
 
 3. **Launch the C2 server**
 
@@ -34,7 +31,28 @@ Simulate benign malware activity and integrate threat intelligence feeds to exer
    sudo subcase_1c/scripts/start_c2_server.sh
    ```
 
-4. **Execute the malware simulation on a Windows host**
+4. **Configure malware detection rules**
+
+   YARA rules live in `subcase_1c/malware_detection/rules/`. Add or adjust
+   rules in this directory and scan samples with:
+
+   ```bash
+   python subcase_1c/malware_detection/scanner.py <sample>
+   ```
+
+5. **Validate playbooks**
+
+   Act consumes CACAO‑style playbooks from `subcase_1c/playbooks/` for actions
+   such as host isolation or malware eradication. Validate the playbooks
+   before use:
+
+   ```bash
+   python subcase_1c/scripts/validate_playbooks.py
+   ```
+
+## Attack Simulation
+
+1. **Execute the malware simulation on a Windows host**
 
    ```powershell
    $env:BEACON_URL = "http://localhost:5601/beacon"  # optional override
@@ -47,15 +65,18 @@ Simulate benign malware activity and integrate threat intelligence feeds to exer
    .\subcase_1c\scripts\benign_malware_simulator.ps1 -BeaconCount 3 -BeaconUrl http://ng-siem.local/beacon
    ```
 
-   or load via [`load_malware_simulation.ps1`](../subcase_1c/scripts/load_malware_simulation.ps1).
+   or load via
+   [`load_malware_simulation.ps1`](../subcase_1c/scripts/load_malware_simulation.ps1).
 
-5. **Observe telemetry in NG-SOC tools**
-   Monitor BIPS, NG-SIEM, CICMS, NG-SOC, and MISP for beacons, file drops, and CTI correlations.
+2. **Observe telemetry in NG‑SOC tools**
 
-6. **Analyst login and triage alerts**
+   Monitor BIPS, NG‑SIEM, CICMS, NG‑SOC, and MISP for beacons, file drops, and
+   CTI correlations.
+
+3. **Analyst login and triage alerts**
 
    - Browse to the Kibana dashboard at `http://localhost:5602`.
-   - Log in with the analyst credentials.
+   - Log in with analyst credentials.
    - Review alerts in the *Security* app and mark them as acknowledged.
    - Acknowledgement can also be recorded via the Act API:
 
@@ -65,27 +86,25 @@ Simulate benign malware activity and integrate threat intelligence feeds to exer
           -d '{"alert_id": "abc123", "analyst": "analyst"}'
      ```
 
-7. **Request mitigation guidance and apply response**
+## Validation
+
+1. **Request mitigation guidance and apply response**
 
    ```bash
    python3 subcase_1c/scripts/apply_mitigation.py 192.0.2.10 --source ng-siem --severity 5
    ```
 
-   The script contacts the Act service, which queries Decide for a recommendation and executes the suggested mitigation on the target.
+   The script contacts the Act service, which queries Decide for a
+   recommendation and executes the suggested mitigation on the target.
 
-## Decide→Act Architecture
+2. **Confirm component status**
 
-The Decide service analyzes event data and returns a mitigation recommendation via its `/recommend` API.
-The Act service exposes `/act`, forwards the event to Decide, and executes predefined actions such as `block_ip` or `isolate_host` based on the recommendation.
-
-## Expected Outcomes
-
-- SOC services accessible on ports 5500 (BIPS), 5601 (NG-SIEM), 5602 (Kibana UI), 5800 (CICMS), 5900 (NG-SOC), 8000 (Decide), and 8100 (Act).
-- MISP running on port 8443 with threat feed ingested.
-- C2 server responding on port 9001.
-- Benign malware simulator generates HTTP beacons and file artifacts detected by NG-SOC components.
-- Decide service available on port 8000 returning mitigation recommendations.
-- Act service reachable on port 8100 executing mitigation actions.
+   - SOC services accessible on ports 5500 (BIPS), 5601 (NG‑SIEM), 5602 (Kibana
+     UI), 5800 (CICMS), 5900 (NG‑SOC), 8000 (Decide), and 8100 (Act).
+   - MISP running on port 8443 with threat feed ingested.
+   - C2 server responding on port 9001.
+   - Benign malware simulator generates HTTP beacons and file artifacts detected
+     by NG‑SOC components.
 
 ## References
 
@@ -97,4 +116,5 @@ The Act service exposes `/act`, forwards the event to Decide, and executes prede
 - [`apply_mitigation.py`](../subcase_1c/scripts/apply_mitigation.py)
 - [`benign_malware_simulator.ps1`](../subcase_1c/scripts/benign_malware_simulator.ps1)
 - [`load_malware_simulation.ps1`](../subcase_1c/scripts/load_malware_simulation.ps1)
-- [NG-SOC components matrix](ngsoc_components_matrix.md)
+- [NG‑SOC components matrix](ngsoc_components_matrix.md)
+
