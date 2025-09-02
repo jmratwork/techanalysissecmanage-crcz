@@ -20,6 +20,24 @@ DECIDE_PORT="${DECIDE_PORT:-8000}"
 ACT_PORT="${ACT_PORT:-8100}"
 SIEM_UI_PORT="${SIEM_UI_PORT:-5602}"
 
+LOG_DIR="/var/log/soc_services"
+LOG_FILE="${LOG_DIR}/start.log"
+mkdir -p "${LOG_DIR}"
+
+export IRIS_URL="${IRIS_URL:-http://localhost:${CICMS_PORT}/incidents}"
+export MISP_URL="${MISP_URL:-http://localhost:8443}"
+export MISP_API_KEY="${MISP_API_KEY:-changeme}"
+export DECIDE_URL="http://localhost:${DECIDE_PORT}/recommend"
+export ACT_URL="http://localhost:${ACT_PORT}/act"
+
+{
+    echo "$(date) Starting SOC services"
+    echo "IRIS_URL=${IRIS_URL}"
+    echo "MISP_URL=${MISP_URL}"
+    echo "DECIDE_URL=${DECIDE_URL}"
+    echo "ACT_URL=${ACT_URL}"
+} >>"${LOG_FILE}"
+
 APT_UPDATED=0
 apt_update_once() {
     if [ "$APT_UPDATED" -eq 0 ]; then
@@ -294,3 +312,22 @@ start_cicms
 start_ng_soc
 start_decide
 start_act
+
+{
+    echo "$(date) BIPS_URL=http://localhost:${BIPS_PORT}"
+    echo "$(date) IRIS_URL=${IRIS_URL}"
+    echo "$(date) MISP_URL=${MISP_URL}"
+    echo "$(date) DECIDE_URL=${DECIDE_URL}"
+    echo "$(date) ACT_URL=${ACT_URL}"
+    echo "$(date) alert->case->response sequence logged at /var/log/bips/sequence.log"
+} >>"${LOG_FILE}"
+
+cat <<EOM
+SOC services started. Endpoints:
+  BIPS    http://localhost:${BIPS_PORT}
+  IRIS    ${IRIS_URL}
+  MISP    ${MISP_URL} (key: ${MISP_API_KEY})
+  Decide  ${DECIDE_URL}
+  Act     ${ACT_URL}
+Logs at ${LOG_FILE} and /var/log/bips/sequence.log
+EOM

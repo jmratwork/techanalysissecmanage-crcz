@@ -9,7 +9,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
+from datetime import datetime
 from pathlib import Path
 from typing import Iterable, List
 
@@ -26,6 +28,11 @@ MODEL_FILE = Path(__file__).with_name("model.joblib")
 DEFAULT_ALERT_FILE = Path("/var/log/suricata/eve.json")
 DEFAULT_RULE_FILE = Path("/etc/suricata/rules/misp.rules")
 DEFAULT_LOG_FILE = Path("/var/log/bips/alerts.json")
+SEQUENCE_LOG = Path("/var/log/bips/sequence.log")
+
+IRIS_URL = os.environ.get("IRIS_URL", "http://localhost:5800/incidents")
+MISP_POST_URL = os.environ.get("MISP_POST_URL", "http://localhost:8443/attributes")
+ACT_URL = os.environ.get("ACT_URL", "http://localhost:8100/act")
 
 
 def train_model() -> None:
@@ -118,6 +125,60 @@ def update_rules_from_misp(url: str, rules_file: Path) -> None:
             handle.write(rule)
 
 
+def log_sequence(message: str) -> None:
+    """Append a message to the alert->case->response log."""
+    SEQUENCE_LOG.parent.mkdir(parents=True, exist_ok=True)
+    with SEQUENCE_LOG.open("a") as handle:
+        handle.write(f"{datetime.utcnow().isoformat()} {message}\n")
+
+
+def create_case(event: dict) -> None:
+    """Open an incident case in IRIS/CICMS."""
+    payload = {
+        "signature": event.get("alert", {}).get("signature"),
+        "src_ip": event.get("src_ip"),
+        "dest_ip": event.get("dest_ip"),
+    }
+    try:
+        requests.post(IRIS_URL, json=payload, timeout=5)
+        log_sequence(f"case opened for {payload['signature']}")
+    except Exception:
+        log_sequence("failed to open case")
+
+
+def push_indicator_to_misp(event: dict) -> None:
+    """Send relevant indicators to MISP."""
+    indicator = {
+        "src_ip": event.get("src_ip"),
+        "dest_ip": event.get("dest_ip"),
+        "signature": event.get("alert", {}).get("signature"),
+    }
+    headers = {}
+    api_key = os.environ.get("MISP_API_KEY")
+    if api_key:
+        headers["Authorization"] = api_key
+    try:
+        requests.post(MISP_POST_URL, json=indicator, headers=headers, timeout=5)
+        log_sequence("indicator pushed to MISP")
+    except Exception:
+        log_sequence("failed to push indicator to MISP")
+
+
+def trigger_mitigation(host: str, event: dict) -> None:
+    """Invoke Act to apply the recommended mitigation."""
+    payload = {
+        "target": host,
+        "source": "bips",
+        "severity": event.get("alert", {}).get("severity", 1),
+    }
+    try:
+        response = requests.post(ACT_URL, json=payload, timeout=5)
+        mitigation = response.json().get("mitigation", "unknown")
+        log_sequence(f"mitigation {mitigation} triggered on {host}")
+    except Exception:
+        log_sequence(f"failed to trigger mitigation for {host}")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Process IDS alerts with ML")
     parser.add_argument("--alert-file", type=Path, default=DEFAULT_ALERT_FILE)
@@ -158,6 +219,9 @@ def main() -> None:
             signature = event.get("alert", {}).get("signature", "malicious")
             host = event.get("dest_ip") or event.get("src_ip") or "unknown"
             alert_service.handle_event("ids_ml", signature, host)
+            create_case(event)
+            push_indicator_to_misp(event)
+            trigger_mitigation(host, event)
         print(json.dumps(res))
 
 
