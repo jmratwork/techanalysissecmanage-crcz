@@ -32,6 +32,17 @@ Running `subcase_1b/scripts/training_platform_start.sh` launches a training plat
 
 See [`docs/subcase_1b_guide.md`](docs/subcase_1b_guide.md) for detailed examples.
 
+### Importing Open edX Content
+
+Sample lessons and a quiz are provided under `open_edx/course`. To load this material into Open edX Studio:
+
+1. Archive the directory:
+   ```bash
+   zip -r phishing_course.zip open_edx/course
+   ```
+2. In Studio, open the target course and navigate to **Tools → Import**.
+3. Upload `phishing_course.zip` to add the lessons and quiz.
+
 ## Teardown
 
 1. Stop the scenario from the KYPO dashboard.

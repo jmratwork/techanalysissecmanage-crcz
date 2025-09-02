@@ -1,0 +1,10 @@
+<problem>
+  <multiplechoiceresponse>
+    <label>Which sign indicates a potential phishing email?</label>
+    <choicegroup type="MultipleChoice">
+      <choice correct="true">A request for credentials via an unsolicited link</choice>
+      <choice>A personalized greeting from your colleague</choice>
+      <choice>An email from your IT team sent through the company helpdesk</choice>
+    </choicegroup>
+  </multiplechoiceresponse>
+</problem>
