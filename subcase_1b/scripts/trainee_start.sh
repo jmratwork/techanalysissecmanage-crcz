@@ -9,6 +9,8 @@ CLI="python $SERVICE_DIR/cli.py"
 TRAINEE="${TRAINEE:-trainee}"
 PASSWORD="${PASSWORD:-changeme}"
 COURSE_ID="${COURSE_ID:-}"
+CALDERA_SERVER="${CALDERA_SERVER:-http://localhost:8888}"
+CALDERA_API_KEY="${CALDERA_API_KEY:-changeme}"
 
 APT_UPDATED=0
 apt_update_once() {
@@ -49,6 +51,20 @@ install_deps() {
     fi
 }
 
+run_recon() {
+    if result=$(nmap -sV -O "$TARGET" 2>&1); then
+        printf '%s\n' "$result" >> "$SCAN_LOG"
+        if echo "$result" | grep -qiE 'running|os details'; then
+            echo "$(date) Reconnaissance succeeded against $TARGET" >> "$SCAN_LOG"
+        else
+            echo "$(date) Reconnaissance completed but expected fingerprints missing for $TARGET" >> "$SCAN_LOG"
+        fi
+        send_results "$result"
+    else
+        echo "$(date) Reconnaissance failed for $TARGET" >> "$SCAN_LOG"
+    fi
+}
+
 run_nmap_scan() {
     if result=$(nmap -p- "$TARGET" 2>&1); then
         printf '%s\n' "$result" >> "$SCAN_LOG"
@@ -84,11 +100,51 @@ run_zap_scan() {
     fi
 }
 
+run_caldera_operation() {
+    if command -v curl >/dev/null 2>&1; then
+        agent=$(mktemp /tmp/sandcat-XXXX)
+        if curl -sf "$CALDERA_SERVER/file/download/sandcat.go?platform=linux&arch=amd64" -o "$agent"; then
+            chmod +x "$agent"
+            "$agent" -server "$CALDERA_SERVER" -group red >/tmp/sandcat.log 2>&1 &
+            agent_pid=$!
+            sleep 5
+            op_payload=$(jq -n '{name:"demo-operation"}')
+            if curl -s -H "KEY: $CALDERA_API_KEY" -H 'Content-Type: application/json' -d "$op_payload" \
+                -X POST "$CALDERA_SERVER/api/v2/operations" > /tmp/caldera-op.log 2>&1 && \
+                grep -q '"id"' /tmp/caldera-op.log; then
+                echo "$(date) Caldera operation completed" >> "$SCAN_LOG"
+                send_results "$(cat /tmp/caldera-op.log)"
+            else
+                echo "$(date) Caldera operation failed" >> "$SCAN_LOG"
+            fi
+            kill "$agent_pid" >/dev/null 2>&1 || true
+            rm -f "$agent" /tmp/sandcat.log /tmp/caldera-op.log
+        else
+            echo "$(date) Failed to download Caldera agent" >> "$SCAN_LOG"
+        fi
+    fi
+}
+
+evaluate_results() {
+    local pass=1
+    grep -q "Reconnaissance succeeded" "$SCAN_LOG" || pass=0
+    grep -q "Completed nmap scan" "$SCAN_LOG" || pass=0
+    grep -q "Caldera operation" "$SCAN_LOG" || pass=0
+    if [ "$pass" -eq 1 ]; then
+        echo "$(date) Evaluation passed" >> "$SCAN_LOG"
+    else
+        echo "$(date) Evaluation failed" >> "$SCAN_LOG"
+    fi
+}
+
 run_scans() {
     mkdir -p "$(dirname "$SCAN_LOG")"
+    run_recon
     run_nmap_scan
     run_openvas_scan
     run_zap_scan
+    run_caldera_operation
+    evaluate_results
 }
 
 send_results() {

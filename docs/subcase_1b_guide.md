@@ -74,16 +74,20 @@ flowchart TD
    sudo subcase_1b/scripts/trainee_start.sh --target 10.10.0.4
    ```
    The script sequentially executes:
-   - `nmap` for port enumeration
+   - an `nmap` reconnaissance sweep with service banner and OS detection
+   - a full TCP port scan using `nmap`
    - an OpenVAS quick scan via `gvm-script`
    - an OWASP ZAP quick scan that saves an HTML report
+   - a Caldera `sandcat` agent that connects to the Caldera server and launches a demo operation
 
    Output from each tool is appended to `/var/log/trainee/scans.log`. Successful runs record messages such as:
+   - `Reconnaissance succeeded against 10.10.0.4`
    - `Completed nmap scan against 10.10.0.4`
+   - `Caldera operation completed`
    - `Completed OpenVAS scan against 10.10.0.4`
    - `Completed OWASP ZAP scan against 10.10.0.4`
 
-   Results are forwarded to the NG-SIEM ingestion endpoint and completion is reported back to the training platform.
+   After the tools finish, the script checks for these indicators and logs an overall pass/fail evaluation. Results are forwarded to the NG-SIEM ingestion endpoint and completion is reported back to the training platform.
 4. Document discovered vulnerabilities and provide them to the instructor.
 
 ## Phishing Awareness Quiz
