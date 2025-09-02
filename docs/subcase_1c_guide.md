@@ -86,6 +86,26 @@ expected.
           -d '{"alert_id": "abc123", "analyst": "analyst"}'
      ```
 
+4. **Verify BIPS alerts**
+
+   Check each BIPS alert to ensure it reflects real activity:
+
+   - Cross-reference the alert indicators with MISP to confirm known threats.
+   - Inspect the affected host for related processes, files, or registry changes.
+   - Review NG-SIEM and network telemetry to validate event correlation.
+   - Compare with benign malware simulator logs to rule out false positives.
+
+5. **Record confirmation in CICMS/Act**
+
+   Analysts document verified alerts in the CICMS case record and update Act
+   to mark the alert as confirmed:
+
+   ```bash
+   curl -X POST http://localhost:8100/confirm \
+        -H 'Content-Type: application/json' \
+        -d '{"alert_id": "abc123", "status": "confirmed"}'
+   ```
+
 ## Validation
 
 1. **Request mitigation guidance and apply response**
