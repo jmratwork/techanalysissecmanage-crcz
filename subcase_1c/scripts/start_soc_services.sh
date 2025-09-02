@@ -89,38 +89,24 @@ start_bips() {
 
 start_ng_siem() {
     mkdir -p /var/log/ng_siem
-    if [ "$USE_SYSTEMCTL" -eq 1 ]; then
-        if systemctl is-active --quiet ng-siem; then
-            return 0
-        fi
-        if systemctl start ng-siem >>/var/log/ng_siem/service.log 2>&1; then
-            if ! systemctl is-active --quiet ng-siem; then
-                echo "$(date) ng-siem failed to start" >>/var/log/ng_siem/service.log
-                return 1
-            fi
-            check_port localhost "${NG_SIEM_PORT}" >>/var/log/ng_siem/service.log 2>&1 || {
-                echo "$(date) ng-siem port check failed" >>/var/log/ng_siem/service.log
-                return 1
-            }
-        else
-            echo "$(date) failed to run systemctl start ng-siem" >>/var/log/ng_siem/service.log
-            return 1
-        fi
+    local compose_cmd
+    if command -v docker >/dev/null 2>&1 && docker compose version >/dev/null 2>&1; then
+        compose_cmd="docker compose"
+    elif command -v docker-compose >/dev/null 2>&1; then
+        compose_cmd="docker-compose"
     else
-        if command -v service >/dev/null 2>&1; then
-            if service ng-siem start >>/var/log/ng_siem/service.log 2>&1; then
-                check_port localhost "${NG_SIEM_PORT}" >>/var/log/ng_siem/service.log 2>&1 || {
-                    echo "$(date) ng-siem port check failed" >>/var/log/ng_siem/service.log
-                    return 1
-                }
-            else
-                echo "$(date) failed to run service ng-siem start" >>/var/log/ng_siem/service.log
-                return 1
-            fi
-        else
-            echo "$(date) service command not found" >>/var/log/ng_siem/service.log
+        echo "$(date) docker compose command not found" >>/var/log/ng_siem/service.log
+        return 1
+    fi
+
+    if $compose_cmd -f /etc/ng_siem/docker-compose.yml up -d >>/var/log/ng_siem/service.log 2>&1; then
+        check_port localhost "${NG_SIEM_PORT}" >>/var/log/ng_siem/service.log 2>&1 || {
+            echo "$(date) ng-siem port check failed" >>/var/log/ng_siem/service.log
             return 1
-        fi
+        }
+    else
+        echo "$(date) failed to run $compose_cmd up" >>/var/log/ng_siem/service.log
+        return 1
     fi
 }
 

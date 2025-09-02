@@ -1,21 +1,25 @@
-- name: Download NG-SIEM package
-  ansible.builtin.get_url:
-    url: "{{ ngsoc_repo_url }}/ng-siem/ng-siem-server.deb"
-    dest: "/tmp/ng-siem-server.deb"
-    mode: "0644"
-    checksum: "{{ ng_siem_server_checksum }}"
-  become: yes
-
-- name: Install NG-SIEM
-  ansible.builtin.apt:
-    deb: "/tmp/ng-siem-server.deb"
-    state: present
-  become: yes
-
-- name: Configure NG-SIEM
+- name: Deploy ELK docker-compose file
   ansible.builtin.template:
-    src: ng_siem.conf.j2
-    dest: /etc/ng_siem/config.yml
+    src: docker-compose.yml.j2
+    dest: /etc/ng_siem/docker-compose.yml
+    owner: root
+    group: root
+    mode: "0644"
+  become: yes
+
+- name: Deploy default Kibana dashboard
+  ansible.builtin.template:
+    src: kibana-dashboard.ndjson.j2
+    dest: /etc/ng_siem/default-dashboard.ndjson
+    owner: root
+    group: root
+    mode: "0644"
+  become: yes
+
+- name: Deploy Elasticsearch index template
+  ansible.builtin.template:
+    src: index-template.json.j2
+    dest: /etc/ng_siem/index-template.json
     owner: root
     group: root
     mode: "0644"
@@ -68,9 +72,9 @@
     mode: "0644"
   become: yes
 
-- name: Enable and start NG-SIEM service
-  ansible.builtin.service:
-    name: ng-siem
-    state: started
-    enabled: yes
+- name: Launch ELK stack
+  ansible.builtin.command:
+    cmd: docker compose -f /etc/ng_siem/docker-compose.yml up -d
+  args:
+    chdir: /etc/ng_siem
   become: yes
