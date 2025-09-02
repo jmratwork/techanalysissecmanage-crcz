@@ -25,7 +25,7 @@ apt_update_once() {
 install_deps() {
     local apt_missing=()
     local snap_missing=()
-    command -v rustscan >/dev/null 2>&1 || apt_missing+=(rustscan)
+    command -v nmap >/dev/null 2>&1 || apt_missing+=(nmap)
     command -v jq >/dev/null 2>&1 || apt_missing+=(jq)
     command -v gvm-script >/dev/null 2>&1 || apt_missing+=(gvm)
     command -v zaproxy >/dev/null 2>&1 || snap_missing+=(zaproxy)
@@ -49,13 +49,13 @@ install_deps() {
     fi
 }
 
-run_rustscan() {
-    if result=$(rustscan -a "$TARGET" 2>&1); then
+run_nmap_scan() {
+    if result=$(nmap -p- "$TARGET" 2>&1); then
         printf '%s\n' "$result" >> "$SCAN_LOG"
-        echo "$(date) Completed rustscan against $TARGET" >> "$SCAN_LOG"
+        echo "$(date) Completed nmap scan against $TARGET" >> "$SCAN_LOG"
         send_results "$result"
     else
-        echo "$(date) Rustscan failed for $TARGET" >> "$SCAN_LOG"
+        echo "$(date) Nmap scan failed for $TARGET" >> "$SCAN_LOG"
     fi
 }
 
@@ -86,7 +86,7 @@ run_zap_scan() {
 
 run_scans() {
     mkdir -p "$(dirname "$SCAN_LOG")"
-    run_rustscan
+    run_nmap_scan
     run_openvas_scan
     run_zap_scan
 }
