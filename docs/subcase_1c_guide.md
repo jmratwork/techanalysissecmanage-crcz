@@ -73,7 +73,15 @@ expected.
    Monitor BIPS, NG‑SIEM, CICMS, NG‑SOC, and MISP for beacons, file drops, and
    CTI correlations.
 
-3. **Analyst login and triage alerts**
+3. **Verify alerts in NG‑SIEM dashboards**
+
+   - Open Kibana at `http://localhost:5602`.
+   - In *Discover*, search for `BenignMalwareSim` to confirm log ingestion from
+     Filebeat and Winlogbeat.
+   - In the *Security* app, ensure beacon activity from the simulator appears as
+     alerts.
+
+4. **Analyst login and triage alerts**
 
    - Browse to the Kibana dashboard at `http://localhost:5602`.
    - Log in with analyst credentials.
@@ -86,7 +94,7 @@ expected.
           -d '{"alert_id": "abc123", "analyst": "analyst"}'
      ```
 
-4. **Verify BIPS alerts**
+5. **Verify BIPS alerts**
 
    Check each BIPS alert to ensure it reflects real activity:
 
@@ -95,7 +103,7 @@ expected.
    - Review NG-SIEM and network telemetry to validate event correlation.
    - Compare with benign malware simulator logs to rule out false positives.
 
-5. **Record confirmation in CICMS/Act**
+6. **Record confirmation in CICMS/Act**
 
    Analysts document verified alerts in the CICMS case record and update Act
    to mark the alert as confirmed:
