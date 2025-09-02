@@ -56,6 +56,24 @@ such as completion time and quiz scores in `results.json`, updates local
 course progress, and relays that progress to the Open edX
 `/courseware/` API so that learner dashboards show the latest status.
 
+### API Usage
+
+#### Trainees
+
+- `POST /register` – create a trainee account.
+- `POST /login` – exchange credentials for an authentication token.
+- `POST /progress` / `GET /progress` – submit or fetch course progress.
+- `POST /results` – manually upload lab scores and timing data.
+- `POST /listener` – used by the KYPO range to push automatic score/flag
+  updates to the platform.
+
+#### Instructors
+
+- `POST /courses` – create a new course shell.
+- `POST /invites` – generate invite codes for trainees.
+- `GET /courses` – list existing courses and metadata.
+- `POST /results` – record evaluation outcomes for a trainee.
+
 ## Subcase 1c: Malware Handling
 
 ### Trainee Activities
