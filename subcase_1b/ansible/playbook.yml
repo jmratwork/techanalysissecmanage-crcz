@@ -3,11 +3,13 @@
   become: true
   roles:
     - cyber_range_setup
+    - logging
 
 - hosts: trainee_workstations
   become: true
   roles:
     - bips
+    - logging
 
 - hosts: training_platform
   become: true
