@@ -153,6 +153,13 @@ LMS should redirect the learner’s browser to that URL to open the lab.
 5. Mark the component as **graded** if the KYPO exercise should
    contribute to the course score and assign an appropriate weight.
 
+> **Deployment note:** After enabling `lti_consumer`, instructors should
+> preview the unit in Studio to confirm the integration. Clicking the
+> **Launch KYPO Lab** button should call the training platform’s
+> `/kypo/launch` endpoint and redirect the browser to the KYPO lab. If
+> no redirect occurs, verify that the training platform is running and
+> that the lab identifier matches an available exercise.
+
 When a learner accesses the unit, Open edX posts the parameters to the
 training platform. The platform validates the token, generates a signed
 LTI launch URL, and returns it to the LMS which then redirects the
