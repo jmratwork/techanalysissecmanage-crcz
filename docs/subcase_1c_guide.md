@@ -138,6 +138,15 @@ expected.
    - Benign malware simulator generates HTTP beacons and file artifacts detected
      by NG‑SOC components.
 
+3. **Observe incident propagation and containment**
+
+   - Visit IRIS at `http://localhost:5800/incidents` to verify a case was
+     created from the IDS alert.
+   - In the MISP UI at `http://localhost:8443`, confirm that the indicator
+     associated with the alert appears in the event list.
+   - Review `/var/log/bips/sequence.log` or Act service logs to ensure the
+     recommended mitigation executed automatically in the KYPO environment.
+
 ## References
 
 - [`start_soc_services.sh`](../subcase_1c/scripts/start_soc_services.sh)
