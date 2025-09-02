@@ -74,12 +74,12 @@ flowchart TD
    sudo subcase_1b/scripts/trainee_start.sh --target 10.10.0.4
    ```
    The script sequentially executes:
-   - `rustscan` for port enumeration
+   - `nmap` for port enumeration
    - an OpenVAS quick scan via `gvm-script`
    - an OWASP ZAP quick scan that saves an HTML report
 
    Output from each tool is appended to `/var/log/trainee/scans.log`. Successful runs record messages such as:
-   - `Completed rustscan against 10.10.0.4`
+   - `Completed nmap scan against 10.10.0.4`
    - `Completed OpenVAS scan against 10.10.0.4`
    - `Completed OWASP ZAP scan against 10.10.0.4`
 
