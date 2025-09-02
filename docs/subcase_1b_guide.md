@@ -20,14 +20,9 @@ flowchart TD
     Trainee -->|submits findings| Instructor
 ```
 
-## Instructor Steps
+## Instructor Setup
 
-1. **Start the Cyber Range**
-   ```bash
-   sudo subcase_1b/scripts/cyber_range_start.sh
-   ```
-   Initializes the simulated CYNET network environment.
-2. **Launch the Training Platform**
+1. **Create the Course**
    ```bash
    sudo subcase_1b/scripts/training_platform_start.sh --course pentest-101
    ```
@@ -39,46 +34,56 @@ flowchart TD
    COURSE_ID=$(python subcase_1b/training_platform/cli.py list-courses --token "$TOKEN" | python -c 'import sys,json; d=json.load(sys.stdin); print(next(iter(d.keys())))')
    python subcase_1b/training_platform/cli.py invite --token "$TOKEN" --course-id "$COURSE_ID" --email learner@example.com
    ```
-3. **Initialize Security Pipeline**
-   - Start Randomization Evaluation Platform
+2. **Prepare Caldera**
+   - Ensure the Caldera server is running and accessible to trainees.
+   - Load a demo operation that the `sandcat` agent can execute.
+3. **Start the Cyber Range and Security Pipeline**
+   - Cyber Range
+     ```bash
+     sudo subcase_1b/scripts/cyber_range_start.sh
+     ```
+     Initializes the simulated CYNET network environment.
+   - Randomization Evaluation Platform
      ```bash
      sudo subcase_1b/scripts/randomization_platform_start.sh
      ```
-   - Start BIPS
+   - BIPS
      ```bash
      sudo subcase_1b/scripts/bips_start.sh
      ```
-   - Start NG-SIEM and process attachments
-    ```bash
-    sudo subcase_1b/scripts/ng_siem_start.sh
-    ```
-    Starts an ingestion service for trainee scan results, registers any attachments,
-    executes the CA/CND Playbook through the CA Module for Integration, and stores results in MongoDB.
-   - Start CICMS
+   - NG-SIEM and attachment processing
+     ```bash
+     sudo subcase_1b/scripts/ng_siem_start.sh
+     ```
+     Starts an ingestion service for trainee scan results, registers any attachments,
+     executes the CA/CND Playbook through the CA Module for Integration, and stores results in MongoDB.
+   - CICMS
      ```bash
      sudo subcase_1b/scripts/cicms_start.sh
      ```
-   - Start NG-SOC
+   - NG-SOC
      ```bash
      sudo subcase_1b/scripts/ng_soc_start.sh
      ```
    - Analysts monitoring these services can follow the [SOC Analyst Playbook](soc_analyst_playbook.md) for dashboard navigation, search queries, and alert confirmation criteria.
-4. **Review Trainee Reports** – Evaluate submitted findings from penetration test runs.
+4. **Evaluation**
+   - Review trainee scan logs and submitted vulnerability reports.
+   - Confirm Caldera operations completed successfully.
+   - Provide feedback through the training platform.
 
-## Trainee Steps
+## Trainee Workflow
 
-1. Log in to the trainee workstation.
-2. Retrieve course material from the training platform.
-3. Run the semi-automated scan.
+1. Log in to the trainee workstation and retrieve course material from the training platform.
+2. Run the semi-automated scan.
    ```bash
    sudo subcase_1b/scripts/trainee_start.sh --target 10.10.0.4
    ```
-   The script sequentially executes:
-   - an `nmap` reconnaissance sweep with service banner and OS detection
-   - a full TCP port scan using `nmap`
-   - an OpenVAS quick scan via `gvm-script`
-   - an OWASP ZAP quick scan that saves an HTML report
-   - a Caldera `sandcat` agent that connects to the Caldera server and launches a demo operation
+   The script sequentially executes the following tools and produces expected deliverables:
+   - `nmap` reconnaissance sweep – provides a list of reachable hosts and detected services.
+   - Full TCP port scan using `nmap` – enumerates open ports and versions for the target.
+   - OpenVAS quick scan via `gvm-script` – generates a vulnerability report saved to `/var/log/trainee/openvas.json`.
+   - OWASP ZAP quick scan – saves an HTML report to `/var/log/trainee/zap.html`.
+   - Caldera `sandcat` agent – runs the demo operation and records executed TTPs in the Caldera server.
 
    Output from each tool is appended to `/var/log/trainee/scans.log`. Successful runs record messages such as:
    - `Reconnaissance succeeded against 10.10.0.4`
@@ -88,7 +93,7 @@ flowchart TD
    - `Completed OWASP ZAP scan against 10.10.0.4`
 
    After the tools finish, the script checks for these indicators and logs an overall pass/fail evaluation. Results are forwarded to the NG-SIEM ingestion endpoint and completion is reported back to the training platform.
-4. Document discovered vulnerabilities and provide them to the instructor.
+3. Compile the scan outputs into a findings report and submit it to the instructor.
 
 ## Phishing Awareness Quiz
 

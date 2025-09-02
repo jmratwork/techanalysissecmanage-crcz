@@ -147,6 +147,12 @@ expected.
    - Review `/var/log/bips/sequence.log` or Act service logs to ensure the
      recommended mitigation executed automatically in the KYPO environment.
 
+## SOC Analyst Checklist
+
+- **View IRIS cases** – Confirm that each IDS alert generates a case in the incident registry.
+- **Verify MISP entries** – Ensure indicators from the simulation appear in the threat feed and are linked to the case.
+- **Confirm automated responses** – Check BIPS or Act logs to validate that recommended mitigations executed without manual intervention.
+
 ## References
 
 - [`start_soc_services.sh`](../subcase_1c/scripts/start_soc_services.sh)
