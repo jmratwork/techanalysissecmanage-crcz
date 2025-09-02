@@ -4,7 +4,7 @@ from flask import Flask, request, jsonify
 
 import phishing_quiz
 from open_edx_client import OpenEdXClient
-from results_service import append_result
+from results_service import append_result, aggregate_results
 
 app = Flask(__name__)
 
@@ -147,10 +147,10 @@ def post_results():
         'timestamp': time.time(),
     }
     append_result(result)
-    progress_value = data.get('progress', score)
-    progress[(course_id, username)] = progress_value
-    open_edx.update_progress(username, course_id, progress_value)
-    return jsonify({'status': 'recorded', 'metrics': {'score': score, 'duration': duration}})
+    metrics = aggregate_results(course_id, username)
+    progress[(course_id, username)] = metrics.get('score', score)
+    open_edx.update_progress(username, course_id, metrics)
+    return jsonify({'status': 'recorded', 'metrics': metrics})
 
 
 @app.route('/kypo/launch', methods=['POST'])
