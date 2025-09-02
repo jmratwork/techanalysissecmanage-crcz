@@ -1,5 +1,7 @@
 # Subcase 1c Guide: Malware Simulation and CTI Integration
 
+See [deployment manual](deployment_manual.md) for baseline environment setup and teardown steps before running this scenario.
+
 This guide walks through deploying the Subcase 1c environment, running the
 benign malware simulator, and validating that NG‑SOC components respond as
 expected.
