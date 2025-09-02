@@ -15,6 +15,7 @@ courses = {}  # course_id -> {title, content, instructor}
 invites = {}  # invite_code -> {course_id, email}
 progress = {}  # (course_id, username) -> progress
 quiz_results = {}  # (course_id, username) -> {answers, score}
+edx_failures = []  # list of Open edX reporting failures
 
 open_edx = OpenEdXClient()
 
@@ -149,8 +150,26 @@ def post_results():
     append_result(result)
     metrics = aggregate_results(course_id, username)
     progress[(course_id, username)] = metrics.get('score', score)
-    open_edx.update_progress(username, course_id, metrics)
-    return jsonify({'status': 'recorded', 'metrics': metrics})
+    ok, message = open_edx.update_progress(username, course_id, metrics)
+    if not ok:
+        edx_failures.append(
+            {
+                'course_id': course_id,
+                'username': username,
+                'error': message,
+                'timestamp': time.time(),
+            }
+        )
+    return jsonify({'status': 'recorded', 'metrics': metrics, 'edx_sync': ok})
+
+
+@app.route('/edx_failures', methods=['GET'])
+def get_edx_failures():
+    token = request.args.get('token')
+    user = authenticate(token)
+    if not user or user.get('role') != 'instructor':
+        return jsonify({'error': 'unauthorized'}), 403
+    return jsonify({'failures': edx_failures})
 
 
 @app.route('/kypo/launch', methods=['POST'])

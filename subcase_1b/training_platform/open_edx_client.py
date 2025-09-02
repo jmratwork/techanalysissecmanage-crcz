@@ -1,3 +1,4 @@
+import logging
 import os
 import time
 import uuid
@@ -10,11 +11,26 @@ import jwt
 class OpenEdXClient:
     """Client for Open edX LMS and KYPO LTI integrations."""
 
-    def __init__(self, base_url: str | None = None):
+    def __init__(
+        self,
+        base_url: str | None = None,
+        session_cookie: str | None = None,
+        api_token: str | None = None,
+    ) -> None:
         # Open edX configuration
         self.base_url = (
             base_url or os.environ.get("OPENEDX_URL", "http://localhost:8000")
         ).rstrip("/")
+
+        # Authentication for Open edX API
+        self.session_cookie = session_cookie or os.environ.get(
+            "OPENEDX_SESSION_COOKIE"
+        )
+        self.api_token = api_token or os.environ.get("OPENEDX_API_TOKEN")
+
+        # Keep reference to any errors for diagnostics
+        self.errors: list[str] = []
+        self.logger = logging.getLogger(__name__)
 
         # LTI / KYPO configuration. Defaults are suitable for local
         # development and can be overridden via environment variables.
@@ -36,19 +52,39 @@ class OpenEdXClient:
 
     # ------------------------------------------------------------------
     # Open edX progress reporting
-    def update_progress(self, username: str, course_id: str, progress: Any) -> None:
+    def update_progress(
+        self, username: str, course_id: str, progress: Any
+    ) -> tuple[bool, str]:
         """POST progress information to the Open edX courseware API.
 
-        Network errors are ignored so training can proceed even if the
-        Open edX instance is unavailable.
+        Returns a tuple ``(success, message)``. Any failure will be logged and
+        the message returned for further processing by callers.
         """
         payload = {"username": username, "course_id": course_id, "progress": progress}
         url = f"{self.base_url}/courseware/progress"
+
+        headers: dict[str, str] = {}
+        cookies: dict[str, str] = {}
+        if self.api_token:
+            headers["Authorization"] = f"Bearer {self.api_token}"
+        if self.session_cookie:
+            cookies["sessionid"] = self.session_cookie
+
         try:
-            requests.post(url, json=payload, timeout=5)
-        except requests.RequestException:
-            # The integration is best-effort; failures are silently ignored.
-            pass
+            response = requests.post(
+                url,
+                json=payload,
+                headers=headers or None,
+                cookies=cookies or None,
+                timeout=5,
+            )
+            response.raise_for_status()
+        except requests.RequestException as exc:  # pragma: no cover - network errors
+            message = f"Open edX progress update failed: {exc}"
+            self.logger.error(message)
+            self.errors.append(message)
+            return False, message
+        return True, ""
 
     # ------------------------------------------------------------------
     # KYPO LTI consumer
