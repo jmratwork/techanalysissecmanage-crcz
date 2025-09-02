@@ -7,6 +7,8 @@ protection capabilities and capacities using state-of-the-art technology and sol
 
 Simulate benign malware activity and integrate threat intelligence feeds to exercise NG-SOC components.
 
+This subcase is **hands-on**. Analysts can inspect outputs in the NG-SIEM dashboards at `http://localhost:5602`, review MISP entries at `https://localhost:8443`, and examine raw logs under `/var/log/bips/` and the Act service log directory.
+
 ## Node Roles
 - **infected_host** – Windows victim that runs the benign malware simulator
 - **c2_server** – Command-and-control server for beaconing traffic
