@@ -36,7 +36,8 @@ The accompanying `docker-compose.yml` file defines services such as a vulnerable
 
 ## Scenario Examples
 
-`subcase_1b/scenario.yml` includes example exercises that can be used during courses:
+The sample scenario pack `subcase_1b/scenario.yml` includes example exercises that can be used during courses:
 
 - **dvwa_sql_injection** – explore SQL injection vulnerabilities in the DVWA service on port 8000.
 - **weak_ssh_credentials** – practice brute-force attacks against weak SSH passwords on the trainee workstation.
+- **buffer_overflow_practice** – craft basic buffer overflow exploits against a vulnerable program in the cyber range.
