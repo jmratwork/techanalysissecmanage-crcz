@@ -1,6 +1,6 @@
 # Training Materials and Workflows
 
-This document outlines the theoretical training materials and the workflow expectations for both trainees and instructors operating within the KYPO cyber range environment. The primary scenario focuses on penetration testing and vulnerability assessment training using a Cyber Range environment that mirrors CYNET's network. Participants learn how to discover and document vulnerabilities while following organizational procedures.
+This document outlines the theoretical training materials and the workflow expectations for both trainees and instructors operating within the KYPO cyber range environment. The primary scenario focuses on penetration testing and vulnerability assessment training using a Cyber Range environment that mirrors CYNET's network. Participants learn how to discover and document vulnerabilities while following organizational procedures. For operational alert triage in NG‑SOC tools, refer to the [SOC Analyst Playbook](soc_analyst_playbook.md).
 
 ## Theoretical Background
 

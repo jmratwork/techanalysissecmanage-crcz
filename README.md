@@ -56,7 +56,7 @@ Sample lessons and a quiz are provided under `open_edx/course`. To load this mat
 - **Scenario Fails to Start** – Ensure all prerequisite images are uploaded and that the repository path is correct.
 - **Tool-Specific Logs** – Consult documentation for [BIPS](https://ngsoc.example.com/bips), [NG-SIEM](https://ngsoc.example.com/ng-siem), [CICMS](https://ngsoc.example.com/cicms), and [MISP](https://ngsoc.example.com/misp).
 
-Additional theoretical background and workflow guidance can be found in [`docs/training_workflows.md`](docs/training_workflows.md).
+Additional theoretical background and workflow guidance can be found in [`docs/training_workflows.md`](docs/training_workflows.md). For day‑to‑day alert handling, analysts should review the [`SOC Analyst Playbook`](docs/soc_analyst_playbook.md).
 
 ## Scenario Guides
 

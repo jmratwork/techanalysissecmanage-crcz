@@ -84,15 +84,17 @@ expected.
 4. **Analyst login and triage alerts**
 
    - Browse to the Kibana dashboard at `http://localhost:5602`.
-   - Log in with analyst credentials.
-   - Review alerts in the *Security* app and mark them as acknowledged.
-   - Acknowledgement can also be recorded via the Act API:
+  - Log in with analyst credentials.
+  - Review alerts in the *Security* app and mark them as acknowledged.
+  - Acknowledgement can also be recorded via the Act API:
 
      ```bash
-     curl -X POST http://localhost:8100/acknowledge \
-          -H 'Content-Type: application/json' \
-          -d '{"alert_id": "abc123", "analyst": "analyst"}'
-     ```
+    curl -X POST http://localhost:8100/acknowledge \
+         -H 'Content-Type: application/json' \
+         -d '{"alert_id": "abc123", "analyst": "analyst"}'
+    ```
+
+   Analysts can reference the [SOC Analyst Playbook](soc_analyst_playbook.md) for deeper guidance on navigation, search queries, and alert confirmation.
 
 5. **Verify BIPS alerts**
 
