@@ -23,6 +23,8 @@ sudo subcase_1b/scripts/trainee_start.sh --target 10.10.0.4  # run sample scan
 
 The training platform records course creation in `/var/log/training_platform/courses.log`. Trainee scan results are written to `/var/log/trainee/scans.log`, and the Cyber Range initialization log is at `/var/log/cyber_range/launch.log`.
 
+The trainee script performs an additional reconnaissance sweep with service and OS fingerprinting and deploys a Caldera `sandcat` agent to execute a demonstration operation. Instructors can verify successful runs by reviewing `/var/log/trainee/scans.log` for entries such as `Reconnaissance succeeded` and `Caldera operation completed`.
+
 ## Virtualization
 
 The cyber range is provisioned using Docker Compose. The `scripts/cyber_range_start.sh` helper launches or tears down the containerized environment:
