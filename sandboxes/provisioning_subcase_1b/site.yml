@@ -1,4 +1,45 @@
 ---
+- hosts: training_platform
+  become: yes
+  tasks:
+    - name: Install training web server
+      apt:
+        name: nginx
+        state: present
+    - name: Ensure nginx running
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+- hosts: trainee_workstation
+  become: yes
+  tasks:
+    - name: Install pentest tools
+      apt:
+        name:
+          - nmap
+          - gvm
+        state: present
+
+- hosts: cyber_range
+  become: yes
+  tasks:
+    - name: Install DVWA dependencies
+      apt:
+        name:
+          - apache2
+          - mysql-server
+        state: present
+
+- hosts: randomization_platform
+  become: yes
+  tasks:
+    - name: Install randomization utilities
+      apt:
+        name: python3
+        state: present
+
 - hosts: bips
   become: yes
   tasks:
@@ -19,6 +60,14 @@
         name: ng-siem
         state: started
         enabled: yes
+
+- hosts: cicms
+  become: yes
+  tasks:
+    - name: Install CICMS service
+      apt:
+        name: cicms
+        state: present
 
 - hosts: ng_soc
   become: yes
