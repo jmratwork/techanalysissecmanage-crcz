@@ -100,3 +100,13 @@ These workflows ensure that trainees gain practical experience while instructors
 ## Post-Incident Reporting and Iteration
 
 Run `subcase_1c/scripts/generate_post_incident_report.sh` once evaluations are complete to gather NG‑SIEM, BIPS and Act logs. Review the resulting file in `reports/` following the guidance in `docs/post_incident_process.md` and update playbooks or teaching materials accordingly before the next training cycle.
+
+## Log Retrieval and Analysis
+
+Shell commands executed on trainee and target machines are stored in `/var/log/commands.log` and forwarded to the NG‑SIEM by Filebeat. To review activity:
+
+1. Access the NG‑SIEM dashboard (Kibana) and search the `commands` index for specific hosts or time ranges.
+2. Correlate command logs with other indexes such as alerts from BIPS or NG‑SOC to trace trainee actions and resulting events.
+3. For offline review, fetch `/var/log/commands.log` from the relevant machine and analyze it with standard tools like `less`, `grep` or timeline analysis utilities.
+
+These logs provide detailed insight into trainee behavior and support both real‑time monitoring and post‑exercise assessments.
