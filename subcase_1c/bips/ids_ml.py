@@ -20,6 +20,7 @@ from sklearn.naive_bayes import MultinomialNB
 MODEL_FILE = Path(__file__).with_name("model.joblib")
 DEFAULT_ALERT_FILE = Path("/var/log/suricata/eve.json")
 DEFAULT_RULE_FILE = Path("/etc/suricata/rules/misp.rules")
+DEFAULT_LOG_FILE = Path("/var/log/bips/alerts.json")
 
 
 def train_model() -> None:
@@ -68,6 +69,24 @@ def process_alerts(path: Path) -> List[dict]:
     return results
 
 
+def write_alerts(alerts: List[dict], log_file: Path = DEFAULT_LOG_FILE) -> None:
+    """Write classification results as JSON lines for SIEM ingestion."""
+    if not alerts:
+        return
+    log_file.parent.mkdir(parents=True, exist_ok=True)
+    with log_file.open("a") as handle:
+        for alert in alerts:
+            event = alert.get("event", {})
+            record = {
+                "timestamp": event.get("timestamp"),
+                "signature": event.get("alert", {}).get("signature"),
+                "src_ip": event.get("src_ip"),
+                "dest_ip": event.get("dest_ip"),
+                "label": alert.get("label"),
+            }
+            handle.write(json.dumps(record) + "\n")
+
+
 def fetch_misp_iocs(url: str) -> Iterable[str]:
     """Fetch indicators from a MISP JSON feed endpoint."""
     try:
@@ -109,6 +128,7 @@ def main() -> None:
         update_rules_from_misp(args.misp_url, DEFAULT_RULE_FILE)
 
     results = process_alerts(args.alert_file)
+    write_alerts(results)
     for res in results:
         print(json.dumps(res))
 
