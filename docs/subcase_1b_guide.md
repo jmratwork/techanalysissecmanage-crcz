@@ -60,6 +60,7 @@ flowchart TD
      ```bash
      sudo subcase_1b/scripts/ng_soc_start.sh
      ```
+   - Analysts monitoring these services can follow the [SOC Analyst Playbook](soc_analyst_playbook.md) for dashboard navigation, search queries, and alert confirmation criteria.
 4. **Review Trainee Reports** – Evaluate submitted findings from penetration test runs.
 
 ## Trainee Steps
