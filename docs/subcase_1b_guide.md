@@ -137,6 +137,37 @@ curl -X POST http://localhost:5000/kypo/launch \
 The response contains a pre-signed URL in the `launch_url` field. The
 LMS should redirect the learner’s browser to that URL to open the lab.
 
+### Creating an LTI component in Open edX
+
+1. In *Studio*, open the course and navigate to **Settings → Advanced
+   Settings**. Add `"lti_consumer"` to the *Advanced Module List* and
+   save.
+2. In the unit where the lab should appear, add a new **LTI
+   consumer** component.
+3. Set **LTI URL** to the training platform endpoint
+   `http://localhost:5000/kypo/launch` (replace host if the platform
+   runs elsewhere).
+4. In **Custom Parameters** specify the target lab, e.g.
+   `lab_id=intro-lab`. The component will POST this value together with
+   the learner’s authentication token when rendering the unit.
+5. Mark the component as **graded** if the KYPO exercise should
+   contribute to the course score and assign an appropriate weight.
+
+When a learner accesses the unit, Open edX posts the parameters to the
+training platform. The platform validates the token, generates a signed
+LTI launch URL, and returns it to the LMS which then redirects the
+learner into the KYPO lab.
+
+### Mapping KYPO results to Open edX grading
+
+KYPO activities report completion data back to the training platform via
+the `/listener` endpoint. The platform aggregates submitted `score` and
+`flag` values and forwards the metrics to Open edX using the
+`/courseware/progress` API. The LTI component’s weight determines how
+these metrics influence the final grade. Instructors can review the raw
+aggregated data with the `/results` endpoint to understand the learner’s
+performance and adjust grading policies as needed.
+
 ## Expected Outcomes
 
 - Course creation logs at `/var/log/training_platform/courses.log`.
