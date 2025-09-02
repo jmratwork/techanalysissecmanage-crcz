@@ -8,12 +8,13 @@ metadata:
   difficulty: "medium"
   created: "2024-01-01"
 network:
+  name: "training_net"
   subnet: "10.10.0.0/24"
   gateway: "10.10.0.1"
 playbook: "ansible/playbook.yml"
 nodes:
   training_platform:
-    image: "course-platform:latest"
+    image: "debian-11"
     role: "instructor"
     services:
       - "Course Management"
@@ -24,7 +25,7 @@ nodes:
       - path: "scripts/training_platform_start.sh"
         args: "--course pentest-101"
   trainee_workstation:
-    image: "pentest-workstation:latest"
+    image: "kali"
     role: "trainee"
     ip: "10.10.0.3"
     subnet: "10.10.0.0/24"
@@ -33,7 +34,7 @@ nodes:
       - path: "scripts/trainee_start.sh"
         args: "--target 10.10.0.4"
   cyber_range:
-    image: "cyber-range-sim:latest"
+    image: "metasploitable2"
     role: "range"
     services:
       - "Simulated CYNET Network"
@@ -44,7 +45,7 @@ nodes:
       - path: "scripts/cyber_range_start.sh"
         args: "--vuln-profile baseline"
   randomization_platform:
-    image: "randomization-platform:latest"
+    image: "debian-11"
     role: "randomization"
     services:
       - "Randomization Evaluation"
@@ -54,7 +55,7 @@ nodes:
     startup_scripts:
       - path: "scripts/randomization_platform_start.sh"
   bips:
-    image: "bips:latest"
+    image: "debian-11"
     role: "security"
     services:
       - "Behavioral IPS"
@@ -64,7 +65,7 @@ nodes:
     startup_scripts:
       - path: "scripts/bips_start.sh"
   ng_siem:
-    image: "ng-siem:latest"
+    image: "debian-11"
     role: "siem"
     services:
       - "Next-Gen SIEM"
@@ -74,7 +75,7 @@ nodes:
     startup_scripts:
       - path: "scripts/ng_siem_start.sh"
   cicms:
-    image: "cicms:latest"
+    image: "debian-11"
     role: "incident_management"
     services:
       - "Cyber Incident & Case Management"
@@ -84,7 +85,7 @@ nodes:
     startup_scripts:
       - path: "scripts/cicms_start.sh"
   ng_soc:
-    image: "ng-soc:latest"
+    image: "debian-11"
     role: "soc"
     services:
       - "Next-Gen SOC"

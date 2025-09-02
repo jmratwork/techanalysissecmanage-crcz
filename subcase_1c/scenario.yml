@@ -8,12 +8,13 @@ metadata:
   difficulty: "medium"
   created: "2024-01-01"
 network:
+  name: "malnet"
   subnet: "10.20.0.0/24"
   gateway: "10.20.0.1"
 playbook: "ansible/playbook.yml"
 nodes:
   infected_host:
-    image: "windows10:latest"
+    image: "kali"
     role: "victim"
     ip: "10.20.0.2"
     subnet: "10.20.0.0/24"
@@ -22,7 +23,7 @@ nodes:
       - path: "scripts/load_malware_simulation.ps1"
         args: "-ExecutionPolicy Bypass"
   c2_server:
-    image: "c2-server:latest"
+    image: "debian-11"
     role: "c2"
     ip: "10.20.0.3"
     subnet: "10.20.0.0/24"
@@ -31,7 +32,7 @@ nodes:
       - path: "scripts/start_c2_server.sh"
         args: "--config /etc/c2.conf"
   soc_server:
-    image: "soc-platform:latest"
+    image: "debian-11"
     role: "soc"
     services:
       - "NG-SOC"
@@ -45,7 +46,7 @@ nodes:
       - path: "scripts/start_soc_services.sh"
       - path: "scripts/bips_start.sh"
   cti_component:
-    image: "cti-platform:latest"
+    image: "debian-11"
     role: "cti"
     services:
       - "MISP"
