@@ -87,3 +87,56 @@
     enabled: yes
     daemon_reload: yes
   become: yes
+
+# Synchronise with remote MISP and expose webhook for IRIS
+- name: Deploy MISP sync script
+  ansible.builtin.template:
+    src: misp-sync.sh.j2
+    dest: /opt/misp/misp-sync.sh
+    owner: root
+    group: root
+    mode: "0755"
+  become: yes
+
+- name: Install misp-sync service
+  ansible.builtin.template:
+    src: misp-sync.service.j2
+    dest: /etc/systemd/system/misp-sync.service
+    owner: root
+    group: root
+    mode: "0644"
+  become: yes
+
+- name: Enable and start misp-sync service
+  ansible.builtin.service:
+    name: misp-sync
+    state: started
+    enabled: yes
+    daemon_reload: yes
+  become: yes
+
+- name: Deploy IRIS webhook script
+  ansible.builtin.template:
+    src: iris_webhook.py.j2
+    dest: /opt/misp/iris_webhook.py
+    owner: root
+    group: root
+    mode: "0755"
+  become: yes
+
+- name: Install iris-webhook service
+  ansible.builtin.template:
+    src: iris-webhook.service.j2
+    dest: /etc/systemd/system/iris-webhook.service
+    owner: root
+    group: root
+    mode: "0644"
+  become: yes
+
+- name: Enable and start iris-webhook service
+  ansible.builtin.service:
+    name: iris-webhook
+    state: started
+    enabled: yes
+    daemon_reload: yes
+  become: yes
