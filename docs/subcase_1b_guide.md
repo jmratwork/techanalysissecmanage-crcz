@@ -41,10 +41,18 @@ flowchart TD
    python subcase_1b/training_platform/cli.py invite --token "$TOKEN" --course-id "$COURSE_ID" --email learner@example.com
    ```
    Set `TRAINING_PLATFORM_URL` if the service runs on a host other than `localhost`.
-3. **Prepare Caldera**
+3. **Enroll instructors and manage invitations**
+   ```bash
+   OPENEDX_TOKEN=<api-token> \
+   subcase_1b/scripts/enrol_instructor.sh course-v1:Org+Code+Run instructor@example.com
+   ```
+   Creates an "instructors" cohort in Open edX, generates invitation codes via
+   the `/invites` endpoint, prints the codes to stdout, and registers the
+   addresses in KYPO through its API or the `kypo_participants.txt` file.
+4. **Prepare Caldera**
    - Ensure the Caldera server is running and accessible to trainees.
    - Load a demo operation that the `sandcat` agent can execute.
-4. **Start the Cyber Range and Security Pipeline**
+5. **Start the Cyber Range and Security Pipeline**
    - Cyber Range
      ```bash
      sudo subcase_1b/scripts/cyber_range_start.sh
@@ -73,7 +81,7 @@ flowchart TD
      sudo subcase_1b/scripts/ng_soar_start.sh
      ```
    - Analysts monitoring these services can follow the [SOC Analyst Playbook](soc_analyst_playbook.md) for dashboard navigation, search queries, and alert confirmation criteria.
-5. **Evaluation**
+6. **Evaluation**
    - Review trainee scan logs and submitted vulnerability reports.
    - Confirm Caldera operations completed successfully.
    - Provide feedback through the training platform.
