@@ -5,3 +5,10 @@ simulation:
 logging:
   directory: /var/log/misp
   level: INFO
+
+sync:
+  url: {{ remote_misp_url }}
+  api_key: {{ remote_misp_key }}
+
+webhook:
+  url: {{ iris_webhook_url }}

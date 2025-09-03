@@ -33,6 +33,7 @@ SEQUENCE_LOG = Path("/var/log/bips/sequence.log")
 IRIS_URL = os.environ.get("IRIS_URL", "http://localhost:5800/incidents")
 MISP_POST_URL = os.environ.get("MISP_POST_URL", "http://localhost:8443/attributes")
 ACT_URL = os.environ.get("ACT_URL", "http://localhost:8100/act")
+NG_SOAR_URL = os.environ.get("NG_SOAR_URL", "http://localhost:5900/events")
 
 
 def train_model() -> None:
@@ -167,6 +168,30 @@ def push_indicator_to_misp(event: dict) -> None:
         log_sequence("failed to push indicator to MISP")
 
 
+def annotate_case_with_misp(event: dict) -> None:
+    """Query MISP for context and forward it to IRIS and NG-SOAR."""
+    indicator = event.get("src_ip")
+    if not indicator:
+        return
+    try:
+        resp = requests.get(f"{MISP_POST_URL}?ioc={indicator}", timeout=5)
+        resp.raise_for_status()
+        context = resp.json()
+    except Exception:
+        log_sequence("no MISP context available")
+        return
+    payload = {"indicator": indicator, "context": context}
+    try:
+        requests.post(f"{IRIS_URL}/annotations", json=payload, timeout=5)
+        log_sequence("case annotated with MISP context")
+    except Exception:
+        log_sequence("failed to annotate case")
+    try:
+        requests.post(NG_SOAR_URL, json=payload, timeout=5)
+    except Exception:
+        log_sequence("failed to notify NG-SOAR")
+
+
 def trigger_mitigation(host: str, event: dict) -> None:
     """Invoke Act to apply the recommended mitigation."""
     payload = {
@@ -224,6 +249,7 @@ def main() -> None:
             alert_service.handle_event("ids_ml", signature, host)
             create_case(event)
             push_indicator_to_misp(event)
+            annotate_case_with_misp(event)
             trigger_mitigation(host, event)
         print(json.dumps(res))
 
