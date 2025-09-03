@@ -105,6 +105,20 @@ start_misp() {
     fi
 }
 
+run_sharing_setup() {
+    # configure MISP sharing settings
+    mkdir -p /var/log/misp
+    local script="$(dirname "$0")/../misp/sharing_setup.py"
+    if [ -f "$script" ]; then
+        if command -v python3 >/dev/null 2>&1; then
+            python3 "$script" >>/var/log/misp/service.log 2>&1 || \
+                echo "$(date) sharing setup failed" >>/var/log/misp/service.log
+        else
+            echo "$(date) python3 not found; skipping sharing setup" >>/var/log/misp/service.log
+        fi
+    fi
+}
+
 start_fetch_cti_feed() {
     mkdir -p /var/log/misp
     if [ "$USE_SYSTEMCTL" -eq 1 ]; then
@@ -141,4 +155,5 @@ start_fetch_cti_feed() {
 
 install_deps
 start_misp
+run_sharing_setup
 start_fetch_cti_feed
