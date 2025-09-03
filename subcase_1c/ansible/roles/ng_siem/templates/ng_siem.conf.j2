@@ -6,3 +6,5 @@ inputs:
 output:
   host: {{ siem_host | default('localhost') }}
   port: {{ siem_port | default(9200) }}
+alerts:
+  webhook: http://localhost:8100/alert

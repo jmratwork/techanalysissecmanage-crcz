@@ -28,10 +28,8 @@ ACTIONS = {
 }
 
 
-@app.post("/act")
-def act() -> "Response":
-    """Receive event data, query Decide, and apply recommended mitigation."""
-    payload = request.get_json(force=True)
+def _apply_mitigation(payload: dict) -> dict:
+    """Determine and execute mitigation for the given payload."""
     target = payload.get("target", "")
     mitigation = payload.get("mitigation")
 
@@ -44,11 +42,28 @@ def act() -> "Response":
     action = info["func"]
     action(target)
 
-    return jsonify({
+    return {
         "mitigation": mitigation,
         "target": target,
         "playbook": info.get("playbook"),
-    })
+    }
+
+
+@app.post("/act")
+def act() -> "Response":
+    """Receive event data, query Decide, and apply recommended mitigation."""
+    payload = request.get_json(force=True)
+    result = _apply_mitigation(payload)
+    return jsonify(result)
+
+
+@app.post("/alert")
+def alert() -> "Response":
+    """Webhook endpoint for NG-SIEM alerts."""
+    payload = request.get_json(force=True)
+    result = _apply_mitigation(payload)
+    result["status"] = "received"
+    return jsonify(result)
 
 
 @app.post("/acknowledge")
