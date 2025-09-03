@@ -1,4 +1,7 @@
 from flask import request, jsonify
+import time
+
+from results_service import append_result, aggregate_results
 
 # Sample phishing quiz questions
 quiz_questions = [
@@ -134,7 +137,17 @@ def init_app(app, authenticate, tokens, quiz_results):
                 score += 1
         username = tokens.get(token)
         quiz_results[(course_id, username)] = {'answers': answers, 'score': score}
-        return jsonify({'score': score})
+
+        result = {
+            'course_id': course_id,
+            'username': username,
+            'score': score,
+            'details': {'answers': answers},
+            'timestamp': time.time(),
+        }
+        append_result(result)
+        metrics = aggregate_results(course_id, username)
+        return jsonify({'score': score, 'metrics': metrics})
 
     @app.route('/quiz/score', methods=['GET'])
     def quiz_score():
