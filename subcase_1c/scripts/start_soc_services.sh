@@ -100,8 +100,19 @@ start_bips() {
                 return 1
             fi
         else
-            echo "$(date) service command not found" >>/var/log/bips/service.log
-            return 1
+            local bips_script
+            bips_script="$(dirname "$0")/bips_start.sh"
+            if [ -x "$bips_script" ]; then
+                bash "$bips_script" >>/var/log/bips/service.log 2>&1 &
+                sleep 1
+                check_port localhost "${BIPS_PORT}" >>/var/log/bips/service.log 2>&1 || {
+                    echo "$(date) bips port check failed" >>/var/log/bips/service.log
+                    return 1
+                }
+            else
+                echo "$(date) service command and bips_start.sh not found" >>/var/log/bips/service.log
+                return 1
+            fi
         fi
     fi
 }
@@ -187,8 +198,17 @@ start_cicms() {
                 return 1
             fi
         else
-            echo "$(date) service command not found" >>/var/log/cicms/service.log
-            return 1
+            if command -v cicms-server >/dev/null 2>&1; then
+                nohup cicms-server --config /etc/cicms/config.yml >>/var/log/cicms/service.log 2>&1 &
+                sleep 1
+                check_port localhost "${CICMS_PORT}" >>/var/log/cicms/service.log 2>&1 || {
+                    echo "$(date) cicms port check failed" >>/var/log/cicms/service.log
+                    return 1
+                }
+            else
+                echo "$(date) service command and cicms-server not found" >>/var/log/cicms/service.log
+                return 1
+            fi
         fi
     fi
 }
@@ -224,8 +244,17 @@ start_ng_soc() {
                 return 1
             fi
         else
-            echo "$(date) service command not found" >>/var/log/ng_soc/service.log
-            return 1
+            if command -v ng-soc >/dev/null 2>&1; then
+                nohup ng-soc --config /etc/ng_soc/config.yml >>/var/log/ng_soc/service.log 2>&1 &
+                sleep 1
+                check_port localhost "${NG_SOC_PORT}" >>/var/log/ng_soc/service.log 2>&1 || {
+                    echo "$(date) ng-soc port check failed" >>/var/log/ng_soc/service.log
+                    return 1
+                }
+            else
+                echo "$(date) service command and ng-soc not found" >>/var/log/ng_soc/service.log
+                return 1
+            fi
         fi
     fi
 }
@@ -261,8 +290,17 @@ start_decide() {
                 return 1
             fi
         else
-            echo "$(date) service command not found" >>/var/log/decide/service.log
-            return 1
+            if [ -f /opt/decide/app.py ]; then
+                nohup /usr/bin/python3 /opt/decide/app.py >>/var/log/decide/service.log 2>&1 &
+                sleep 1
+                check_port localhost "${DECIDE_PORT}" >>/var/log/decide/service.log 2>&1 || {
+                    echo "$(date) decide port check failed" >>/var/log/decide/service.log
+                    return 1
+                }
+            else
+                echo "$(date) service command and /opt/decide/app.py not found" >>/var/log/decide/service.log
+                return 1
+            fi
         fi
     fi
 }
@@ -298,8 +336,17 @@ start_act() {
                 return 1
             fi
         else
-            echo "$(date) service command not found" >>/var/log/act/service.log
-            return 1
+            if [ -f /opt/act/act.py ]; then
+                nohup /usr/bin/python3 /opt/act/act.py >>/var/log/act/service.log 2>&1 &
+                sleep 1
+                check_port localhost "${ACT_PORT}" >>/var/log/act/service.log 2>&1 || {
+                    echo "$(date) act port check failed" >>/var/log/act/service.log
+                    return 1
+                }
+            else
+                echo "$(date) service command and /opt/act/act.py not found" >>/var/log/act/service.log
+                return 1
+            fi
         fi
     fi
 }

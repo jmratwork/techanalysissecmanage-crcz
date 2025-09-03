@@ -82,8 +82,17 @@ start_misp() {
                 return 1
             fi
         else
-            echo "$(date) service command not found" >>/var/log/misp/service.log
-            return 1
+            if command -v misp-server >/dev/null 2>&1; then
+                nohup misp-server >>/var/log/misp/service.log 2>&1 &
+                sleep 1
+                check_port localhost "${MISP_PORT}" >>/var/log/misp/service.log 2>&1 || {
+                    echo "$(date) misp port check failed" >>/var/log/misp/service.log
+                    return 1
+                }
+            else
+                echo "$(date) service command and misp-server not found" >>/var/log/misp/service.log
+                return 1
+            fi
         fi
     fi
 }
@@ -112,8 +121,12 @@ start_fetch_cti_feed() {
                 return 1
             fi
         else
-            echo "$(date) service command not found" >>/var/log/misp/service.log
-            return 1
+            if [ -f /opt/misp/fetch_cti_feed.sh ]; then
+                nohup /opt/misp/fetch_cti_feed.sh >>/var/log/misp/service.log 2>&1 &
+            else
+                echo "$(date) service command and fetch_cti_feed.sh not found" >>/var/log/misp/service.log
+                return 1
+            fi
         fi
     fi
 }
