@@ -96,12 +96,24 @@ start_c2() {
             return 1
         fi
     else
-        nohup /usr/bin/python3 /opt/c2_server/c2_server.py >>/var/log/c2_server/service.log 2>&1 &
-        sleep 1
-        nc -z localhost "${C2_PORT}" >>/var/log/c2_server/service.log 2>&1 || {
-            echo "$(date) c2_server port check failed" >>/var/log/c2_server/service.log
-            return 1
-        }
+        if command -v service >/dev/null 2>&1; then
+            if service c2_server start >>/var/log/c2_server/service.log 2>&1; then
+                nc -z localhost "${C2_PORT}" >>/var/log/c2_server/service.log 2>&1 || {
+                    echo "$(date) c2_server port check failed" >>/var/log/c2_server/service.log
+                    return 1
+                }
+            else
+                echo "$(date) failed to run service c2_server start" >>/var/log/c2_server/service.log
+                return 1
+            fi
+        else
+            nohup /usr/bin/python3 /opt/c2_server/c2_server.py >>/var/log/c2_server/service.log 2>&1 &
+            sleep 1
+            nc -z localhost "${C2_PORT}" >>/var/log/c2_server/service.log 2>&1 || {
+                echo "$(date) c2_server port check failed" >>/var/log/c2_server/service.log
+                return 1
+            }
+        fi
     fi
 }
 
