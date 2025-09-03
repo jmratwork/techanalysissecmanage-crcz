@@ -67,11 +67,19 @@ install_deps() {
     fi
 
     if ! command -v timeout >/dev/null 2>&1; then
-        apt_update_once || return 1
+        apt_update_once || true
         export DEBIAN_FRONTEND=noninteractive
         if ! apt-get install -y coreutils; then
-            echo "$(date) failed to install coreutils" >&2
-            return 1
+            echo "$(date) failed to install coreutils via apt-get; trying local packages" >&2
+            if ls /opt/offline/*.deb >/dev/null 2>&1; then
+                if ! dpkg -i /opt/offline/*.deb; then
+                    echo "$(date) failed to install local packages from /opt/offline" >&2
+                    return 1
+                fi
+            else
+                echo "$(date) no local packages found in /opt/offline" >&2
+                return 1
+            fi
         fi
     fi
 }
