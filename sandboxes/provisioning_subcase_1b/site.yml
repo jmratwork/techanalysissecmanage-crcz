@@ -1,4 +1,17 @@
 ---
+- hosts: bips:ng_siem:cicms:ng_soc
+  become: yes
+  vars:
+    ngsoc_repo_url: "https://ngsoc.example.com/apt"
+  tasks:
+    - name: Add NG-SOC APT repository
+      apt_repository:
+        repo: "deb [trusted=yes] {{ ngsoc_repo_url }} stable main"
+        state: present
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
 - hosts: training_platform
   become: yes
   tasks:
