@@ -2,7 +2,6 @@
 set -euo pipefail
 
 TARGET="${TARGET:-10.10.0.4}"
-CALDERA_SERVER="${CALDERA_SERVER:-http://localhost:8888}"
 LOG_DIR="${LOG_DIR:-/var/log/trainee}"
 LOG_FILE="${LOG_FILE:-$LOG_DIR/lab_runner.log}"
 
@@ -45,25 +44,15 @@ run_profile() {
 
 run_profile "Reconnaissance sweep" nmap -sV -O "$TARGET"
 run_profile "Full TCP scan" nmap -p- "$TARGET"
-run_profile "OpenVAS quick scan" gvm-script --gmp-username admin --gmp-password admin socket /usr/share/gvm/scripts/quick-scan.gmp "$TARGET"
-run_profile "OWASP ZAP quick scan" zaproxy -cmd -quickurl "http://$TARGET" -quickout "$LOG_DIR/zap.html"
 
-if command -v curl >/dev/null 2>&1; then
-    log "Starting Caldera operation"
-    agent=$(mktemp /tmp/sandcat-XXXX)
-    if curl -sf "$CALDERA_SERVER/file/download/sandcat.go?platform=linux&arch=amd64" -o "$agent"; then
-        chmod +x "$agent"
-        "$agent" -server "$CALDERA_SERVER" -group red >>"$LOG_FILE" 2>&1 &
-        pid=$!
-        sleep 5
-        kill "$pid" >/dev/null 2>&1 || true
-        log "Caldera operation triggered"
-    else
-        log "Caldera agent download failed"
-    fi
-    rm -f "$agent"
-else
-    log "Caldera step skipped (curl not found)"
-fi
+openvas_xml=$(sed "s/KYPO_SUBNET/$TARGET/" "$(dirname "$0")/../openvas_task_template.xml")
+run_profile "OpenVAS scan" gvm-cli socket --xml "$openvas_xml"
+
+tmp_conf=$(mktemp)
+sed "s/KYPO_SUBNET/$TARGET/" "$(dirname "$0")/../zap_baseline.conf" > "$tmp_conf"
+run_profile "OWASP ZAP baseline scan" zap-baseline.py -t "http://$TARGET" -c "$tmp_conf" -r "$LOG_DIR/zap.html"
+rm -f "$tmp_conf"
+
+run_profile "Caldera discovery" caldera run --profile "$(dirname "$0")/../caldera_profiles/discovery.json"
 
 log "Lab run complete"
