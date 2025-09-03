@@ -28,6 +28,19 @@ This manual describes how to deploy KYPO training scenarios in this repository. 
    - Create service accounts and SSH keys as required.
 3. **Snapshot** – Take a snapshot of each VM after configuration so it can be restored for future exercises.
 
+## Offline Environments
+
+For systems without Internet access, pre-download required packages and modules:
+
+- Copy any necessary `.deb` files to `/opt/offline`. The start scripts for Subcase 1c
+  (e.g., `start_soc_services.sh` and `start_cti_component.sh`) will install packages
+  from this directory if `apt-get` fails.
+- Save PowerShell modules for offline use:
+  ```powershell
+  Save-Module -Name PowerShellGet,PackageManagement -Path /opt/offline/psmodules
+  ```
+- Ensure these paths are available on the target machines before running the scenario scripts.
+
 ## Service Orchestration
 
 1. **Provision VMs** – Start VMs from the prepared images or snapshots and verify connectivity.
