@@ -451,6 +451,7 @@ start_decide
 start_mongodb
 start_roaster
 start_soarca
+ROASTER_PORT="${ROASTER_PORT}" SOARCA_PORT="${SOARCA_PORT}" "$(dirname "$0")/import_playbooks.sh"
 start_act
 
 {
