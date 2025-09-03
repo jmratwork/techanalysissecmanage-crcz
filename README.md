@@ -36,6 +36,16 @@ Running `subcase_1b/scripts/training_platform_start.sh` launches a training plat
 
 See [`docs/subcase_1b_guide.md`](docs/subcase_1b_guide.md) for detailed examples.
 
+### Tool Launch Endpoint
+
+The training platform also provides a `POST /launch_tool` route to run
+predefined **Nmap**, **ZAP**, or **Caldera** operations against the KYPO
+subnet. Supply the authentication `token` and desired `tool` in the JSON
+body to start a job. The response returns a `job_id` and initial
+`status`. Poll `GET /launch_tool/<job_id>?token=...` to obtain the latest
+status and command output, allowing the UI to show progress or completion
+to the trainee.
+
 ### Importing Open edX Content
 
 Sample lessons and a quiz are provided under `open_edx/course`. To load this material into Open edX Studio:

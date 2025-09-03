@@ -1,5 +1,8 @@
+import os
 import uuid
 import time
+import threading
+import subprocess
 from flask import Flask, request, jsonify
 
 import phishing_quiz
@@ -16,8 +19,37 @@ invites = {}  # invite_code -> {course_id, email}
 progress = {}  # (course_id, username) -> progress
 quiz_results = {}  # (course_id, username) -> {answers, score}
 edx_failures = []  # list of Open edX reporting failures
+jobs = {}  # job_id -> {status, tool, output}
 
 open_edx = OpenEdXClient()
+
+# Default subnet for KYPO exercises; can be overridden with environment variable
+KYPO_SUBNET = os.getenv('KYPO_SUBNET', '10.10.0.0/24')
+
+COMMANDS = {
+    'nmap': ['nmap', '-sV', KYPO_SUBNET],
+    'zap': ['zap-baseline.py', '-t', f'http://{KYPO_SUBNET}'],
+    'caldera': ['caldera', 'run', '--adversary', 'discovery']
+}
+
+
+def _run_tool(job_id, command):
+    """Execute a security tool and capture its output."""
+
+    jobs[job_id]['status'] = 'running'
+    try:
+        result = subprocess.run(command, capture_output=True, text=True, check=True)
+    except FileNotFoundError as exc:  # tool missing
+        jobs[job_id]['status'] = 'failed'
+        jobs[job_id]['output'] = str(exc)
+        return
+    except subprocess.CalledProcessError as exc:  # execution error
+        jobs[job_id]['status'] = 'failed'
+        jobs[job_id]['output'] = exc.stderr
+        return
+
+    jobs[job_id]['status'] = 'completed'
+    jobs[job_id]['output'] = result.stdout
 
 
 def authenticate(token):
@@ -173,6 +205,41 @@ def get_edx_failures():
     if not user or user.get('role') != 'instructor':
         return jsonify({'error': 'unauthorized'}), 403
     return jsonify({'failures': edx_failures})
+
+
+@app.route('/launch_tool', methods=['POST'])
+def launch_tool():
+    data = request.get_json(force=True)
+    token = data.get('token')
+    user = authenticate(token)
+    if not user:
+        return jsonify({'error': 'unauthorized'}), 403
+
+    tool = data.get('tool', '').lower()
+    command = COMMANDS.get(tool)
+    if not command:
+        return jsonify({'error': 'invalid tool'}), 400
+
+    job_id = str(uuid.uuid4())
+    jobs[job_id] = {'status': 'pending', 'tool': tool}
+    thread = threading.Thread(target=_run_tool, args=(job_id, command), daemon=True)
+    thread.start()
+
+    return jsonify({'job_id': job_id, 'status': jobs[job_id]['status']})
+
+
+@app.route('/launch_tool/<job_id>', methods=['GET'])
+def launch_tool_status(job_id):
+    token = request.args.get('token')
+    user = authenticate(token)
+    if not user:
+        return jsonify({'error': 'unauthorized'}), 403
+
+    job = jobs.get(job_id)
+    if not job:
+        return jsonify({'error': 'not found'}), 404
+
+    return jsonify(job)
 
 
 @app.route('/kypo/launch', methods=['POST'])
