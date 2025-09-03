@@ -29,12 +29,26 @@ KYPO_SUBNET = os.getenv('KYPO_SUBNET', '10.10.0.0/24')
 COMMANDS = {
     'nmap': ['nmap', '-sV', KYPO_SUBNET],
     'zap': ['zap-baseline.py', '-t', f'http://{KYPO_SUBNET}'],
-    'caldera': ['caldera', 'run', '--adversary', 'discovery']
+    'caldera': ['caldera', 'run', '--adversary', 'discovery'],
+    # Quick vulnerability scan using the Greenbone Vulnerability Manager
+    'openvas': [
+        'gvm-script',
+        '--gmp-username', 'admin',
+        '--gmp-password', 'admin',
+        'socket',
+        '/usr/share/gvm/scripts/quick-scan.gmp',
+        KYPO_SUBNET,
+    ],
 }
 
 
 def _run_tool(job_id, command):
-    """Execute a security tool and capture its output."""
+    """Execute a security tool and capture its output.
+
+    Results are stored in-memory for quick access and additionally written to
+    ``/var/log/trainee`` for later inspection.  The file extension is chosen
+    based on the tool invoked to better reflect the typical output format.
+    """
 
     jobs[job_id]['status'] = 'running'
     try:
@@ -50,6 +64,20 @@ def _run_tool(job_id, command):
 
     jobs[job_id]['status'] = 'completed'
     jobs[job_id]['output'] = result.stdout
+
+    # Persist full output to disk for instructor review
+    log_dir = '/var/log/trainee'
+    os.makedirs(log_dir, exist_ok=True)
+    tool = jobs[job_id]['tool']
+    ext = 'html' if tool in {'zap', 'openvas'} else 'txt'
+    file_path = os.path.join(log_dir, f'{tool}_{job_id}.{ext}')
+    try:
+        with open(file_path, 'w', encoding='utf-8') as fh:
+            fh.write(result.stdout)
+        jobs[job_id]['output_file'] = file_path
+    except OSError:
+        # Failure to persist the file should not mark the job as failed
+        pass
 
 
 def authenticate(token):
