@@ -25,6 +25,14 @@ The training platform records course creation in `/var/log/training_platform/cou
 
 The trainee script performs an additional reconnaissance sweep with service and OS fingerprinting and deploys a Caldera `sandcat` agent to execute a demonstration operation. Instructors can verify successful runs by reviewing `/var/log/trainee/scans.log` for entries such as `Reconnaissance succeeded` and `Caldera operation completed`.
 
+To archive these logs for evaluation, run:
+
+```bash
+sudo subcase_1b/scripts/collect_artifacts.sh
+```
+
+The helper gathers available logs from `/var/log/trainee/`, `/var/log/training_platform/`, and `/var/log/cyber_range/` and compresses them into `artefacts.zip` in the current directory.
+
 ## Virtualization
 
 The cyber range is provisioned using Docker Compose. The `scripts/cyber_range_start.sh` helper launches or tears down the containerized environment:
