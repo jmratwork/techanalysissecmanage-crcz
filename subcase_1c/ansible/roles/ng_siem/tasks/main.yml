@@ -78,3 +78,24 @@
   args:
     chdir: /etc/ng_siem
   become: yes
+
+- name: Deploy anomaly detection rules
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../ng_siem/rules/anomaly_rules.ndjson"
+    dest: /etc/ng_siem/anomaly_rules.ndjson
+    owner: root
+    group: root
+    mode: "0644"
+  become: yes
+
+- name: Import anomaly detection rules into Kibana
+  ansible.builtin.command:
+    cmd: >-
+      curl -s -X POST -H 'kbn-xsrf: true' -F
+      file=@/etc/ng_siem/anomaly_rules.ndjson
+      http://localhost:5601/api/detection_engine/rules/_import?overwrite=true
+  register: import_rules
+  retries: 5
+  delay: 15
+  until: import_rules.rc == 0
+  become: yes
