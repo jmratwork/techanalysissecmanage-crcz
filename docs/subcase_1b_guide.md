@@ -81,27 +81,25 @@ flowchart TD
 ## Trainee Workflow
 
 1. Log in to the trainee workstation and retrieve course material from the training platform.
-2. Run the semi-automated scan.
+2. Run the lab runner script.
    ```bash
-   export TRAINEE_PASSWORD='Str0ngP@ss'
-   export CALDERA_API_KEY='your-caldera-key'
-   sudo PASSWORD="$TRAINEE_PASSWORD" CALDERA_API_KEY="$CALDERA_API_KEY" subcase_1b/scripts/trainee_start.sh --target 10.10.0.4
+   sudo subcase_1b/scripts/lab_runner.sh --target 10.10.0.4
    ```
-   The script sequentially executes the following tools and produces expected deliverables:
+   The script sequentially executes the approved tool profiles and produces expected deliverables:
    - `nmap` reconnaissance sweep – provides a list of reachable hosts and detected services.
    - Full TCP port scan using `nmap` – enumerates open ports and versions for the target.
    - OpenVAS quick scan via `gvm-script` – generates a vulnerability report saved to `/var/log/trainee/openvas.json`.
    - OWASP ZAP quick scan – saves an HTML report to `/var/log/trainee/zap.html`.
    - Caldera `sandcat` agent – runs the demo operation and records executed TTPs in the Caldera server.
 
-   Output from each tool is appended to `/var/log/trainee/scans.log`. Successful runs record messages such as:
-   - `Reconnaissance succeeded against 10.10.0.4`
-   - `Completed nmap scan against 10.10.0.4`
-   - `Caldera operation completed`
-   - `Completed OpenVAS scan against 10.10.0.4`
-   - `Completed OWASP ZAP scan against 10.10.0.4`
+   Output from each tool is appended to `/var/log/trainee/lab_runner.log`. Successful runs record messages such as:
+   - `Reconnaissance sweep completed`
+   - `Full TCP scan completed`
+   - `Caldera operation triggered`
+   - `OpenVAS quick scan completed`
+   - `OWASP ZAP quick scan completed`
 
-   After the tools finish, the script checks for these indicators and logs an overall pass/fail evaluation. Results are forwarded to the NG-SIEM ingestion endpoint and completion is reported back to the training platform.
+   The log file consolidates results for instructor review.
 3. Compile the scan outputs into a findings report and submit it to the instructor.
 
 ## Phishing Awareness Quiz
