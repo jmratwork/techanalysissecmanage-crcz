@@ -59,6 +59,18 @@ expected.
    python subcase_1c/scripts/validate_playbooks.py
    ```
 
+## IRIS Incident Flow States
+
+The case management system tracks three primary response phases:
+
+- **contain** – initial containment of the incident.
+- **eradicate** – removal of malicious artifacts and persistence.
+- **recover** – restoration of normal operations.
+
+Transitions into each phase trigger webhooks that send updates to MISP
+(``/events/update``) and notify NG‑SOAR (``/act``) so external systems stay
+aligned with the incident status.
+
 ## Attack Simulation
 
 1. **Execute the malware simulation on a Windows host**
