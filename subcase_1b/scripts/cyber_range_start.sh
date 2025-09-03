@@ -5,6 +5,19 @@ RANGE_LOG="${RANGE_LOG:-/var/log/cyber_range/launch.log}"
 VULN_PROFILE="${VULN_PROFILE:-baseline}"
 COMPOSE_FILE="$(dirname "$0")/../docker-compose.yml"
 
+if ! command -v docker >/dev/null 2>&1; then
+    if [ "${ALLOW_NO_DOCKER:-0}" -eq 1 ]; then
+        echo "Docker not found; continuing without launching containers." >&2
+        exit 0
+    fi
+    echo "ERROR: docker command not found. Install Docker to run cyber_range_start.sh." >&2
+    exit 1
+fi
+if ! docker compose version >/dev/null 2>&1; then
+    echo "ERROR: Docker Compose plugin is required."
+    exit 1
+fi
+
 usage() {
     echo "Usage: $0 [--down]"
     echo "Deploy or tear down the cyber range environment using Docker Compose."
@@ -17,20 +30,12 @@ log() {
 
 deploy() {
     log "Launching cyber range with profile $VULN_PROFILE"
-    if command -v docker >/dev/null 2>&1; then
-        docker compose -f "$COMPOSE_FILE" up -d
-    else
-        log "docker command not found; skipping container launch"
-    fi
+    docker compose -f "$COMPOSE_FILE" up -d
 }
 
 teardown() {
     log "Stopping cyber range"
-    if command -v docker >/dev/null 2>&1; then
-        docker compose -f "$COMPOSE_FILE" down
-    else
-        log "docker command not found; nothing to stop"
-    fi
+    docker compose -f "$COMPOSE_FILE" down
 }
 
 case "${1:-up}" in

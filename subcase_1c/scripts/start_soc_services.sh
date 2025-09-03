@@ -12,6 +12,11 @@ if ! command -v systemctl >/dev/null 2>&1; then
     fi
 fi
 
+if ! command -v docker >/dev/null 2>&1; then
+    echo "ERROR: docker command not found. Install Docker to run start_soc_services.sh." >&2
+    exit 1
+fi
+
 BIPS_PORT="${BIPS_PORT:-5500}"
 NG_SIEM_PORT="${NG_SIEM_PORT:-5601}"
 CICMS_PORT="${CICMS_PORT:-5800}"
