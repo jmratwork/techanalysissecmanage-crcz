@@ -9,6 +9,12 @@ COURSE_NAME="${COURSE_NAME:-PenTest 101}"
 COURSE_CONTENT="${COURSE_CONTENT:-Introduction to penetration testing}"
 LOG_FILE="${LOG_FILE:-/var/log/training_platform/courses.log}"
 
+# refuse to run with an insecure default instructor password
+if [ "$PASSWORD" = "changeme" ]; then
+    echo "ERROR: Set PASSWORD to a non-default value before starting the training platform." >&2
+    exit 1
+fi
+
 mkdir -p "$(dirname "$LOG_FILE")"
 
 # start service in background

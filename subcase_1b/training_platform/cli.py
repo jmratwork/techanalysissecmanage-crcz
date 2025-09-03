@@ -1,9 +1,13 @@
 import argparse
 import json
+import os
 import sys
 from urllib import request, parse
 
-BASE_URL = 'http://localhost:5000'
+# Base URL for the training platform API. Can be overridden with the
+# TRAINING_PLATFORM_URL environment variable to point the CLI at a remote
+# service when running inside KYPO.
+BASE_URL = os.environ.get('TRAINING_PLATFORM_URL', 'http://localhost:5000')
 
 
 def post(path, payload):

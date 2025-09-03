@@ -2,4 +2,4 @@
 dashboard: /etc/ng_soc/ngsoc-dashboard.ndjson
 api:
   endpoint: {{ soc_api_endpoint | default('https://soc.internal.local') }}
-  token: {{ soc_api_token | default('changeme') }}
+  token: {{ soc_api_token | default(lookup('env','SOC_API_TOKEN')) }}

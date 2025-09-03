@@ -12,6 +12,16 @@ COURSE_ID="${COURSE_ID:-}"
 CALDERA_SERVER="${CALDERA_SERVER:-http://localhost:8888}"
 CALDERA_API_KEY="${CALDERA_API_KEY:-changeme}"
 
+# fail fast if insecure default credentials are used
+if [ "$PASSWORD" = "changeme" ]; then
+    echo "ERROR: Set PASSWORD to a non-default value before running trainee_start.sh" >&2
+    exit 1
+fi
+if [ "$CALDERA_API_KEY" = "changeme" ]; then
+    echo "ERROR: Set CALDERA_API_KEY to a non-default value before running trainee_start.sh" >&2
+    exit 1
+fi
+
 APT_UPDATED=0
 apt_update_once() {
     if [ "$APT_UPDATED" -eq 0 ]; then

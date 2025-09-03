@@ -27,7 +27,7 @@ See [deployment manual](docs/deployment_manual.md) for detailed steps including 
 
 ### Phishing Quiz Module
 
-Running `subcase_1b/scripts/training_platform_start.sh` launches a training platform that now includes a phishing-awareness quiz. Once the service is up, the following endpoints can be used to interact with the quiz:
+Running `subcase_1b/scripts/training_platform_start.sh` launches a training platform that now includes a phishing-awareness quiz. Set the `PASSWORD` environment variable to a strong value before starting the service. Once the service is up, the following endpoints can be used to interact with the quiz:
 
 - `GET /quiz/start` – obtain questions.
 - `POST /quiz/submit` – send answers and record the score.

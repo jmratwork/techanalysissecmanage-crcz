@@ -24,16 +24,19 @@ flowchart TD
 
 1. **Create the Course**
    ```bash
-   sudo subcase_1b/scripts/training_platform_start.sh --course pentest-101
+   export INSTRUCTOR_PASSWORD='S3cureP@ss'
+   sudo PASSWORD="$INSTRUCTOR_PASSWORD" COURSE_NAME=pentest-101 subcase_1b/scripts/training_platform_start.sh
    ```
-   Starts the Flask service, registers the instructor, and creates the course via the REST API.
+   Starts the Flask service, registers the instructor, and creates the course via the REST API. The script
+   refuses to run if `PASSWORD` remains at the insecure default value.
 
    To invite a learner:
    ```bash
-   TOKEN=$(python subcase_1b/training_platform/cli.py login --username instructor --password changeme)
+   TOKEN=$(python subcase_1b/training_platform/cli.py login --username instructor --password "$INSTRUCTOR_PASSWORD")
    COURSE_ID=$(python subcase_1b/training_platform/cli.py list-courses --token "$TOKEN" | python -c 'import sys,json; d=json.load(sys.stdin); print(next(iter(d.keys())))')
    python subcase_1b/training_platform/cli.py invite --token "$TOKEN" --course-id "$COURSE_ID" --email learner@example.com
    ```
+   Set `TRAINING_PLATFORM_URL` if the service runs on a host other than `localhost`.
 2. **Prepare Caldera**
    - Ensure the Caldera server is running and accessible to trainees.
    - Load a demo operation that the `sandcat` agent can execute.
@@ -76,7 +79,9 @@ flowchart TD
 1. Log in to the trainee workstation and retrieve course material from the training platform.
 2. Run the semi-automated scan.
    ```bash
-   sudo subcase_1b/scripts/trainee_start.sh --target 10.10.0.4
+   export TRAINEE_PASSWORD='Str0ngP@ss'
+   export CALDERA_API_KEY='your-caldera-key'
+   sudo PASSWORD="$TRAINEE_PASSWORD" CALDERA_API_KEY="$CALDERA_API_KEY" subcase_1b/scripts/trainee_start.sh --target 10.10.0.4
    ```
    The script sequentially executes the following tools and produces expected deliverables:
    - `nmap` reconnaissance sweep – provides a list of reachable hosts and detected services.
