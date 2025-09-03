@@ -90,6 +90,22 @@ check_port() {
 
 start_bips() {
     mkdir -p /var/log/bips
+    if [ "${BIPS_FORWARD_ONLY:-0}" -eq 1 ]; then
+        local stub_script
+        stub_script="$(dirname "$0")/../bips_stub.py"
+        echo "$(date) starting bips forwarding stub" >>/var/log/bips/service.log
+        if BIPS_PORT="${BIPS_PORT}" python3 "$stub_script" >>/var/log/bips/service.log 2>&1 & then
+            sleep 1
+            check_port localhost "${BIPS_PORT}" >>/var/log/bips/service.log 2>&1 || {
+                echo "$(date) bips stub port check failed" >>/var/log/bips/service.log
+                return 1
+            }
+            return 0
+        else
+            echo "$(date) failed to start bips forwarding stub" >>/var/log/bips/service.log
+            return 1
+        fi
+    fi
     if [ "$USE_SYSTEMCTL" -eq 1 ]; then
         if systemctl is-active --quiet bips; then
             return 0
