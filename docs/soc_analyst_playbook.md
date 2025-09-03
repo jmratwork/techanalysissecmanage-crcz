@@ -30,8 +30,8 @@ An alert is considered confirmed when:
 
 | Playbook | Purpose | When to Execute |
 |---------|---------|----------------|
-| [`isolation.yml`](../subcase_1c/playbooks/isolation.yml) | Disconnect a compromised host to prevent spread. | Execute when initial triage shows active compromise or lateral movement. |
-| [`eradication.yml`](../subcase_1c/playbooks/eradication.yml) | Remove malware artifacts and clean quarantine directories. | Run after isolation to eliminate confirmed malicious components. |
-| [`recovery.yml`](../subcase_1c/playbooks/recovery.yml) | Restore network connectivity and verify critical services. | Apply once eradication is complete and the host is ready to return to production. |
+| [`response.json`](../subcase_1c/playbooks/response.json) | Isolate a compromised host to prevent spread. | Execute when initial triage shows active compromise or lateral movement. |
+| [`elimination.json`](../subcase_1c/playbooks/elimination.json) | Remove malware artifacts and clean quarantine directories. | Run after response to eliminate confirmed malicious components. |
+| [`recovery.json`](../subcase_1c/playbooks/recovery.json) | Restore network connectivity and verify critical services. | Apply once elimination is complete and the host is ready to return to production. |
 
 Following this guide ensures analysts can navigate dashboards, perform targeted searches, confirm alerts, and trigger the correct automation playbook during incident response.

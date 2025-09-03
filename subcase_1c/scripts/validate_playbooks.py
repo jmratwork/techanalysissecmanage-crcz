@@ -1,33 +1,35 @@
 #!/usr/bin/env python3
-"""Basic validation for CACAO-style YAML playbooks."""
+"""Basic validation for CACAO JSON playbooks."""
 import sys
 import pathlib
-import yaml
+import json
 
-REQUIRED_TOP_LEVEL = {"id", "name", "description", "start", "actions"}
-REQUIRED_ACTION_KEYS = {"description", "command"}
+REQUIRED_TOP_LEVEL = {"type", "spec_version", "id", "name", "description", "playbook_types", "workflow"}
+REQUIRED_WORKFLOW_KEYS = {"start", "blocks"}
+REQUIRED_BLOCK_KEYS = {"type", "description", "action"}
 
 
 def validate_playbook(path: pathlib.Path) -> None:
     with path.open() as f:
-        data = yaml.safe_load(f)
+        data = json.load(f)
     missing = REQUIRED_TOP_LEVEL - data.keys()
     if missing:
         raise ValueError(f"missing keys: {', '.join(sorted(missing))}")
-    actions = data["actions"]
-    if not isinstance(actions, dict) or not actions:
-        raise ValueError("actions must be a non-empty mapping")
-    if data["start"] not in actions:
-        raise ValueError("start action not defined in actions")
-    for name, action in actions.items():
-        if REQUIRED_ACTION_KEYS - action.keys():
-            raise ValueError(f"action '{name}' missing keys")
+    workflow = data["workflow"]
+    if REQUIRED_WORKFLOW_KEYS - workflow.keys():
+        raise ValueError("workflow missing keys")
+    blocks = workflow["blocks"]
+    if workflow["start"] not in blocks:
+        raise ValueError("start block not defined in blocks")
+    for name, block in blocks.items():
+        if REQUIRED_BLOCK_KEYS - block.keys():
+            raise ValueError(f"block '{name}' missing keys")
 
 
 def main() -> int:
     base = pathlib.Path(__file__).resolve().parent.parent / "playbooks"
     ok = True
-    for file in base.glob("*.yml"):
+    for file in base.glob("*.json"):
         try:
             validate_playbook(file)
             print(f"{file.name}: OK")
