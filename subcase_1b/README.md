@@ -36,6 +36,31 @@ sudo subcase_1b/scripts/cyber_range_start.sh --down # stop and remove containers
 
 The accompanying `docker-compose.yml` file defines services such as a vulnerable DVWA web server, a Kali-based workstation, and the training platform.
 
+### Installing Docker on KYPO
+
+1. Update the package index:
+
+    ```bash
+    sudo apt-get update
+    ```
+2. Install Docker and the Compose plugin:
+
+    ```bash
+    sudo apt-get install -y docker.io docker-compose-plugin
+    sudo systemctl enable --now docker
+    sudo usermod -aG docker "$USER"
+    ```
+3. Log out and back in, then verify with:
+
+    ```bash
+    docker --version
+    docker compose version
+    ```
+
+### Running without containers
+
+If Docker is unavailable, set `ALLOW_NO_DOCKER=1` to skip container startup and run services directly on the host. The training platform and other utilities can be started individually using the scripts in `subcase_1b/scripts/`.
+
 ## Scenario Examples
 
 The sample scenario pack `subcase_1b/scenario.yml` includes example exercises that can be used during courses:
