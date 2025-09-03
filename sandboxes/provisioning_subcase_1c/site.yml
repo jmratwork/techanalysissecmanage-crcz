@@ -6,7 +6,6 @@
       apt:
         name:
           - tcpdump
-          - netcat
           - powershell
         state: present
 

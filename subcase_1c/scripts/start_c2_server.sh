@@ -41,14 +41,26 @@ install_deps() {
         fi
     fi
 
-    if ! command -v nc >/dev/null 2>&1; then
-        apt_update_once || return 1
+    if ! command -v timeout >/dev/null 2>&1; then
+        apt_update_once || true
         export DEBIAN_FRONTEND=noninteractive
-        if ! apt-get install -y netcat; then
-            echo "$(date) failed to install netcat" >&2
-            return 1
+        if ! apt-get install -y coreutils; then
+            echo "$(date) failed to install coreutils via apt-get; trying local packages" >&2
+            if ls /opt/offline/*.deb >/dev/null 2>&1; then
+                if ! dpkg -i /opt/offline/*.deb; then
+                    echo "$(date) failed to install local packages from /opt/offline" >&2
+                    return 1
+                fi
+            else
+                echo "$(date) no local packages found in /opt/offline" >&2
+                return 1
+            fi
         fi
     fi
+}
+
+check_port() {
+    timeout 5 bash -c "cat < /dev/null > /dev/tcp/$1/$2"
 }
 
 setup_c2() {
@@ -87,7 +99,7 @@ start_c2() {
                 echo "$(date) c2_server failed to start" >>/var/log/c2_server/service.log
                 return 1
             fi
-            nc -z localhost "${C2_PORT}" >>/var/log/c2_server/service.log 2>&1 || {
+            check_port localhost "${C2_PORT}" >>/var/log/c2_server/service.log 2>&1 || {
                 echo "$(date) c2_server port check failed" >>/var/log/c2_server/service.log
                 return 1
             }
@@ -98,7 +110,7 @@ start_c2() {
     else
         if command -v service >/dev/null 2>&1; then
             if service c2_server start >>/var/log/c2_server/service.log 2>&1; then
-                nc -z localhost "${C2_PORT}" >>/var/log/c2_server/service.log 2>&1 || {
+                check_port localhost "${C2_PORT}" >>/var/log/c2_server/service.log 2>&1 || {
                     echo "$(date) c2_server port check failed" >>/var/log/c2_server/service.log
                     return 1
                 }
@@ -109,7 +121,7 @@ start_c2() {
         else
             nohup /usr/bin/python3 /opt/c2_server/c2_server.py >>/var/log/c2_server/service.log 2>&1 &
             sleep 1
-            nc -z localhost "${C2_PORT}" >>/var/log/c2_server/service.log 2>&1 || {
+            check_port localhost "${C2_PORT}" >>/var/log/c2_server/service.log 2>&1 || {
                 echo "$(date) c2_server port check failed" >>/var/log/c2_server/service.log
                 return 1
             }
