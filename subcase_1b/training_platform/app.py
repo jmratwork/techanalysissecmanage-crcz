@@ -149,6 +149,9 @@ def post_results():
     }
     append_result(result)
     metrics = aggregate_results(course_id, username)
+    quiz = quiz_results.get((course_id, username))
+    if quiz:
+        metrics['quiz_score'] = quiz.get('score', 0)
     progress[(course_id, username)] = metrics.get('score', score)
     ok, message = open_edx.update_progress(username, course_id, metrics)
     if not ok:
