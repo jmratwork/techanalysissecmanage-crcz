@@ -96,19 +96,32 @@ flowchart TD
    The script sequentially executes the approved tool profiles and produces expected deliverables:
    - `nmap` reconnaissance sweep – provides a list of reachable hosts and detected services.
    - Full TCP port scan using `nmap` – enumerates open ports and versions for the target.
-   - OpenVAS quick scan via `gvm-script` – generates a vulnerability report saved to `/var/log/trainee/openvas.json`.
-   - OWASP ZAP quick scan – saves an HTML report to `/var/log/trainee/zap.html`.
-   - Caldera `sandcat` agent – runs the demo operation and records executed TTPs in the Caldera server.
+   - OpenVAS scan driven by `openvas_task_template.xml` – generates a vulnerability report saved to `/var/log/trainee/openvas.json`.
+   - OWASP ZAP baseline scan using `zap_baseline.conf` – saves an HTML report to `/var/log/trainee/zap.html`.
+   - Caldera discovery profile (`caldera_profiles/discovery.json`) – runs the demo operation against the KYPO subnet.
 
-   Output from each tool is appended to `/var/log/trainee/lab_runner.log`. Successful runs record messages such as:
-   - `Reconnaissance sweep completed`
-   - `Full TCP scan completed`
-   - `Caldera operation triggered`
-   - `OpenVAS quick scan completed`
-   - `OWASP ZAP quick scan completed`
+    Output from each tool is appended to `/var/log/trainee/lab_runner.log`. Successful runs record messages such as:
+    - `Reconnaissance sweep completed`
+    - `Full TCP scan completed`
+    - `Caldera discovery completed`
+    - `OpenVAS scan completed`
+    - `OWASP ZAP baseline scan completed`
 
-   The log file consolidates results for instructor review.
+The log file consolidates results for instructor review.
 3. Compile the scan outputs into a findings report and submit it to the instructor.
+
+### Customizing scan artifacts
+
+The lab runner and training platform reference configurable templates located in `subcase_1b/`:
+
+- `caldera_profiles/discovery.json`
+- `zap_baseline.conf`
+- `openvas_task_template.xml`
+
+Each file contains the placeholder `KYPO_SUBNET` (default `10.10.0.0/24`).
+Modify these files or export `KYPO_SUBNET` to adapt the exercises to a different
+network.  Adjusting the contents allows instructors to tweak Caldera facts,
+ZAP rules, or OpenVAS scan parameters to match their environment.
 
 ### Launching tools via API
 

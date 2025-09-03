@@ -3,6 +3,7 @@ import uuid
 import time
 import threading
 import subprocess
+import tempfile
 from flask import Flask, request, jsonify
 
 import phishing_quiz
@@ -26,19 +27,34 @@ open_edx = OpenEdXClient()
 # Default subnet for KYPO exercises; can be overridden with environment variable
 KYPO_SUBNET = os.getenv('KYPO_SUBNET', '10.10.0.0/24')
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CALDERA_PROFILE = os.path.join(BASE_DIR, '..', 'caldera_profiles', 'discovery.json')
+ZAP_CONFIG = os.path.join(BASE_DIR, '..', 'zap_baseline.conf')
+OPENVAS_TEMPLATE = os.path.join(BASE_DIR, '..', 'openvas_task_template.xml')
+
+
+def _prepare_template(path):
+    """Return path to a temporary file with KYPO_SUBNET substituted."""
+
+    with open(path, 'r', encoding='utf-8') as fh:
+        content = fh.read().replace('KYPO_SUBNET', KYPO_SUBNET)
+    tmp = tempfile.NamedTemporaryFile(delete=False)
+    tmp.write(content.encode('utf-8'))
+    tmp.close()
+    return tmp.name
+
+
+ZAP_CONF = _prepare_template(ZAP_CONFIG)
+CALDERA_PROFILE_PATH = _prepare_template(CALDERA_PROFILE)
+with open(OPENVAS_TEMPLATE, 'r', encoding='utf-8') as fh:
+    OPENVAS_XML = fh.read().replace('KYPO_SUBNET', KYPO_SUBNET)
+
+
 COMMANDS = {
     'nmap': ['nmap', '-sV', KYPO_SUBNET],
-    'zap': ['zap-baseline.py', '-t', f'http://{KYPO_SUBNET}'],
-    'caldera': ['caldera', 'run', '--adversary', 'discovery'],
-    # Quick vulnerability scan using the Greenbone Vulnerability Manager
-    'openvas': [
-        'gvm-script',
-        '--gmp-username', 'admin',
-        '--gmp-password', 'admin',
-        'socket',
-        '/usr/share/gvm/scripts/quick-scan.gmp',
-        KYPO_SUBNET,
-    ],
+    'zap': ['zap-baseline.py', '-t', f'http://{KYPO_SUBNET}', '-c', ZAP_CONF],
+    'caldera': ['caldera', 'run', '--profile', CALDERA_PROFILE_PATH],
+    'openvas': ['gvm-cli', 'socket', '--xml', OPENVAS_XML],
 }
 
 
