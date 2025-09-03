@@ -59,6 +59,14 @@ expected.
    python subcase_1c/scripts/validate_playbooks.py
    ```
 
+### Sharing policy
+
+`start_cti_component.sh` initializes a local sharing policy for MISP. A
+*Local sharing group* limits dissemination to internal participants, and the
+`TLP` taxonomy is imported and enabled so that indicators can be tagged with
+traffic-light protocol markings. This ensures threat intelligence is scoped to
+the local environment and classified consistently.
+
 ## IRIS Incident Flow States
 
 The case management system tracks three primary response phases:
