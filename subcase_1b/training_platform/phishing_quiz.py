@@ -115,6 +115,7 @@ def init_app(
     tokens,
     quiz_results,
     open_edx: OpenEdXClient | None = None,
+    edx_failures: list | None = None,
 ):
     """Register quiz endpoints on the given Flask app."""
 
@@ -156,6 +157,16 @@ def init_app(
         metrics = aggregate_results(course_id, username)
         if open_edx:
             open_edx.push_grade(username, course_id, score)
+            ok, message = open_edx.push_grade_lms(username, course_id, score)
+            if not ok and edx_failures is not None:
+                edx_failures.append(
+                    {
+                        "course_id": course_id,
+                        "username": username,
+                        "error": message,
+                        "timestamp": time.time(),
+                    }
+                )
         return jsonify({'score': score, 'metrics': metrics})
 
     @app.route('/quiz/score', methods=['GET'])
