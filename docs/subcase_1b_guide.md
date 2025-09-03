@@ -22,7 +22,11 @@ flowchart TD
 
 ## Instructor Setup
 
-1. **Create the Course**
+1. **Install dependencies**
+   ```bash
+   pip install -r subcase_1b/training_platform/requirements.txt
+   ```
+2. **Create the Course**
    ```bash
    export INSTRUCTOR_PASSWORD='S3cureP@ss'
    sudo PASSWORD="$INSTRUCTOR_PASSWORD" COURSE_NAME=pentest-101 subcase_1b/scripts/training_platform_start.sh
@@ -37,10 +41,10 @@ flowchart TD
    python subcase_1b/training_platform/cli.py invite --token "$TOKEN" --course-id "$COURSE_ID" --email learner@example.com
    ```
    Set `TRAINING_PLATFORM_URL` if the service runs on a host other than `localhost`.
-2. **Prepare Caldera**
+3. **Prepare Caldera**
    - Ensure the Caldera server is running and accessible to trainees.
    - Load a demo operation that the `sandcat` agent can execute.
-3. **Start the Cyber Range and Security Pipeline**
+4. **Start the Cyber Range and Security Pipeline**
    - Cyber Range
      ```bash
      sudo subcase_1b/scripts/cyber_range_start.sh
@@ -69,7 +73,7 @@ flowchart TD
      sudo subcase_1b/scripts/ng_soc_start.sh
      ```
    - Analysts monitoring these services can follow the [SOC Analyst Playbook](soc_analyst_playbook.md) for dashboard navigation, search queries, and alert confirmation criteria.
-4. **Evaluation**
+5. **Evaluation**
    - Review trainee scan logs and submitted vulnerability reports.
    - Confirm Caldera operations completed successfully.
    - Provide feedback through the training platform.

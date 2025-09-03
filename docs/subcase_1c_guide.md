@@ -8,7 +8,11 @@ expected.
 
 ## Deployment
 
-1. **Start SOC services**
+1. **Install dependencies**
+   ```bash
+   pip install -r subcase_1c/requirements.txt
+   ```
+2. **Start SOC services**
 
    ```bash
    export MISP_API_KEY='your-misp-key'
@@ -18,7 +22,7 @@ expected.
    Launches BIPS, NG‑SIEM, CICMS, NG‑SOC, Decide, and Act. Port checks rely on
    Bash's `/dev/tcp` and `timeout` rather than external utilities.
 
-2. **Start CTI component and ingest feeds**
+3. **Start CTI component and ingest feeds**
 
    ```bash
    sudo subcase_1c/scripts/start_cti_component.sh
@@ -28,13 +32,13 @@ expected.
    NG‑SIEM. Use `CTI_OFFLINE=1` or run the fetch script with `--offline` to
    skip external downloads when network access is unavailable.
 
-3. **Launch the C2 server**
+4. **Launch the C2 server**
 
    ```bash
    sudo subcase_1c/scripts/start_c2_server.sh
    ```
 
-4. **Configure malware detection rules**
+5. **Configure malware detection rules**
 
    YARA rules live in `subcase_1c/malware_detection/rules/`. Add or adjust
    rules in this directory and scan samples with:
@@ -43,7 +47,7 @@ expected.
    python subcase_1c/malware_detection/scanner.py <sample>
    ```
 
-5. **Validate playbooks**
+6. **Validate playbooks**
 
    Act consumes CACAO‑style playbooks from `subcase_1c/playbooks/` for actions
    such as host isolation or malware eradication. Validate the playbooks
