@@ -202,7 +202,7 @@ def kypo_launch():
     return jsonify({'launch_url': launch_url})
 
 
-phishing_quiz.init_app(app, authenticate, tokens, quiz_results)
+phishing_quiz.init_app(app, authenticate, tokens, quiz_results, open_edx)
 
 
 if __name__ == '__main__':

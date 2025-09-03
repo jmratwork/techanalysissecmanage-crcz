@@ -1,6 +1,7 @@
 from flask import request, jsonify
 import time
 
+from open_edx_client import OpenEdXClient
 from results_service import append_result, aggregate_results
 
 # Sample phishing quiz questions
@@ -108,7 +109,13 @@ quiz_questions = [
 ]
 
 
-def init_app(app, authenticate, tokens, quiz_results):
+def init_app(
+    app,
+    authenticate,
+    tokens,
+    quiz_results,
+    open_edx: OpenEdXClient | None = None,
+):
     """Register quiz endpoints on the given Flask app."""
 
     @app.route('/quiz/start', methods=['GET'])
@@ -147,6 +154,8 @@ def init_app(app, authenticate, tokens, quiz_results):
         }
         append_result(result)
         metrics = aggregate_results(course_id, username)
+        if open_edx:
+            open_edx.push_grade(username, course_id, score)
         return jsonify({'score': score, 'metrics': metrics})
 
     @app.route('/quiz/score', methods=['GET'])

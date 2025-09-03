@@ -1,7 +1,9 @@
+import csv
 import logging
 import os
 import time
 import uuid
+from pathlib import Path
 from typing import Any
 
 import requests
@@ -81,6 +83,37 @@ class OpenEdXClient:
             response.raise_for_status()
         except requests.RequestException as exc:  # pragma: no cover - network errors
             message = f"Open edX progress update failed: {exc}"
+            self.logger.error(message)
+            self.errors.append(message)
+            return False, message
+        return True, ""
+
+    # ------------------------------------------------------------------
+    # Gradebook export
+    def push_grade(
+        self,
+        username: str,
+        course_id: str,
+        score: Any,
+        csv_path: str | None = None,
+    ) -> tuple[bool, str]:
+        """Append a grade entry to a CSV file for instructor review.
+
+        The default implementation writes ``username``, ``course_id`` and
+        ``score`` to ``gradebook.csv`` located next to this module. The path
+        can be overridden via ``csv_path``.
+        """
+
+        path = Path(csv_path or Path(__file__).with_name("gradebook.csv"))
+        try:
+            exists = path.exists()
+            with path.open("a", newline="", encoding="utf-8") as fh:
+                writer = csv.writer(fh)
+                if not exists:
+                    writer.writerow(["username", "course_id", "score"])
+                writer.writerow([username, course_id, score])
+        except OSError as exc:  # pragma: no cover - filesystem errors
+            message = f"Grade export failed: {exc}"
             self.logger.error(message)
             self.errors.append(message)
             return False, message
