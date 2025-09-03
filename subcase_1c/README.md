@@ -61,27 +61,27 @@ For a cross-reference of tools, versions, and documentation, see the [NG-SOAR co
 For deeper guidance and troubleshooting tips, see [the Subcase 1c guide](../docs/subcase_1c_guide.md).
 
 ## Playbook Execution Examples
-The Act service now leverages a lightweight **SoarEngine** that parses CACAO-style YAML playbooks from `subcase_1c/playbooks/`. Each playbook defines a starting action and a set of ordered actions. When an incident is posted to `/act`, the engine renders commands with the provided target and prints the simulated execution steps.
+The Act service now leverages a lightweight **SoarEngine** that parses CACAO JSON playbooks from `subcase_1c/playbooks/`. Each playbook defines a starting action and a set of ordered actions. When an incident is posted to `/act`, the engine renders commands with the provided target and prints the simulated execution steps.
 
-### Isolation
+### Response
 ```bash
 curl -X POST http://localhost:8100/act \
      -H 'Content-Type: application/json' \
-     -d '{"target":"192.168.56.10","mitigation":"isolate_host"}'
+     -d '{"target":"192.168.56.10","mitigation":"response"}'
 ```
 
-### Eradication
+### Elimination
 ```bash
 curl -X POST http://localhost:8100/act \
      -H 'Content-Type: application/json' \
-     -d '{"target":"192.168.56.10","mitigation":"eradicate_malware"}'
+     -d '{"target":"192.168.56.10","mitigation":"elimination"}'
 ```
 
 ### Recovery
 ```bash
 curl -X POST http://localhost:8100/act \
      -H 'Content-Type: application/json' \
-     -d '{"target":"192.168.56.10","mitigation":"recover_host"}'
+     -d '{"target":"192.168.56.10","mitigation":"recovery"}'
 ```
 
 Playbooks can be edited and validated with:

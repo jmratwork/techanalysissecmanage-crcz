@@ -14,7 +14,7 @@ X = np.array([
     [0, 1], [0, 5], [0, 8],
     [1, 2], [1, 6], [1, 9],
 ])
-y = np.array([0, 1, 2, 0, 1, 2])  # 0: monitor, 1: block_ip, 2: isolate_host
+y = np.array([0, 1, 2, 0, 1, 2])  # 0: monitor, 1: block_ip, 2: response
 
 model = DecisionTreeClassifier()
 model.fit(X, y)
@@ -22,7 +22,7 @@ model.fit(X, y)
 MITIGATIONS = {
     0: "monitor",
     1: "block_ip",
-    2: "isolate_host"
+    2: "response"
 }
 
 def encode_source(source: str) -> int:

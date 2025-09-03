@@ -51,8 +51,8 @@ expected.
 
 6. **Validate playbooks**
 
-   Act consumes CACAO‑style playbooks from `subcase_1c/playbooks/` for actions
-   such as host isolation or malware eradication. Validate the playbooks
+   Act consumes CACAO JSON playbooks from `subcase_1c/playbooks/` for actions
+   such as incident response or threat elimination. Validate the playbooks
    before use:
 
    ```bash

@@ -24,6 +24,9 @@ NG_SOAR_PORT="${NG_SOAR_PORT:-5900}"
 DECIDE_PORT="${DECIDE_PORT:-8000}"
 ACT_PORT="${ACT_PORT:-8100}"
 SIEM_UI_PORT="${SIEM_UI_PORT:-5602}"
+ROASTER_PORT="${ROASTER_PORT:-8081}"
+SOARCA_PORT="${SOARCA_PORT:-8082}"
+MONGODB_PORT="${MONGODB_PORT:-27017}"
 
 LOG_DIR="/var/log/soc_services"
 LOG_FILE="${LOG_DIR}/start.log"
@@ -58,6 +61,58 @@ apt_update_once() {
             return 1
         fi
         APT_UPDATED=1
+    fi
+}
+
+
+start_mongodb() {
+    mkdir -p /var/log/mongodb
+    if docker ps --format '{{.Names}}' | grep -q '^cacao-mongo$'; then
+        return 0
+    fi
+    if docker run -d --name cacao-mongo -p ${MONGODB_PORT}:27017 mongo:8.0.4 >>/var/log/mongodb/service.log 2>&1; then
+        sleep 1
+        check_port localhost "${MONGODB_PORT}" >>/var/log/mongodb/service.log 2>&1 || {
+            echo "$(date) mongodb port check failed" >>/var/log/mongodb/service.log
+            return 1
+        }
+    else
+        echo "$(date) failed to start mongodb" >>/var/log/mongodb/service.log
+        return 1
+    fi
+}
+
+start_roaster() {
+    mkdir -p /var/log/roaster
+    if docker ps --format '{{.Names}}' | grep -q '^cacao-roaster$'; then
+        return 0
+    fi
+    if docker run -d --name cacao-roaster --link cacao-mongo:mongo -p ${ROASTER_PORT}:8080 ghcr.io/oasis-open/roaster:1.3.0 >>/var/log/roaster/service.log 2>&1; then
+        sleep 1
+        check_port localhost "${ROASTER_PORT}" >>/var/log/roaster/service.log 2>&1 || {
+            echo "$(date) roaster port check failed" >>/var/log/roaster/service.log
+            return 1
+        }
+    else
+        echo "$(date) failed to start roaster" >>/var/log/roaster/service.log
+        return 1
+    fi
+}
+
+start_soarca() {
+    mkdir -p /var/log/soarca
+    if docker ps --format '{{.Names}}' | grep -q '^soarca$'; then
+        return 0
+    fi
+    if docker run -d --name soarca -e ROASTER_URL=http://localhost:${ROASTER_PORT} -p ${SOARCA_PORT}:8000 ghcr.io/oasis-open/soarca:1.0.0 >>/var/log/soarca/service.log 2>&1; then
+        sleep 1
+        check_port localhost "${SOARCA_PORT}" >>/var/log/soarca/service.log 2>&1 || {
+            echo "$(date) soarca port check failed" >>/var/log/soarca/service.log
+            return 1
+        }
+    else
+        echo "$(date) failed to start soarca" >>/var/log/soarca/service.log
+        return 1
     fi
 }
 
@@ -393,6 +448,9 @@ start_siem_ui
 start_cicms
 start_ng_soar
 start_decide
+start_mongodb
+start_roaster
+start_soarca
 start_act
 
 {
@@ -401,6 +459,8 @@ start_act
     echo "$(date) MISP_URL=${MISP_URL}"
     echo "$(date) DECIDE_URL=${DECIDE_URL}"
     echo "$(date) ACT_URL=${ACT_URL}"
+    echo "$(date) ROASTER_URL=http://localhost:${ROASTER_PORT}"
+    echo "$(date) SOARCA_URL=http://localhost:${SOARCA_PORT}"
     echo "$(date) alert->case->response sequence logged at /var/log/bips/sequence.log"
 } >>"${LOG_FILE}"
 
@@ -410,6 +470,8 @@ SOC services started. Endpoints:
   IRIS    ${IRIS_URL}
   MISP    ${MISP_URL} (key: ${MISP_API_KEY})
   Decide  ${DECIDE_URL}
+  Roaster http://localhost:${ROASTER_PORT}
+  SOARCA  http://localhost:${SOARCA_PORT}
   Act     ${ACT_URL}
 Logs at ${LOG_FILE} and /var/log/bips/sequence.log
 EOM

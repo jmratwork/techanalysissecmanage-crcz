@@ -21,9 +21,9 @@ def monitor(target: str) -> None:
 
 
 ACTIONS = {
-    "isolate_host": {"func": engine.isolate_host, "playbook": "isolation"},
-    "eradicate_malware": {"func": engine.eradicate_malware, "playbook": "eradication"},
-    "recover_host": {"func": lambda host: engine.execute("recovery", host=host), "playbook": "recovery"},
+    "response": {"func": engine.response, "playbook": "response"},
+    "elimination": {"func": engine.elimination, "playbook": "elimination"},
+    "recovery": {"func": engine.recovery, "playbook": "recovery"},
     "monitor": {"func": monitor, "playbook": None},
 }
 
