@@ -11,7 +11,8 @@ expected.
 1. **Start SOC services**
 
    ```bash
-   sudo subcase_1c/scripts/start_soc_services.sh
+   export MISP_API_KEY='your-misp-key'
+   sudo MISP_API_KEY="$MISP_API_KEY" subcase_1c/scripts/start_soc_services.sh
    ```
 
    Launches BIPS, NG‑SIEM, CICMS, NG‑SOC, Decide, and Act. Port checks rely on

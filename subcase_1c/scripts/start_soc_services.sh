@@ -30,6 +30,12 @@ export MISP_API_KEY="${MISP_API_KEY:-changeme}"
 export DECIDE_URL="http://localhost:${DECIDE_PORT}/recommend"
 export ACT_URL="http://localhost:${ACT_PORT}/act"
 
+# ensure the MISP API key is not left at the insecure default
+if [ "$MISP_API_KEY" = "changeme" ]; then
+    echo "ERROR: Set MISP_API_KEY to a non-default value before starting SOC services." >&2
+    exit 1
+fi
+
 {
     echo "$(date) Starting SOC services"
     echo "IRIS_URL=${IRIS_URL}"
