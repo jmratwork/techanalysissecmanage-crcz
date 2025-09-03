@@ -1,6 +1,6 @@
 # Subcase 1b Guide: Penetration Testing and Vulnerability Assessment
 
-See [deployment manual](deployment_manual.md) for baseline environment setup and teardown steps before running this scenario.
+See [deployment manual](deployment_manual.md) for baseline environment setup and teardown steps before running this scenario. Ensure required environment variables are configured as outlined in [env_variables.md](env_variables.md) before executing scripts.
 
 ## Objective
 Provide self-paced training on penetration testing and vulnerability assessments. The Training Instructor creates courses and configures Cyber Range scenarios simulating CYNET's network infrastructure. Trainees run semi-automated penetration tests to locate potential vulnerabilities and attack entry points.

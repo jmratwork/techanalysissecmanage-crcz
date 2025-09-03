@@ -1,6 +1,6 @@
 # Subcase 1c Guide: Malware Simulation and CTI Integration
 
-See [deployment manual](deployment_manual.md) for baseline environment setup and teardown steps before running this scenario.
+See [deployment manual](deployment_manual.md) for baseline environment setup and teardown steps before running this scenario. Review [env_variables.md](env_variables.md) and configure required environment variables such as `MISP_API_KEY` before executing scripts.
 
 This guide walks through deploying the Subcase 1c environment, running the
 benign malware simulator, and validating that NG‑SOC components respond as
