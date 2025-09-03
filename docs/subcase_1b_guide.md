@@ -152,6 +152,31 @@ generated:
 | `LTI_DEPLOYMENT_ID` | Deployment identifier for the integration. |
 | `LTI_TOOL_PRIVATE_KEY` | RSA private key used to sign LTI launch tokens. It may contain the key itself or a path to a key file. |
 
+### Generating and storing the LTI private key
+
+Create a dedicated RSA key for the KYPO LTI consumer and store it in a
+location only readable by the service account. A simple approach uses a
+Docker/Podman secret mounted at `/run/secrets/lti_tool_private_key`:
+
+```bash
+openssl genpkey -algorithm RSA -out lti_tool_private_key.pem -pkeyopt rsa_keygen_bits:2048
+chmod 600 lti_tool_private_key.pem
+sudo mv lti_tool_private_key.pem /run/secrets/lti_tool_private_key
+```
+
+The `training_platform_start.sh` script automatically checks for the
+`LTI_TOOL_PRIVATE_KEY` environment variable or, if unset, the secret file
+above. For deployments using a secret manager such as HashiCorp Vault,
+retrieve the key at runtime and export `LTI_TOOL_PRIVATE_KEY` before
+starting the service:
+
+```bash
+export LTI_TOOL_PRIVATE_KEY=$(vault kv get -field=key secret/kypo/lti)
+```
+
+Ensure that the key is never committed to version control and that file
+permissions restrict access to authorized users only.
+
 When Open edX needs to start a KYPO session it should call the new
 endpoint on the training platform:
 
