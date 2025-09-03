@@ -160,6 +160,17 @@ curl -X POST http://localhost:5000/results \
 The recorded metrics allow instructors to review completion times and
 quiz performance when assessing learner progress.
 
+To also record grades in the Open edX gradebook, export the following
+environment variables so the training platform can reach the REST API:
+
+```bash
+export OPENEDX_GRADEBOOK_ENDPOINT='https://openedx.example/api/grades/v1/course_grade/{course_id}/{username}'
+export OPENEDX_GRADEBOOK_TOKEN='your-gradebook-token'
+```
+
+The endpoint can include the placeholders ``{course_id}`` and
+``{username}`` which are replaced at runtime.
+
 ## KYPO Lab Integration
 
 The training platform can launch [KYPO](https://www.kypo.muni.cz/) labs

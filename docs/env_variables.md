@@ -8,6 +8,8 @@ Certain scripts in this repository rely on environment variables for authenticat
 | `OPENEDX_URL` | Base URL of the Open edX instance (default `http://localhost:8000`). |
 | `OPENEDX_SESSION_COOKIE` | Session cookie for Open edX API calls. Optional when using an API token. |
 | `OPENEDX_API_TOKEN` | Token granting access to the Open edX REST API. |
+| `OPENEDX_GRADEBOOK_ENDPOINT` | URL template used to push grades to the Open edX gradebook. |
+| `OPENEDX_GRADEBOOK_TOKEN` | Token used for gradebook API requests. Defaults to `OPENEDX_API_TOKEN`. |
 | `KYPO_URL` | Base URL of the KYPO LTI provider (default `http://localhost:5000`). |
 | `LTI_CLIENT_ID` | Client identifier issued by KYPO for the LTI integration. |
 | `LTI_DEPLOYMENT_ID` | Deployment identifier for the LTI consumer. |

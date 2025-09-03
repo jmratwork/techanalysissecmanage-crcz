@@ -213,17 +213,35 @@ def post_results():
     if quiz:
         metrics['quiz_score'] = quiz.get('score', 0)
     progress[(course_id, username)] = metrics.get('score', score)
-    ok, message = open_edx.update_progress(username, course_id, metrics)
-    if not ok:
+    ok_progress, message_progress = open_edx.update_progress(username, course_id, metrics)
+    ok_grade, message_grade = open_edx.push_grade_lms(
+        username, course_id, metrics.get('score', score)
+    )
+    if not ok_progress:
         edx_failures.append(
             {
                 'course_id': course_id,
                 'username': username,
-                'error': message,
+                'error': message_progress,
                 'timestamp': time.time(),
             }
         )
-    return jsonify({'status': 'recorded', 'metrics': metrics, 'edx_sync': ok})
+    if not ok_grade:
+        edx_failures.append(
+            {
+                'course_id': course_id,
+                'username': username,
+                'error': message_grade,
+                'timestamp': time.time(),
+            }
+        )
+    return jsonify(
+        {
+            'status': 'recorded',
+            'metrics': metrics,
+            'edx_sync': ok_progress and ok_grade,
+        }
+    )
 
 
 @app.route('/edx_failures', methods=['GET'])
@@ -297,7 +315,7 @@ def kypo_launch():
     return jsonify({'launch_url': launch_url})
 
 
-phishing_quiz.init_app(app, authenticate, tokens, quiz_results, open_edx)
+phishing_quiz.init_app(app, authenticate, tokens, quiz_results, open_edx, edx_failures)
 
 
 if __name__ == '__main__':

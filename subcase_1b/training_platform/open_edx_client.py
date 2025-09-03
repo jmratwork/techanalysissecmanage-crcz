@@ -30,6 +30,15 @@ class OpenEdXClient:
         )
         self.api_token = api_token or os.environ.get("OPENEDX_API_TOKEN")
 
+        # Gradebook API configuration
+        self.gradebook_endpoint = os.environ.get(
+            "OPENEDX_GRADEBOOK_ENDPOINT",
+            f"{self.base_url}/api/grades/v1/course_grade/{{course_id}}/{{username}}",
+        )
+        self.gradebook_token = os.environ.get(
+            "OPENEDX_GRADEBOOK_TOKEN", self.api_token
+        )
+
         # Keep reference to any errors for diagnostics
         self.errors: list[str] = []
         self.logger = logging.getLogger(__name__)
@@ -114,6 +123,32 @@ class OpenEdXClient:
                 writer.writerow([username, course_id, score])
         except OSError as exc:  # pragma: no cover - filesystem errors
             message = f"Grade export failed: {exc}"
+            self.logger.error(message)
+            self.errors.append(message)
+            return False, message
+        return True, ""
+
+    # ------------------------------------------------------------------
+    # Grade push to LMS
+    def push_grade_lms(
+        self, username: str, course_id: str, score: Any
+    ) -> tuple[bool, str]:
+        """Create or update a learner's grade using the Open edX API."""
+
+        payload = {"username": username, "course_id": course_id, "score": score}
+        url = self.gradebook_endpoint.format(course_id=course_id, username=username)
+
+        headers: dict[str, str] = {}
+        if self.gradebook_token:
+            headers["Authorization"] = f"Bearer {self.gradebook_token}"
+
+        try:
+            response = requests.post(
+                url, json=payload, headers=headers or None, timeout=5
+            )
+            response.raise_for_status()
+        except requests.RequestException as exc:  # pragma: no cover - network errors
+            message = f"Open edX grade push failed: {exc}"
             self.logger.error(message)
             self.errors.append(message)
             return False, message
