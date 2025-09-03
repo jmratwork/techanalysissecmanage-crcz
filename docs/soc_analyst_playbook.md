@@ -1,6 +1,6 @@
 # SOC Analyst Playbook
 
-This playbook guides analysts through NG-SOC dashboards, typical search queries, and criteria for confirming alerts. It also highlights CACAO playbooks executed through Act.
+This playbook guides analysts through NG-SOAR dashboards, typical search queries, and criteria for confirming alerts. It also highlights CACAO playbooks executed through Act.
 
 ## Dashboard Navigation
 

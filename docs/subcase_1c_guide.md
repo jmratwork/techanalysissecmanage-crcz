@@ -3,7 +3,7 @@
 See [deployment manual](deployment_manual.md) for baseline environment setup and teardown steps before running this scenario. Review [env_variables.md](env_variables.md) and configure required environment variables such as `MISP_API_KEY` before executing scripts.
 
 This guide walks through deploying the Subcase 1c environment, running the
-benign malware simulator, and validating that NG‑SOC components respond as
+benign malware simulator, and validating that NG‑SOAR components respond as
 expected.
 
 ## Deployment
@@ -19,7 +19,7 @@ expected.
    sudo MISP_API_KEY="$MISP_API_KEY" subcase_1c/scripts/start_soc_services.sh
    ```
 
-   Launches BIPS, NG‑SIEM, CICMS, NG‑SOC, Decide, and Act. Port checks rely on
+   Launches BIPS, NG‑SIEM, CICMS, NG‑SOAR, Decide, and Act. Port checks rely on
    Bash's `/dev/tcp` and `timeout` rather than external utilities.
 
 3. **Start CTI component and ingest feeds**
@@ -77,9 +77,9 @@ expected.
    or load via
    [`load_malware_simulation.ps1`](../subcase_1c/scripts/load_malware_simulation.ps1).
 
-2. **Observe telemetry in NG‑SOC tools**
+2. **Observe telemetry in NG‑SOAR tools**
 
-   Monitor BIPS, NG‑SIEM, CICMS, NG‑SOC, and MISP for beacons, file drops, and
+   Monitor BIPS, NG‑SIEM, CICMS, NG‑SOAR, and MISP for beacons, file drops, and
    CTI correlations.
 
 3. **Verify alerts in NG‑SIEM dashboards**
@@ -139,11 +139,11 @@ expected.
 2. **Confirm component status**
 
    - SOC services accessible on ports 5500 (BIPS), 5601 (NG‑SIEM), 5602 (Kibana
-     UI), 5800 (CICMS), 5900 (NG‑SOC), 8000 (Decide), and 8100 (Act).
+     UI), 5800 (CICMS), 5900 (NG‑SOAR), 8000 (Decide), and 8100 (Act).
    - MISP running on port 8443 with threat feed ingested.
    - C2 server responding on port 9001.
    - Benign malware simulator generates HTTP beacons and file artifacts detected
-     by NG‑SOC components.
+     by NG‑SOAR components.
 
 3. **Observe incident propagation and containment**
 
@@ -170,5 +170,5 @@ expected.
 - [`apply_mitigation.py`](../subcase_1c/scripts/apply_mitigation.py)
 - [`benign_malware_simulator.ps1`](../subcase_1c/scripts/benign_malware_simulator.ps1)
 - [`load_malware_simulation.ps1`](../subcase_1c/scripts/load_malware_simulation.ps1)
-- [NG‑SOC components matrix](ngsoc_components_matrix.md)
+- [NG‑SOAR components matrix](ngsoar_components_matrix.md)
 

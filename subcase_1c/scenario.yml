@@ -35,7 +35,7 @@ nodes:
     image: "debian-11"
     role: "soc"
     services:
-      - "NG-SOC"
+      - "NG-SOAR"
       - "NG-SIEM"
       - "BIPS"
       - "CICMS"

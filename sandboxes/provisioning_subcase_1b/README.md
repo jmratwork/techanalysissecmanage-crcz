@@ -1,6 +1,6 @@
 # Provisioning Subcase 1b Packages
 
-This directory contains example automation for provisioning the subcase 1b sandbox. The NG-SOC
+This directory contains example automation for provisioning the subcase 1b sandbox. The NG-SOAR
 components are distributed through a private APT repository. Each host installs the required
 package from this repository, or alternatively, container images can be used.
 
@@ -8,10 +8,10 @@ package from this repository, or alternatively, container images can be used.
 
 | Component | Deb package URL | Container image |
 |-----------|-----------------|-----------------|
-| BIPS | https://ngsoc.example.com/apt/pool/bips/bips-agent.deb | registry.example.com/ngsoc/bips:latest |
-| NG-SIEM | https://ngsoc.example.com/apt/pool/ng-siem/ng-siem-server.deb | registry.example.com/ngsoc/ng-siem:latest |
-| CICMS | https://ngsoc.example.com/apt/pool/cicms/cicms-server.deb | registry.example.com/ngsoc/cicms:latest |
-| NG-SOC | https://ngsoc.example.com/apt/pool/ng-soc/ng-soc-platform.deb | registry.example.com/ngsoc/ng-soc:latest |
+| BIPS | https://ngsoar.example.com/apt/pool/bips/bips-agent.deb | registry.example.com/ngsoar/bips:latest |
+| NG-SIEM | https://ngsoar.example.com/apt/pool/ng-siem/ng-siem-server.deb | registry.example.com/ngsoar/ng-siem:latest |
+| CICMS | https://ngsoar.example.com/apt/pool/cicms/cicms-server.deb | registry.example.com/ngsoar/cicms:latest |
+| NG-SOAR | https://ngsoar.example.com/apt/pool/ng-soar/ng-soar-platform.deb | registry.example.com/ngsoar/ng-soar:latest |
 
 ## Adding the private APT repository
 
@@ -19,13 +19,13 @@ The playbook in this folder adds the repository automatically, but manual setup 
 as follows:
 
 ```bash
-echo 'deb [trusted=yes] https://ngsoc.example.com/apt stable main' | \
-  sudo tee /etc/apt/sources.list.d/ngsoc.list
+echo 'deb [trusted=yes] https://ngsoar.example.com/apt stable main' | \
+  sudo tee /etc/apt/sources.list.d/ngsoar.list
 sudo apt-get update
-sudo apt-get install bips ng-siem cicms ng-soc
+sudo apt-get install bips ng-siem cicms ng-soar
 ```
 
-These packages provide the services required by the BIPS, NG‑SIEM, CICMS and NG‑SOC hosts during
+These packages provide the services required by the BIPS, NG‑SIEM, CICMS and NG‑SOAR hosts during
 sandbox provisioning.
 
 ## Trainee workstation tool versions

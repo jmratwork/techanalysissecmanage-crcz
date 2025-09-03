@@ -10,7 +10,7 @@
   - **bips** – Debian 11
   - **ng_siem** – Debian 11
   - **cicms** – Debian 11
-  - **ng_soc** – Debian 11
+  - **ng_soar** – Debian 11
 
 ## Subcase 1c
 - Network segment `malnet` (10.20.0.0/24)

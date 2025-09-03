@@ -5,27 +5,27 @@ Design a comprehensive cyber security training plan focused on handling and miti
 involves theoretical and practical training on the utilization of automation techniques, tools and technologies, and incident response procedures to detect, contain, eradicate, and recover from malware attacks. Through this subcase, CYNET will improve its
 protection capabilities and capacities using state-of-the-art technology and solutions to better prepare, detect, and stop malware attacks. Furthermore, relevant intelligence (CTI) is shared with the appropriate audience (other entities and authorities) to enhance collective defense efforts and improve overall cybersecurity resilience.
 
-Simulate benign malware activity and integrate threat intelligence feeds to exercise NG-SOC components.
+Simulate benign malware activity and integrate threat intelligence feeds to exercise NG-SOAR components.
 
 This subcase is **hands-on**. Analysts can inspect outputs in the NG-SIEM dashboards at `http://localhost:5602`, review MISP entries at `https://localhost:8443`, and examine raw logs under `/var/log/bips/` and the Act service log directory.
 
 ## Node Roles
 - **infected_host** – Windows victim that runs the benign malware simulator
 - **c2_server** – Command-and-control server for beaconing traffic
-- **soc_server** – Hosts NG-SOC platform services
+- **soc_server** – Hosts NG-SOAR platform services
 - **cti_component** – Runs MISP and feeds threat intelligence to the SOC
 
-## Required NG-SOC Components
+## Required NG-SOAR Components
 - BIPS
 - NG-SIEM
-- NG-SOC
+- NG-SOAR
 - CICMS
 - MISP
 
-For a cross-reference of tools, versions, and documentation, see the [NG-SOC components matrix](../docs/ngsoc_components_matrix.md).
+For a cross-reference of tools, versions, and documentation, see the [NG-SOAR components matrix](../docs/ngsoar_components_matrix.md).
 
 ## Workflow
-1. **Service initialization** – The instructor provisions the exercise inside the RandomSec LMS and launches NG-SOC services with [scripts/start_soc_services.sh](scripts/start_soc_services.sh).
+1. **Service initialization** – The instructor provisions the exercise inside the RandomSec LMS and launches NG-SOAR services with [scripts/start_soc_services.sh](scripts/start_soc_services.sh).
 2. **CTI ingestion** – The trainee activates the CTI component using [scripts/start_cti_component.sh](scripts/start_cti_component.sh) so threat intelligence flows into the SOC.
 3. **SOC analysis** – Acting as a SOC analyst, the trainee investigates alerts produced by [scripts/start_c2_server.sh](scripts/start_c2_server.sh) and [scripts/benign_malware_simulator.ps1](scripts/benign_malware_simulator.ps1), documenting findings in the platform.
 4. **Automated mitigation** – NG-SIEM and BIPS forward events to the Decide service, which recommends responses consumed by the Act orchestrator.
