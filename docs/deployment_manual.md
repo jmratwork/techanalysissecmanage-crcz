@@ -31,10 +31,15 @@ This manual describes how to deploy KYPO training scenarios in this repository. 
 ## Service Orchestration
 
 1. **Provision VMs** – Start VMs from the prepared images or snapshots and verify connectivity.
-2. **Launch core services**
+2. **Install Python dependencies** – Before running any scenario scripts, install required packages:
+   ```bash
+   pip install -r subcase_1b/training_platform/requirements.txt   # for Subcase 1b
+   pip install -r subcase_1c/requirements.txt                     # for Subcase 1c
+   ```
+3. **Launch core services**
    - Start BIPS, NG‑SIEM, CICMS, NG‑SOC, and related components using the scripts under `subcase_1b/scripts/` or `subcase_1c/scripts/`.
    - If `systemctl` is unavailable, set `DIRECT_START=1` to invoke legacy service scripts.
-3. **Validate operation**
+4. **Validate operation**
    - Confirm ports are listening and dashboards are reachable.
    - Run the scenario‑specific validation steps from the respective guide.
 

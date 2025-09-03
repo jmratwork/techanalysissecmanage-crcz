@@ -1,0 +1,6 @@
+Flask
+requests
+numpy
+scikit-learn
+PyYAML
+Jinja2
