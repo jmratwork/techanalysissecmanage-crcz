@@ -89,3 +89,12 @@ Playbooks can be edited and validated with:
 ```bash
 python subcase_1c/scripts/validate_playbooks.py
 ```
+
+## Smoke Test
+Run a quick end-to-end validation of the training environment:
+
+```bash
+sudo subcase_1c/scripts/smoke_test.sh
+```
+
+The script runs the benign malware simulator and checks for the resulting NG-SIEM alert, IRIS case, MISP event, and NG-SOAR playbook execution.
