@@ -102,6 +102,26 @@ flowchart TD
    The log file consolidates results for instructor review.
 3. Compile the scan outputs into a findings report and submit it to the instructor.
 
+### Launching tools via API
+
+Instead of using the helper script, trainees may trigger individual scans
+through the training platform. First obtain an authentication token and then
+launch a tool via the REST interface:
+
+```bash
+# start an OpenVAS scan
+JOB_ID=$(curl -s -X POST http://localhost:5000/launch_tool \
+    -H 'Content-Type: application/json' \
+    -d '{"token":"'$TOKEN'","tool":"openvas"}' | jq -r '.job_id')
+
+# check on the job
+curl "http://localhost:5000/launch_tool/$JOB_ID?token=$TOKEN"
+```
+
+The status endpoint returns the current state (``pending``, ``running`` or
+``completed``) and the path to any generated report under
+``/var/log/trainee``.
+
 ## Phishing Awareness Quiz
 
 The training platform includes a short phishing quiz to reinforce social engineering concepts. Trainees can use the following REST endpoints once authenticated:
