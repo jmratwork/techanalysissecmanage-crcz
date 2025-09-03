@@ -27,3 +27,15 @@ sudo apt-get install bips ng-siem cicms ng-soc
 
 These packages provide the services required by the BIPS, NG‑SIEM, CICMS and NG‑SOC hosts during
 sandbox provisioning.
+
+## Trainee workstation tool versions
+
+The `build_trainee_workstation.sh` script installs pre‑downloaded packages for the trainee
+workstation. The following versions are bundled and verified using SHA256 hashes:
+
+| Tool | Version | Verification command |
+|------|---------|---------------------|
+| Nmap | 7.93+dfsg1-1 | `nmap --version` |
+| GVM  | 25.04.0 | `gvmd --version` |
+| OWASP ZAP | 2.16.1 | `zaproxy -version` |
+| Caldera | 5.3.0 | `python3 /opt/caldera/server.py --help` |

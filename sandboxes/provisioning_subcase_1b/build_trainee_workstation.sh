@@ -15,16 +15,29 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ARTIFACTS_DIR="${ARTIFACTS_DIR:-${SCRIPT_DIR}/offline_artifacts}"
 APT_REPO="${ARTIFACTS_DIR}/apt"
 PIP_REPO="${ARTIFACTS_DIR}/pip"
-CALDERA_ARCHIVE="${ARTIFACTS_DIR}/caldera.tar.gz"
-ZAP_SNAP="${ARTIFACTS_DIR}/zaproxy.snap"
+NMAP_DEB="${ARTIFACTS_DIR}/apt/nmap_7.93+dfsg1-1_amd64.deb"
+GVM_DEB="${ARTIFACTS_DIR}/apt/gvm_25.04.0_all.deb"
+CALDERA_ARCHIVE="${ARTIFACTS_DIR}/caldera-5.3.0.tar.gz"
+ZAP_SNAP="${ARTIFACTS_DIR}/zaproxy_2.16.1_amd64.snap"
+
+NMAP_SHA256="1ac65a0a1038ffa8de7ee13a146c4cbb9dac3180c7faef703f3efb3adad098b2"
+GVM_SHA256="19b450baabf0a916f591fe786c71fa46db786d21132c5f711b225b8f32b14fe9"
+CALDERA_SHA256="23f79e83ccf6215bac627f96bed303f09b1759f524a151608279b08574c5eff1"
+ZAP_SNAP_SHA256="a980e67ae3b8ae6d05165aeb8376014985fda9c2159c4122bec533abab555148"
 
 # Sanity check that artefacts are present
-for path in "$APT_REPO" "$PIP_REPO" "$CALDERA_ARCHIVE" "$ZAP_SNAP"; do
+for path in "$APT_REPO" "$PIP_REPO" "$NMAP_DEB" "$GVM_DEB" "$CALDERA_ARCHIVE" "$ZAP_SNAP"; do
     if [ ! -e "$path" ]; then
         echo "Required artefact $path not found" >&2
         exit 1
     fi
 done
+
+# Verify artefact integrity
+echo "${NMAP_SHA256}  ${NMAP_DEB}" | sha256sum -c -
+echo "${GVM_SHA256}  ${GVM_DEB}" | sha256sum -c -
+echo "${CALDERA_SHA256}  ${CALDERA_ARCHIVE}" | sha256sum -c -
+echo "${ZAP_SNAP_SHA256}  ${ZAP_SNAP}" | sha256sum -c -
 
 ###############################################################################
 # Approved tooling list
@@ -44,7 +57,10 @@ done
 ###############################################################################
 echo "deb [trusted=yes] file:${APT_REPO} ./" >/etc/apt/sources.list.d/offline.list
 apt-get update
-apt-get install -y --no-install-recommends nmap gvm python3-pip git curl snapd
+apt-get install -y --no-install-recommends python3-pip git curl snapd
+
+# Install tool packages from verified artefacts
+dpkg -i "${NMAP_DEB}" "${GVM_DEB}" || apt-get install -f -y --no-install-recommends
 
 ###############################################################################
 # Install OWASP ZAP from local snap file
