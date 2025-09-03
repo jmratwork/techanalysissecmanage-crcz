@@ -46,6 +46,8 @@ expected.
    ```bash
    python subcase_1c/malware_detection/scanner.py <sample>
    ```
+   The scanner depends on the `yara-python` library provided in the
+   Subcase 1c requirements file.
 
 6. **Validate playbooks**
 

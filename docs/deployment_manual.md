@@ -49,6 +49,8 @@ For systems without Internet access, pre-download required packages and modules:
    pip install -r subcase_1b/training_platform/requirements.txt   # for Subcase 1b
    pip install -r subcase_1c/requirements.txt                     # for Subcase 1c
    ```
+   The Subcase 1c requirements include the `yara-python` library to enable
+   rule-based malware detection.
 3. **Launch core services**
    - Start BIPS, NG‑SIEM, CICMS, NG‑SOC, and related components using the scripts under `subcase_1b/scripts/` or `subcase_1c/scripts/`.
    - If `systemctl` is unavailable, set `DIRECT_START=1` to invoke legacy service scripts.
