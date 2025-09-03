@@ -57,6 +57,26 @@ Sample lessons and a quiz are provided under `open_edx/course`. To load this mat
 2. In Studio, open the target course and navigate to **Tools → Import**.
 3. Upload `phishing_course.zip` to add the lessons and quiz.
 
+### IRIS Case Closure Automation
+
+The repository includes `scripts/iris_case_closed_poll.py`, a helper that
+polls an IRIS case-management instance for cases marked as **closed**. When a
+newly closed case is discovered it will:
+
+1. Run `subcase_1c/scripts/generate_post_incident_report.sh` to create a
+   post-incident report.
+2. Tag the associated MISP event with `lessons learned` via the MISP API.
+
+Configuration is handled through environment variables such as `IRIS_URL`,
+`IRIS_API_KEY`, `MISP_URL`, and `MISP_API_KEY`. Execute the script with:
+
+```bash
+python scripts/iris_case_closed_poll.py
+```
+
+The script keeps track of processed case IDs in `scripts/.iris_processed_cases.json`
+to avoid duplicate reports.
+
 ## Teardown
 
 1. Stop the scenario from the KYPO dashboard.
