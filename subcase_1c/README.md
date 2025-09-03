@@ -37,21 +37,26 @@ For a cross-reference of tools, versions, and documentation, see the [NG-SOAR co
    ```bash
    sudo subcase_1c/scripts/start_soc_services.sh
    ```
-2. **Start the CTI component**
+2. **Import the playbooks**
+   ```bash
+   sudo subcase_1c/scripts/import_playbooks.sh
+   ```
+   This script uploads CACAO playbooks from `subcase_1c/playbooks/` to ROASTER and registers them with SOARCA. It runs automatically when starting SOC services but can be re-executed after modifying playbooks.
+3. **Start the CTI component**
    ```bash
    sudo subcase_1c/scripts/start_cti_component.sh
    ```
-3. **Launch the C2 server**
+4. **Launch the C2 server**
    ```bash
    sudo subcase_1c/scripts/start_c2_server.sh
    ```
-4. **Run the Windows malware simulator**
+5. **Run the Windows malware simulator**
    ```powershell
    $env:BEACON_URL = "http://localhost:5601/beacon"  # optional override
    .\subcase_1c\scripts\benign_malware_simulator.ps1 -BeaconCount 3
    ```
 
-5. **Query mitigation recommendations**
+6. **Query mitigation recommendations**
    ```bash
    curl -X POST http://localhost:8000/recommend \
         -H 'Content-Type: application/json' \
