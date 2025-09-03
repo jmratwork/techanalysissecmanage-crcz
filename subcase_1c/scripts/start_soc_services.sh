@@ -28,6 +28,9 @@ ROASTER_PORT="${ROASTER_PORT:-8081}"
 SOARCA_PORT="${SOARCA_PORT:-8082}"
 MONGODB_PORT="${MONGODB_PORT:-27017}"
 
+MONGO_INITDB_ROOT_USERNAME="${MONGO_INITDB_ROOT_USERNAME:-soc_admin}"
+MONGO_INITDB_ROOT_PASSWORD="${MONGO_INITDB_ROOT_PASSWORD:-soc_password}"
+
 LOG_DIR="/var/log/soc_services"
 LOG_FILE="${LOG_DIR}/start.log"
 mkdir -p "${LOG_DIR}"
@@ -70,7 +73,15 @@ start_mongodb() {
     if docker ps --format '{{.Names}}' | grep -q '^cacao-mongo$'; then
         return 0
     fi
-    if docker run -d --name cacao-mongo -p ${MONGODB_PORT}:27017 mongo:8.0.4 >>/var/log/mongodb/service.log 2>&1; then
+    local mongo_conf
+    mongo_conf="$(dirname "$0")/../mongod.conf"
+    if docker run -d --name cacao-mongo \
+        -p ${MONGODB_PORT}:27017 \
+        --env MONGO_INITDB_ROOT_USERNAME="${MONGO_INITDB_ROOT_USERNAME}" \
+        --env MONGO_INITDB_ROOT_PASSWORD="${MONGO_INITDB_ROOT_PASSWORD}" \
+        -v cacao-mongo-data:/data/db \
+        -v "${mongo_conf}":/etc/mongo/mongod.conf \
+        mongo:8.0.4 --config /etc/mongo/mongod.conf >>/var/log/mongodb/service.log 2>&1; then
         sleep 1
         check_port localhost "${MONGODB_PORT}" >>/var/log/mongodb/service.log 2>&1 || {
             echo "$(date) mongodb port check failed" >>/var/log/mongodb/service.log
