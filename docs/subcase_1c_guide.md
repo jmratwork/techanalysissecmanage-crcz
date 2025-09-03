@@ -16,11 +16,17 @@ expected.
 
    ```bash
    export MISP_API_KEY='your-misp-key'
-   sudo MISP_API_KEY="$MISP_API_KEY" subcase_1c/scripts/start_soc_services.sh
-   ```
+    sudo MISP_API_KEY="$MISP_API_KEY" subcase_1c/scripts/start_soc_services.sh
+    ```
 
-   Launches BIPS, NG‑SIEM, CICMS, NG‑SOAR, Decide, and Act. Port checks rely on
-   Bash's `/dev/tcp` and `timeout` rather than external utilities.
+    Launches BIPS, NG‑SIEM, CICMS, NG‑SOAR, Decide, and Act. Port checks rely on
+    Bash's `/dev/tcp` and `timeout` rather than external utilities.
+
+    The MongoDB instance starts with the admin user `soc_admin` and password
+    `soc_password` (override with `MONGO_INITDB_ROOT_USERNAME` and
+    `MONGO_INITDB_ROOT_PASSWORD`). Data is persisted to the `cacao-mongo-data`
+    Docker volume, and the `oplogMinRetentionHours` setting in
+    `subcase_1c/mongod.conf` keeps change history for seven days.
 
 3. **Start CTI component and ingest feeds**
 
