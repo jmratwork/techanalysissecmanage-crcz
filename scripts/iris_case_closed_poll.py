@@ -41,8 +41,17 @@ REPORT_SCRIPT = os.getenv(
     "REPORT_SCRIPT",
     str(Path(__file__).resolve().parents[1] / "subcase_1c" / "scripts" / "generate_post_incident_report.sh"),
 )
+UPDATE_BIPS_SCRIPT = os.getenv(
+    "UPDATE_BIPS_SCRIPT", str(Path(__file__).resolve().with_name("update_bips_model.sh"))
+)
+COMMIT_PLAYBOOKS_SCRIPT = os.getenv(
+    "COMMIT_PLAYBOOKS_SCRIPT", str(Path(__file__).resolve().with_name("commit_playbooks.sh"))
+)
 POLL_INTERVAL = int(os.getenv("POLL_INTERVAL", "60"))
 STATE_FILE = Path(os.getenv("STATE_FILE", Path(__file__).with_name(".iris_processed_cases.json")))
+SEQUENCE_LOG = Path(
+    os.getenv("SEQUENCE_LOG", Path(__file__).resolve().parents[1] / "sequence.log")
+)
 
 
 def load_processed() -> Set[str]:
@@ -90,6 +99,23 @@ def tag_misp_event(event_id: str) -> None:
     resp.raise_for_status()
 
 
+def log_sequence(message: str) -> None:
+    """Append a timestamped message to the sequence log."""
+    SEQUENCE_LOG.parent.mkdir(parents=True, exist_ok=True)
+    timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+    with SEQUENCE_LOG.open("a") as handle:
+        handle.write(f"{timestamp} {message}\n")
+
+
+def run_and_log(script: str, label: str) -> None:
+    """Run an external script and log its result."""
+    try:
+        result = subprocess.run([script], capture_output=True, text=True, check=True)
+        log_sequence(f"{label} succeeded: {result.stdout.strip()}")
+    except subprocess.CalledProcessError as exc:  # pragma: no cover - logging only
+        log_sequence(f"{label} failed: {exc.stderr.strip()}")
+
+
 def main() -> None:
     processed = load_processed()
     while True:
@@ -105,6 +131,8 @@ def main() -> None:
                         tag_misp_event(str(event_id))
                     except Exception as exc:  # pragma: no cover - logging only
                         print(f"Failed to tag MISP event {event_id}: {exc}")
+                run_and_log(UPDATE_BIPS_SCRIPT, "update_bips_model.sh")
+                run_and_log(COMMIT_PLAYBOOKS_SCRIPT, "commit_playbooks.sh")
                 processed.add(case_id)
                 save_processed(processed)
         except Exception as exc:  # pragma: no cover - logging only
