@@ -2,7 +2,7 @@
 set -euo pipefail
 
 SERVICE_DIR="$(dirname "$0")/../training_platform"
-CLI="python $SERVICE_DIR/cli.py"
+CLI="python3 $SERVICE_DIR/cli.py"
 INSTRUCTOR="${INSTRUCTOR:-instructor}"
 PASSWORD="${PASSWORD:-changeme}"
 COURSE_NAME="${COURSE_NAME:-PenTest 101}"
@@ -37,7 +37,7 @@ export LTI_TOOL_PRIVATE_KEY
 mkdir -p "$(dirname "$LOG_FILE")"
 
 # start service in background
-python "$SERVICE_DIR/app.py" >/tmp/training_platform_server.log 2>&1 &
+python3 "$SERVICE_DIR/app.py" >/tmp/training_platform_server.log 2>&1 &
 sleep 1
 
 # register instructor if needed and obtain token
