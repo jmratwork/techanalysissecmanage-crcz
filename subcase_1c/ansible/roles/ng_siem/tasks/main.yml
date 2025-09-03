@@ -88,6 +88,15 @@
     mode: "0644"
   become: yes
 
+- name: Deploy correlation detection rules
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../ng_siem/rules/correlation_rules.ndjson"
+    dest: /etc/ng_siem/correlation_rules.ndjson
+    owner: root
+    group: root
+    mode: "0644"
+  become: yes
+
 - name: Import anomaly detection rules into Kibana
   ansible.builtin.command:
     cmd: >-
@@ -98,4 +107,28 @@
   retries: 5
   delay: 15
   until: import_rules.rc == 0
+  become: yes
+
+- name: Import correlation detection rules into Kibana
+  ansible.builtin.command:
+    cmd: >-
+      curl -s -X POST -H 'kbn-xsrf: true' -F
+      file=@/etc/ng_siem/correlation_rules.ndjson
+      http://localhost:5601/api/detection_engine/rules/_import?overwrite=true
+  register: import_corr_rules
+  retries: 5
+  delay: 15
+  until: import_corr_rules.rc == 0
+  become: yes
+
+- name: Import default Kibana dashboard
+  ansible.builtin.command:
+    cmd: >-
+      curl -s -X POST -H 'kbn-xsrf: true' -F
+      file=@/etc/ng_siem/default-dashboard.ndjson
+      http://localhost:5601/api/saved_objects/_import?overwrite=true
+  register: import_dashboard
+  retries: 5
+  delay: 15
+  until: import_dashboard.rc == 0
   become: yes
