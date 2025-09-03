@@ -138,6 +138,9 @@ def create_case(event: dict) -> None:
         "signature": event.get("alert", {}).get("signature"),
         "src_ip": event.get("src_ip"),
         "dest_ip": event.get("dest_ip"),
+        "entry_point": event.get("entry_point"),
+        "propagation_method": event.get("propagation_method"),
+        "improvements": event.get("improvements"),
     }
     try:
         requests.post(IRIS_URL, json=payload, timeout=5)
