@@ -20,4 +20,4 @@
   become: true
   roles:
     - ng_siem
-    - ng_soc
+    - ng_soar

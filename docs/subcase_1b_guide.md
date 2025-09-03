@@ -15,7 +15,7 @@ flowchart TD
     Randomization --> BIPS
     BIPS --> NG_SIEM
     NG_SIEM -->|executes playbook| CICMS
-    CICMS --> NG_SOC
+    CICMS --> NG_SOAR
     Trainee -->|scans| CyberRange
     Trainee -->|submits findings| Instructor
 ```
@@ -68,9 +68,9 @@ flowchart TD
      ```bash
      sudo subcase_1b/scripts/cicms_start.sh
      ```
-   - NG-SOC
+   - NG-SOAR
      ```bash
-     sudo subcase_1b/scripts/ng_soc_start.sh
+     sudo subcase_1b/scripts/ng_soar_start.sh
      ```
    - Analysts monitoring these services can follow the [SOC Analyst Playbook](soc_analyst_playbook.md) for dashboard navigation, search queries, and alert confirmation criteria.
 5. **Evaluation**
@@ -246,4 +246,4 @@ performance and adjust grading policies as needed.
 - [`ng_siem_start.sh`](../subcase_1b/scripts/ng_siem_start.sh)
 - [`ng_siem/app.py`](../subcase_1b/ng_siem/app.py)
 - [`cicms_start.sh`](../subcase_1b/scripts/cicms_start.sh)
-- [`ng_soc_start.sh`](../subcase_1b/scripts/ng_soc_start.sh)
+- [`ng_soar_start.sh`](../subcase_1b/scripts/ng_soar_start.sh)

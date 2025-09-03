@@ -2,7 +2,7 @@
 - hosts: soc_server
   become: true
   roles:
-    - ng_soc
+    - ng_soar
     - ng_siem
     - bips
     - cicms

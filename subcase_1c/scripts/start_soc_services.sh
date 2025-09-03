@@ -20,7 +20,7 @@ fi
 BIPS_PORT="${BIPS_PORT:-5500}"
 NG_SIEM_PORT="${NG_SIEM_PORT:-5601}"
 CICMS_PORT="${CICMS_PORT:-5800}"
-NG_SOC_PORT="${NG_SOC_PORT:-5900}"
+NG_SOAR_PORT="${NG_SOAR_PORT:-5900}"
 DECIDE_PORT="${DECIDE_PORT:-8000}"
 ACT_PORT="${ACT_PORT:-8100}"
 SIEM_UI_PORT="${SIEM_UI_PORT:-5602}"
@@ -232,46 +232,46 @@ start_cicms() {
     fi
 }
 
-start_ng_soc() {
-    mkdir -p /var/log/ng_soc
+start_ng_soar() {
+    mkdir -p /var/log/ng_soar
     if [ "$USE_SYSTEMCTL" -eq 1 ]; then
-        if systemctl is-active --quiet ng-soc; then
+        if systemctl is-active --quiet ng-soar; then
             return 0
         fi
-        if systemctl start ng-soc >>/var/log/ng_soc/service.log 2>&1; then
-            if ! systemctl is-active --quiet ng-soc; then
-                echo "$(date) ng-soc failed to start" >>/var/log/ng_soc/service.log
+        if systemctl start ng-soar >>/var/log/ng_soar/service.log 2>&1; then
+            if ! systemctl is-active --quiet ng-soar; then
+                echo "$(date) ng-soar failed to start" >>/var/log/ng_soar/service.log
                 return 1
             fi
-            check_port localhost "${NG_SOC_PORT}" >>/var/log/ng_soc/service.log 2>&1 || {
-                echo "$(date) ng-soc port check failed" >>/var/log/ng_soc/service.log
+            check_port localhost "${NG_SOAR_PORT}" >>/var/log/ng_soar/service.log 2>&1 || {
+                echo "$(date) ng-soar port check failed" >>/var/log/ng_soar/service.log
                 return 1
             }
         else
-            echo "$(date) failed to run systemctl start ng-soc" >>/var/log/ng_soc/service.log
+            echo "$(date) failed to run systemctl start ng-soar" >>/var/log/ng_soar/service.log
             return 1
         fi
     else
         if command -v service >/dev/null 2>&1; then
-            if service ng-soc start >>/var/log/ng_soc/service.log 2>&1; then
-                check_port localhost "${NG_SOC_PORT}" >>/var/log/ng_soc/service.log 2>&1 || {
-                    echo "$(date) ng-soc port check failed" >>/var/log/ng_soc/service.log
+            if service ng-soar start >>/var/log/ng_soar/service.log 2>&1; then
+                check_port localhost "${NG_SOAR_PORT}" >>/var/log/ng_soar/service.log 2>&1 || {
+                    echo "$(date) ng-soar port check failed" >>/var/log/ng_soar/service.log
                     return 1
                 }
             else
-                echo "$(date) failed to run service ng-soc start" >>/var/log/ng_soc/service.log
+                echo "$(date) failed to run service ng-soar start" >>/var/log/ng_soar/service.log
                 return 1
             fi
         else
-            if command -v ng-soc >/dev/null 2>&1; then
-                nohup ng-soc --config /etc/ng_soc/config.yml >>/var/log/ng_soc/service.log 2>&1 &
+            if command -v ng-soar >/dev/null 2>&1; then
+                nohup ng-soar --config /etc/ng_soar/config.yml >>/var/log/ng_soar/service.log 2>&1 &
                 sleep 1
-                check_port localhost "${NG_SOC_PORT}" >>/var/log/ng_soc/service.log 2>&1 || {
-                    echo "$(date) ng-soc port check failed" >>/var/log/ng_soc/service.log
+                check_port localhost "${NG_SOAR_PORT}" >>/var/log/ng_soar/service.log 2>&1 || {
+                    echo "$(date) ng-soar port check failed" >>/var/log/ng_soar/service.log
                     return 1
                 }
             else
-                echo "$(date) service command and ng-soc not found" >>/var/log/ng_soc/service.log
+                echo "$(date) service command and ng-soar not found" >>/var/log/ng_soar/service.log
                 return 1
             fi
         fi
@@ -375,7 +375,7 @@ start_bips
 start_ng_siem
 start_siem_ui
 start_cicms
-start_ng_soc
+start_ng_soar
 start_decide
 start_act
 

@@ -77,7 +77,7 @@ hosts:
         port: 22
       - name: incident_mgmt
         port: 8800
-  ng_soc:
+  ng_soar:
     image: debian-11
     flavor: medium
     interfaces:
@@ -86,7 +86,7 @@ hosts:
     services:
       - name: ssh
         port: 22
-      - name: soc
+      - name: soar
         port: 8900
 routers:
   router:

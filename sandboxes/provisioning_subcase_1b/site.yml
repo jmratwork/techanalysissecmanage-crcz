@@ -1,12 +1,12 @@
 ---
-- hosts: bips:ng_siem:cicms:ng_soc
+- hosts: bips:ng_siem:cicms:ng_soar
   become: yes
   vars:
-    ngsoc_repo_url: "https://ngsoc.example.com/apt"
+    ngsoar_repo_url: "https://ngsoar.example.com/apt"
   tasks:
-    - name: Add NG-SOC APT repository
+    - name: Add NG-SOAR APT repository
       apt_repository:
-        repo: "deb [trusted=yes] {{ ngsoc_repo_url }} stable main"
+        repo: "deb [trusted=yes] {{ ngsoar_repo_url }} stable main"
         state: present
     - name: Update apt cache
       apt:
@@ -82,15 +82,15 @@
         name: cicms
         state: present
 
-- hosts: ng_soc
+- hosts: ng_soar
   become: yes
   tasks:
-    - name: Install NG SOC service
+    - name: Install NG SOAR service
       apt:
-        name: ng-soc
+        name: ng-soar
         state: present
-    - name: Ensure NG SOC running
+    - name: Ensure NG SOAR running
       service:
-        name: ng-soc
+        name: ng-soar
         state: started
         enabled: yes

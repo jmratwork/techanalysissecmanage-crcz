@@ -1,6 +1,6 @@
 - name: Download MISP package
   ansible.builtin.get_url:
-    url: "{{ ngsoc_repo_url }}/misp/misp-agent.deb"
+    url: "{{ ngsoar_repo_url }}/misp/misp-agent.deb"
     dest: "/tmp/misp-agent.deb"
     mode: "0644"
     checksum: "{{ misp_agent_checksum }}"

@@ -84,16 +84,16 @@ nodes:
     gateway: "10.10.0.1"
     startup_scripts:
       - path: "scripts/cicms_start.sh"
-  ng_soc:
+  ng_soar:
     image: "debian-11"
     role: "soc"
     services:
-      - "Next-Gen SOC"
+      - "Next-Gen SOAR"
     ip: "10.10.0.9"
     subnet: "10.10.0.0/24"
     gateway: "10.10.0.1"
     startup_scripts:
-      - path: "scripts/ng_soc_start.sh"
+      - path: "scripts/ng_soar_start.sh"
 links:
   - [trainee_workstation, cyber_range]
   - [trainee_workstation, training_platform]
@@ -101,7 +101,7 @@ links:
   - [randomization_platform, bips]
   - [bips, ng_siem]
   - [ng_siem, cicms]
-  - [cicms, ng_soc]
+  - [cicms, ng_soar]
 scenarios:
   - id: "dvwa_sql_injection"
     title: "DVWA SQL Injection Lab"
