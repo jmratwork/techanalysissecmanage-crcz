@@ -18,12 +18,12 @@ Run the startup scripts to deploy the exercise:
 ```bash
 sudo subcase_1b/scripts/cyber_range_start.sh          # initialize Cyber Range
 sudo subcase_1b/scripts/training_platform_start.sh     # set up course content
-sudo subcase_1b/scripts/trainee_start.sh --target 10.10.0.4  # run sample scan
+sudo subcase_1b/scripts/lab_runner.sh --target 10.10.0.4      # run approved tool profiles
 ```
 
-The training platform records course creation in `/var/log/training_platform/courses.log`. Trainee scan results are written to `/var/log/trainee/scans.log`, and the Cyber Range initialization log is at `/var/log/cyber_range/launch.log`.
+The training platform records course creation in `/var/log/training_platform/courses.log`. Lab run results are written to `/var/log/trainee/lab_runner.log`, and the Cyber Range initialization log is at `/var/log/cyber_range/launch.log`.
 
-The trainee script performs an additional reconnaissance sweep with service and OS fingerprinting and deploys a Caldera `sandcat` agent to execute a demonstration operation. Instructors can verify successful runs by reviewing `/var/log/trainee/scans.log` for entries such as `Reconnaissance succeeded` and `Caldera operation completed`.
+The lab runner script performs an additional reconnaissance sweep with service and OS fingerprinting and deploys a Caldera `sandcat` agent to execute a demonstration operation. Instructors can verify successful runs by reviewing `/var/log/trainee/lab_runner.log` for entries such as `Reconnaissance sweep completed` and `Caldera operation triggered`.
 
 To archive these logs for evaluation, run:
 
