@@ -4,7 +4,7 @@ This repository provides complete, ready‑to‑deploy instructions for double C
 
 ## Prerequisites
 
-- Active account on [CyberRangeCZ](https://www.cyberrange.cz/) with permissions to deploy KYPO scenarios.
+- Active account on [CyberRangeCZ](https://www.cyberrange.cz/) with permissions to deploy cyber range scenarios.
 - SSH access to the range and ability to run privileged commands.
 - Local tools: `git`, `kubectl`, `helm`, and a modern web browser.
 - Recommended familiarity with NG-SOAR components, including BIPS for behavioral intrusion prevention, NG-SIEM for event correlation, CICMS for incident collaboration, and MISP for CTI sharing.
