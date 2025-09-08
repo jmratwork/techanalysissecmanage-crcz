@@ -1,4 +1,4 @@
-# KYPO Deployment Manual
+# CRCZ/KYPO Deployment Manual
 
 This manual describes how to deploy KYPO training scenarios in this repository. It covers uploading a scenario to the KYPO portal, preparing virtual machines, orchestrating services, and cleaning up afterward.
 
