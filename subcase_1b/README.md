@@ -6,7 +6,7 @@ This scenario provides self-paced courses for penetration testing and vulnerabil
 
 ```mermaid
 flowchart LR
-    A[Open edX inscripción] --> B[KYPO lab]
+    A[Open edX inscripción] --> B[CRCZ/KYPO lab]
     B --> C[Módulo de resultados]
     C --> D[Actualización Open edX]
 ```
@@ -44,7 +44,7 @@ sudo subcase_1b/scripts/cyber_range_start.sh --down # stop and remove containers
 
 The accompanying `docker-compose.yml` file defines services such as a vulnerable DVWA web server, a Kali-based workstation, and the training platform.
 
-### Installing Docker on KYPO
+### Installing Docker on CRCZ/KYPO
 
 1. Update the package index:
 
