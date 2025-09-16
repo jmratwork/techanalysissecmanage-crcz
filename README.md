@@ -79,7 +79,7 @@ to avoid duplicate reports.
 
 ## Teardown
 
-1. Stop the scenario from the KYPO dashboard.
+1. Stop the scenario from the CRCZ dashboard.
 2. Remove any temporary resources or virtual machines associated with the exercise.
 3. Archive logs and reports for after-action review.
 4. Verify that no residual network configurations remain on CyberRangeCZ.
@@ -117,4 +117,4 @@ After adding or modifying sandbox definitions, you can validate and publish the 
    ```bash
    kypo training publish training.yaml
    ```
-   The publish command expects authentication details appropriate for your KYPO instance.
+   The publish command expects authentication details appropriate for your CRCZ/KYPO instance.
