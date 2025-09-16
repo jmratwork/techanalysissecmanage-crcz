@@ -10,10 +10,10 @@ Certain scripts in this repository rely on environment variables for authenticat
 | `OPENEDX_API_TOKEN` | Token granting access to the Open edX REST API. |
 | `OPENEDX_GRADEBOOK_ENDPOINT` | URL template used to push grades to the Open edX gradebook. |
 | `OPENEDX_GRADEBOOK_TOKEN` | Token used for gradebook API requests. Defaults to `OPENEDX_API_TOKEN`. |
-| `KYPO_URL` | Base URL of the KYPO LTI provider (default `http://localhost:5000`). |
-| `LTI_CLIENT_ID` | Client identifier issued by KYPO for the LTI integration. |
+| `KYPO_URL` | Base URL of the KYPO/CRCZ LTI provider (default `http://localhost:5000`). |
+| `LTI_CLIENT_ID` | Client identifier issued by KYPO/CRCZ for the LTI integration. |
 | `LTI_DEPLOYMENT_ID` | Deployment identifier for the LTI consumer. |
-| `KYPO_LTI_LAUNCH_URL` | Endpoint used to launch KYPO lab sessions via LTI. |
+| `KYPO_LTI_LAUNCH_URL` | Endpoint used to launch KYPO/CRCZ lab sessions via LTI. |
 | `MISP_API_KEY` | API key used to authenticate to MISP when fetching or pushing CTI data. |
 | `MISP_URL` | Base URL of the MISP instance (default `http://localhost:8443`). |
 
