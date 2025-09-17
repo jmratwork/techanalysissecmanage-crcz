@@ -18,8 +18,8 @@ See [deployment manual](docs/deployment_manual.md) for detailed steps including 
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/example/techanalysissecmanage_crcz.git
-   cd techanalysissecmanage_crcz
+   git clone https://github.com/example/techanalysissecmanage-crcz.git
+   cd techanalysissecmanage-crcz
    ```
 2. **Authenticate to CyberRangeCZ** – Ensure VPN or direct connectivity and log into the portal.
 3. **Prepare the Scenario** – Upload required images or scripts (e.g., `subcase_1c/scripts/benign_malware_simulator.ps1`) to the appropriate CRCZ repositories.
