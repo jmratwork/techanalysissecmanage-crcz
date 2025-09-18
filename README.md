@@ -7,7 +7,7 @@ This repository provides complete, ready‑to‑deploy instructions for double C
 - Active account on [CyberRangeCZ](https://www.cyberrange.cz/) with permissions to deploy cyber range scenarios.
 - SSH access to the range and ability to run privileged commands.
 - Local tools: `git`, `kubectl`, `helm`, and a modern web browser.
-- Recommended familiarity with NG-SOAR components, including BIPS for behavioral intrusion prevention, NG-SIEM for event correlation, CICMS for incident collaboration, and MISP for CTI sharing.
+- Recommended familiarity with NG-SOC components, including BIPS for behavioral intrusion prevention, NG-SIEM for event correlation, CICMS for incident collaboration, and MISP for CTI sharing.
 - The provided startup scripts rely on `systemctl`. If your environment lacks systemd, set `DIRECT_START=1` to attempt starting services with legacy `service` commands or direct scripts.
 - Prepare required environment variables such as `LTI_TOOL_PRIVATE_KEY`, `MISP_API_KEY`, and `OPENEDX_URL` as described in [docs/env_variables.md](docs/env_variables.md).
 
@@ -24,7 +24,7 @@ See [deployment manual](docs/deployment_manual.md) for detailed steps including 
 2. **Authenticate to CyberRangeCZ** – Ensure VPN or direct connectivity and log into the portal.
 3. **Prepare the Scenario** – Upload required images or scripts (e.g., `subcase_1c/scripts/benign_malware_simulator.ps1`) to the appropriate CRCZ repositories.
 4. **Launch the Scenario** – Use the CRCZ interface to create a new exercise and point it to this repository. Configure network ranges and participants as needed.
-5. **Monitor the Exercise** – During execution, analysts should track alerts and manage cases using NG-SOAR components such as BIPS, NG-SIEM, CICMS, and MISP (for CTI sharing), following the workflow described in [`docs/training_workflows.md`](docs/training_workflows.md) and the deployment/validation steps in [`docs/subcase_1c_guide.md`](docs/subcase_1c_guide.md).
+5. **Monitor the Exercise** – During execution, analysts should track alerts and manage cases using NG-SOC components such as BIPS, NG-SIEM, CICMS, and MISP (for CTI sharing), following the workflow described in [`docs/training_workflows.md`](docs/training_workflows.md) and the deployment/validation steps in [`docs/subcase_1c_guide.md`](docs/subcase_1c_guide.md).
 
 ### Phishing Quiz Module
 
