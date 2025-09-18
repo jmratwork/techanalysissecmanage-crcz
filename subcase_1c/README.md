@@ -15,7 +15,7 @@ This subcase is **hands-on**. Analysts can inspect outputs in the NG-SIEM dashbo
 - **soc_server** – Hosts NG-SOAR platform services
 - **cti_component** – Runs MISP and feeds threat intelligence to the SOC
 
-## Required NG-SOAR Components
+## Required NG-SOC Components
 - BIPS
 - NG-SIEM
 - NG-SOAR
