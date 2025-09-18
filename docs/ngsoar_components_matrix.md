@@ -1,4 +1,4 @@
-# NG-SOAR Components Matrix
+# NG‑SOC Components Matrix
 
 This matrix centralizes references for NG-SOAR tools and their documentation. Replace `TBD` entries with the appropriate details.
 
