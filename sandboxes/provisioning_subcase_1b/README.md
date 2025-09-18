@@ -1,6 +1,6 @@
 # Provisioning Subcase 1b Packages
 
-This directory contains example automation for provisioning the subcase 1b sandbox. The NG-SOAR
+This directory contains example automation for provisioning the subcase 1b sandbox. The NG-SOC
 components are distributed through a private APT repository. Each host installs the required
 package from this repository, or alternatively, container images can be used.
 
