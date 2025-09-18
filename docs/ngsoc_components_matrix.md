@@ -1,6 +1,6 @@
 # NG‑SOC Components Matrix
 
-This matrix centralizes references for NG-SOAR tools and their documentation. Replace `TBD` entries with the appropriate details.
+This matrix centralizes references for NG-SOC tools and their documentation. Replace `TBD` entries with the appropriate details.
 
 | Tool | Version | NG-SOAR Component | Open Source | Partner | Documentation |
 |------|---------|------------------|-------------|---------|---------------|
