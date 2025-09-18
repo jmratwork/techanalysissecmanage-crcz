@@ -88,7 +88,7 @@ to avoid duplicate reports.
 
 - **Connectivity Issues** – Confirm VPN status and that required ports (e.g., 22 for SSH) are open.
 - **Scenario Fails to Start** – Ensure all prerequisite images are uploaded and that the repository path is correct.
-- **Tool-Specific Logs** – Consult documentation for [BIPS](https://ngsoar.example.com/bips), [NG-SIEM](https://ngsoar.example.com/ng-siem), [CICMS](https://ngsoar.example.com/cicms), and [MISP](https://ngsoar.example.com/misp).
+- **Tool-Specific Logs** – Consult documentation for [BIPS](https://example.com/bips), [NG-SIEM](https://example.com/ng-siem), [CICMS](https://example.com/cicms), and [MISP](https://example.com/misp).
 
 Additional theoretical background and workflow guidance can be found in [`docs/training_workflows.md`](docs/training_workflows.md). For day‑to‑day alert handling, analysts should review the [`SOC Analyst Playbook`](docs/soc_analyst_playbook.md).
 
