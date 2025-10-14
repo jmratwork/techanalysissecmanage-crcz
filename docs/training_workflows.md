@@ -11,7 +11,7 @@ Trainees should familiarize themselves with fundamental concepts in network secu
 - Basics of log analysis and threat intelligence
 - Overview of vulnerability assessment and penetration testing methodologies
 
-## Inscripción
+## Registration
 
 Trainees are invited and registered through the training platform CLI in
 `subcase_1b/training_platform/cli.py`. The script contacts the Open edX
@@ -20,7 +20,7 @@ enrollment. Instructors typically bootstrap the platform with
 `subcase_1b/scripts/training_platform_start.sh`, which starts the API that
 handles these enrollment requests.
 
-## Ejecución de laboratorio
+## Lab run
 
 Once enrolled, trainees launch the hands‑on lab in the KYPO cyber range.
 The environment is provisioned using `subcase_1b/scripts/cyber_range_start.sh`
@@ -29,7 +29,7 @@ and individualized scans can be executed with
 described in `subcase_1b/scenario.yml` and the corresponding topology file
 `sandboxes/topology_subcase_1b.yaml`.
 
-## Evaluación
+## Evaluation
 
 Exercise results are submitted to the new results module implemented in
 `subcase_1b/training_platform/results_service.py`. The service appends
