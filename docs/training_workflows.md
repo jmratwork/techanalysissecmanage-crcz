@@ -101,7 +101,7 @@ These workflows ensure that trainees gain practical experience while instructors
 
 ## Post-Incident Reporting and Iteration
 
-Run `subcase_1c/scripts/generate_post_incident_report.sh` once evaluations are complete to gather NG‑SIEM, BIPS and Act logs. Review the resulting file in `reports/` following the guidance in `docs/post_incident_process.md` and update playbooks or teaching materials accordingly before the next training cycle.  When the IRIS case poller processes a closed case it also tags the related MISP event, executes `update_bips_model.sh` to retrain or tune the BIPS model, and runs `commit_playbooks.sh` to push updated CACAO playbooks.  Results of these actions are appended to `sequence.log` for auditing.
+Run `subcase_1c/scripts/generate_post_incident_report.sh` once evaluations are complete to gather NG‑SIEM, BIPS and Act logs. Review the resulting file in `reports/` following the guidance in `docs/post_incident_process.md` and update playbooks or teaching materials accordingly before the next training cycle.  When the IRIS case poller processes a closed case it also tags the related MISP event, executes `scripts/update_bips_model.sh` to retrain or tune the BIPS model using the shared `subcase_1c/bips/ids_ml.py` helpers, and runs `scripts/commit_playbooks.sh` to validate and version updated CACAO playbooks (creating a Git commit when changes are present).  Results of these actions are appended to `sequence.log` for auditing, and any missing helper scripts are noted without interrupting case processing.
 
 ## Log Retrieval and Analysis
 

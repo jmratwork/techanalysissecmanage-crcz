@@ -109,8 +109,12 @@ def log_sequence(message: str) -> None:
 
 def run_and_log(script: str, label: str) -> None:
     """Run an external script and log its result."""
+    script_path = Path(script)
+    if not script_path.exists():
+        log_sequence(f"{label} skipped: missing helper at {script_path}")
+        return
     try:
-        result = subprocess.run([script], capture_output=True, text=True, check=True)
+        result = subprocess.run([str(script_path)], capture_output=True, text=True, check=True)
         log_sequence(f"{label} succeeded: {result.stdout.strip()}")
     except subprocess.CalledProcessError as exc:  # pragma: no cover - logging only
         log_sequence(f"{label} failed: {exc.stderr.strip()}")
