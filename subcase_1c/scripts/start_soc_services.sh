@@ -41,6 +41,28 @@ export MISP_API_KEY="${MISP_API_KEY:-changeme}"
 export DECIDE_URL="http://localhost:${DECIDE_PORT}/recommend"
 export ACT_URL="http://localhost:${ACT_PORT}/act"
 
+mask_secret() {
+    local secret="$1"
+    local visible="${2:-4}"
+    local secret_len="${#secret}"
+
+    if [ "${secret_len}" -eq 0 ]; then
+        printf '%s' ""
+        return
+    fi
+
+    if [ "${secret_len}" -le "${visible}" ]; then
+        printf '%s' "$(printf '%*s' "${secret_len}" '' | tr ' ' '*')"
+        return
+    fi
+
+    local masked_prefix
+    masked_prefix="$(printf '%*s' "$((secret_len-visible))" '' | tr ' ' '*')"
+    local suffix
+    suffix="${secret:$((secret_len-visible))}"
+    printf '%s%s' "${masked_prefix}" "${suffix}"
+}
+
 # ensure the MISP API key is not left at the insecure default
 if [ "$MISP_API_KEY" = "changeme" ]; then
     echo "ERROR: Set MISP_API_KEY to a non-default value before starting SOC services." >&2
@@ -476,11 +498,13 @@ start_act
     echo "$(date) alert->case->response sequence logged at /var/log/bips/sequence.log"
 } >>"${LOG_FILE}"
 
+masked_misp_key="$(mask_secret "${MISP_API_KEY}")"
+
 cat <<EOM
 SOC services started. Endpoints:
   BIPS    http://localhost:${BIPS_PORT}
   IRIS    ${IRIS_URL}
-  MISP    ${MISP_URL} (key: ${MISP_API_KEY})
+  MISP    ${MISP_URL} (key: ${masked_misp_key:-[hidden]})
   Decide  ${DECIDE_URL}
   Roaster http://localhost:${ROASTER_PORT}
   SOARCA  http://localhost:${SOARCA_PORT}
