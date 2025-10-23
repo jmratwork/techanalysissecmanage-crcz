@@ -22,6 +22,11 @@ expected.
     Launches BIPS, NG‑SIEM, CICMS, NG‑SOAR, Decide, and Act. Port checks rely on
     Bash's `/dev/tcp` and `timeout` rather than external utilities.
 
+    The script masks `MISP_API_KEY` in status messages and logs. Use a
+    subshell to inspect only the trailing characters (for example,
+    `echo "****${MISP_API_KEY: -4}"`) if you need to compare against the
+    expected value without revealing the entire secret.
+
     The MongoDB instance starts with the admin user `soc_admin` and password
     `soc_password` (override with `MONGO_INITDB_ROOT_USERNAME` and
     `MONGO_INITDB_ROOT_PASSWORD`). Data is persisted to the `cacao-mongo-data`
