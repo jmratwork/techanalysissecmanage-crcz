@@ -17,6 +17,8 @@ Configuration is handled via environment variables:
 ``POLL_INTERVAL``       Seconds between checks (default: 60)
 ``STATE_FILE``          File tracking processed case IDs
                         (default: scripts/.iris_processed_cases.json)
+``MISP_CA_BUNDLE``      Optional CA bundle path used to validate the MISP TLS
+                        certificate. When unset the system trust store is used.
 
 The script stores a JSON list of case IDs it has already handled to avoid
 re-running the report for the same case.
@@ -32,11 +34,13 @@ from pathlib import Path
 from typing import Iterable, Set
 
 import requests
+from requests import exceptions as requests_exceptions
 
 IRIS_URL = os.getenv("IRIS_URL", "http://localhost:8000/api")
 IRIS_API_KEY = os.getenv("IRIS_API_KEY")
 MISP_URL = os.getenv("MISP_URL", "http://localhost:8080")
 MISP_API_KEY = os.getenv("MISP_API_KEY")
+MISP_CA_BUNDLE = os.getenv("MISP_CA_BUNDLE")
 REPORT_SCRIPT = os.getenv(
     "REPORT_SCRIPT",
     str(Path(__file__).resolve().parents[1] / "subcase_1c" / "scripts" / "generate_post_incident_report.sh"),
@@ -89,13 +93,24 @@ def tag_misp_event(event_id: str) -> None:
         "Content-Type": "application/json",
     }
     payload = {"tag": "lessons learned"}
-    resp = requests.post(
-        f"{MISP_URL}/events/{event_id}/tags/add",
-        headers=headers,
-        json=payload,
-        timeout=30,
-        verify=False,
-    )
+    request_kwargs = {
+        "headers": headers,
+        "json": payload,
+        "timeout": 30,
+    }
+    verify_option = MISP_CA_BUNDLE if MISP_CA_BUNDLE else True
+    request_kwargs["verify"] = verify_option
+
+    try:
+        resp = requests.post(
+            f"{MISP_URL}/events/{event_id}/tags/add",
+            **request_kwargs,
+        )
+    except requests_exceptions.SSLError as exc:
+        raise RuntimeError(
+            "TLS handshake with MISP failed. Verify the certificate or set the "
+            "MISP_CA_BUNDLE environment variable with a trusted CA bundle."
+        ) from exc
     resp.raise_for_status()
 
 
